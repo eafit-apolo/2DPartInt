@@ -1,0 +1,23 @@
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: gcc:7.4
+    working_directory: ~/rename
+    steps:
+      - checkout
+      - run:
+          name: Run tests
+          command:
+            make tests
+
+workflows:
+  version: 2
+  ci:
+    jobs:
+      - build:
+          filters:
+            branches:
+              ignore:
+                - master
