@@ -10,6 +10,7 @@
 // Terminal color constants.
 #define RED   "\033[1;31m"
 #define GREEN "\033[1;32m"
+#define RESETCOLOR "\033[0m"
 
 // Global var to keep track of the number of failed tests.
 int number_failed;
@@ -21,9 +22,9 @@ int number_failed;
 void assert(const double result, const double expected, const char* test_description) {
   if (fabs(result - expected) > TOLERANCE) {
     number_failed++;
-    printf(RED "Test: '%s' FAILED!\n\t%f did not equal %f\n", test_description, expected, result);
+    printf(RED "Test: '%s' FAILED!\n\t%f did not equal %f\n" RESETCOLOR, test_description, expected, result);
   } else {
-    printf(GREEN "Test: '%s' PASSED!\n", test_description);
+    printf(GREEN "Test: '%s' PASSED!\n" RESETCOLOR, test_description);
   }
 }
 
@@ -34,9 +35,9 @@ void assert(const double result, const double expected, const char* test_descrip
 void for_assert(const double result, const double expected, const char* test_description, const int i) {
   if (fabs(result - expected) > TOLERANCE) {
     number_failed++;
-    printf(RED "Test: '%s' (%i) FAILED!\n\t%f did not equal %f\n", test_description, i, expected, result);
+    printf(RED "Test: '%s' (%i) FAILED!\n\t%f did not equal %f\n" RESETCOLOR, test_description, i, expected, result);
   } else {
-    printf(GREEN "Test: '%s' (%i) PASSED!\n", test_description, i);
+    printf(GREEN "Test: '%s' (%i) PASSED!\n" RESETCOLOR, test_description, i);
   }
 }
 
