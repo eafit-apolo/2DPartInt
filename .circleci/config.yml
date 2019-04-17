@@ -1,0 +1,31 @@
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: gcc:7.4
+    working_directory: ~/rename
+    steps:
+      - checkout
+      - run:
+          name: Clean
+          command:
+            make clean
+      - run:
+          name: Compile code
+          command:
+            make
+      - run:
+          name: Run tests
+          command:
+            make test
+
+workflows:
+  version: 2
+  ci:
+    jobs:
+      - build:
+          filters:
+            branches:
+              ignore:
+                - master
