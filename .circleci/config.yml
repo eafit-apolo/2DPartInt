@@ -10,7 +10,7 @@ jobs:
       - run:
           name: Run tests
           command:
-            make tests
+            make test
 
 workflows:
   version: 2
