@@ -5,7 +5,7 @@
 /**
  * Main method - All code logic runs here.
  */
-int main(int argc, const char* argv[]) {
-  printf("Hello, World!");
+int main(void) {
+  printf("Hello, World!\n");
   return 0;
 }
