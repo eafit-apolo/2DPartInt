@@ -53,7 +53,7 @@ void test_sum_vectors_one_element() {
   sum_vectors(size, v1, v2, result);
 
   assert(result[0].x_component, 10.0d, "test_sum_vectors_one_element - x_component");
-  assert(result[0].y_component, 0.0d, "test_sum_vectors_one_element - y_component");
+  assert(result[0].y_component, 10.0d, "test_sum_vectors_one_element - y_component");
   #undef size
 }
 
