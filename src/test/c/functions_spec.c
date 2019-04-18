@@ -68,7 +68,7 @@ void test_sum_vectors_multiple_elements() {
 
   sum_vectors(size, v1, v2, result);
 
-  Vector expected[size] = { { 10.0d, 10.0d }, { -12.6d, 4.56d }, { -2.0d, 8.0d } };
+  Vector expected[size] = { { 10.0d, 10.0d }, { -22.6d, 4.56d }, { -2.0d, 8.0d } };
   for (int i = 0; i < size; i++) {
     for_assert(result[i].x_component, expected[i].x_component, "test_sum_vectors_multiple_elements - x_component", i);
     for_assert(result[i].y_component, expected[i].y_component, "test_sum_vectors_multiple_elements - y_component", i);
