@@ -1,2 +1,3 @@
-# Rename
-Change
+# 2DPartInt
+
+Geotechnical problems have been traditionally tackled as an extension of continuum mechanics theories. Such an approach, although appropriate for systems undergoing small displacements, cannot examine important problems such as landslides, rockfalls, and rainfall-induced landslides. Our implementation is a first step toward analyzing these complex behavior, and, as a starting point, studies systems constituted of geomaterials assumed as particles in a two-dimensional space. With this implementation, we plan to bring to the geotechnical community, academic and practitioners in general, a computational tool that will allow solving challenges involving multiphysics and large displacements effectively and accurately.
