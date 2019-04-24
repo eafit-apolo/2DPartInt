@@ -12,7 +12,7 @@ void sum_vectors(const int size, const Vector *v1, const Vector *v2, Vector *res
  * Applies the forces to the particles with the same index,
  * and computes the resultant acceleration.
  */
-void compute_acceleration(const int size, const ParticleProperties *particles, const Vector *forces, Vector resultant_accelerations);
+void compute_acceleration(const int size, const ParticleProperties *particles, const Vector *forces, Vector *resultant_accelerations);
 
 /**
  * Derives the resultant velocity,
