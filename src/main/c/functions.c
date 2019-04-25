@@ -24,3 +24,10 @@ void compute_velocity(const int size, const Vector *accelerations, const double 
     velocities[i].y_component = velocities[i].y_component + accelerations[i].y_component * dt;
   }
 }
+
+void compute_displacement(const int size, const Vector *displacements, const double dt, Vector *velocities);
+  for (int i = 0; i < size; ++i) {
+    displacements[i].x_component = displacements[i].x_component + velocities[i].x_component * dt;
+    displacements[i].y_component = displacements[i].y_component + velocities[i].y_component * dt;
+  }
+}
