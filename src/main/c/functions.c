@@ -17,3 +17,10 @@ void compute_acceleration(const int size, const ParticleProperties *particles, c
     resultant_accelerations[i].y_component = forces[i].y_component / particles[i].mass;
   }
 }
+
+void compute_velocity(const int size, const Vector *accelerations, const double dt, Vector *velocities, Vector *resultant_velocity){
+  for (int i = 0; i < size; ++i) {
+    velocities[i].x_component = velocities[i].x_component + accelerations[i].x_component * dt;
+    velocities[i].y_component = velocities[i].y_component + accelerations[i].y_component * dt;
+  }
+}
