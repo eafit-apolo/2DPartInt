@@ -3,6 +3,11 @@
 #include "data.h"
 
 /**
+ * Returns the size of a triangular matrix, without the diagonal.
+ */
+int size_triangular_matrix(const int n);
+
+/**
  * Takes two arrays of vectors,
  * and sums together the vectors with the same index.
  */
