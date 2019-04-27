@@ -18,7 +18,7 @@ $(objects_folder)/functions_spec.o: $(test_src_folder)/functions_spec.c $(header
 
 $(test_folder)/functions_spec: $(objects_folder)/functions.o $(objects_folder)/functions_spec.o
 	mkdir -p $(test_folder)
-	gcc $(c_flags) -o $@ $^
+	gcc $(c_flags) -o $@ $^ -lm
 
 .PHONY: functions_spec
 functions_spec: $(test_folder)/functions_spec
@@ -32,7 +32,7 @@ $(objects_folder)/main.o: $(main_src_folder)/main.c $(headers_folder)/data.h $(h
 	gcc $(c_flags) -I$(headers_folder) -o $@ -c $<
 
 bin/$(program_name): $(objects_folder)/functions.o $(objects_folder)/main.o
-	gcc $(c_flags) -o $@ $^
+	gcc $(c_flags) -o $@ $^ -lm
 
 .PHONY: compile
 compile: bin/$(program_name)

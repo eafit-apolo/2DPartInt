@@ -8,6 +8,12 @@
 int size_triangular_matrix(const int n);
 
 /**
+ * Computes the overlap between two particles.
+ * Note: If the overlap is negative, there is no overlap.
+ */
+double compute_overlap(const Particle p1, const Particle p2);
+
+/**
  * Takes two arrays of vectors,
  * and sums together the vectors with the same index.
  */
@@ -37,4 +43,4 @@ void compute_displacement(const int size, const Vector *velocities, const double
  * Note: The size of the buffer should be equals to
  *       the size of a triangular matrix for the number of particles.
  */
-int compute_contacts(const int size; const Particle *particles, Contacts contact_buffer);
+int compute_contacts(const int size, const Particle *particles, Contact *contacts_buffer);

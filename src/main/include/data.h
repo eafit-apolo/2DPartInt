@@ -4,8 +4,8 @@
  * Represents a circular shaped particle in a two-dimensional space.
  */
 typedef struct {
-  double x;
-  double y;
+  double x_coordinate;
+  double y_coordinate;
   double radious;
 } Particle;
 
@@ -31,5 +31,5 @@ typedef struct {
 typedef struct {
   int p1_idx;
   int p2_idx;
-  unsigned double overlap;
+  double overlap;
 } Contact;
