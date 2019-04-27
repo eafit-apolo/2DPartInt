@@ -30,3 +30,11 @@ void compute_velocity(const int size, const Vector *accelerations, const double 
  * with an applied velocity for a given time delta.
  */
 void compute_displacement(const int size, const Vector *velocities, const double dt, Particle *particles);
+
+/**
+ * Computes the contacts between all particles.
+ * Returns the number of contacts written on the buffer.
+ * Note: The size of the buffer should be equals to
+ *       the size of a triangular matrix for the number of particles.
+ */
+int compute_contacts(const int size; const Particle *particles, Contacts contact_buffer);
