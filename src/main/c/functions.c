@@ -41,14 +41,15 @@ void sum_vectors(const int size, const Vector *v1, const Vector *v2, Vector *res
  *       the size of a triangular matrix for the number of particles.
  */
 int compute_contacts(const int size, const Particle *particles, Contact *contacts_buffer) {
-  int k = -1;
+  int k = 0;
+  double overlap;
   Particle p1;
   Particle p2;
   for (int i = 0; i < size; ++i) {
     for (int j = i + 1; j < size; ++j) {
       p1 = particles[i];
       p2 = particles[j];
-      double overlap = compute_overlap(p1, p2);
+      overlap = compute_overlap(p1, p2);
       if (overlap > 0) {
         contacts_buffer[k].p1_idx = i;
         contacts_buffer[k].p2_idx = j;
