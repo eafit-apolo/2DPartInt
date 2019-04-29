@@ -20,10 +20,15 @@ double compute_overlap(const Particle p1, const Particle p2);
 void sum_vectors(const int size, const Vector *v1, const Vector *v2, Vector *result);
 
 /**
+ * Computes the forces applied to each particle.
+ */
+void compute_forces(const int particles_size, const int contacts_size, const Particle *particles, const ParticleProperties *properties, const Vector *velocities, const double dt, Vector resultant_forces);
+
+/**
  * Applies the forces to the particles with the same index,
  * and computes the resultant acceleration.
  */
-void compute_acceleration(const int size, const ParticleProperties *particles, const Vector *forces, Vector resultant_accelerations);
+void compute_acceleration(const int size, const ParticleProperties *particles, const Vector *forces, Vector *resultant_accelerations);
 
 /**
  * Derives the resultant velocity,
