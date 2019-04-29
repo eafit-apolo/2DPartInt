@@ -15,6 +15,8 @@ typedef struct {
  */
 typedef struct {
   double mass;
+  double kn; // Normal rigidity.
+  double ks; // Tangential rigidity.
 } ParticleProperties;
 
 /**
