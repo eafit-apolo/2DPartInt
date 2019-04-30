@@ -89,41 +89,6 @@ void test_sum_vectors_multiple_elements() {
 }
 
 /**
- * Checks that the compute_acceleration function works for arrays of one element.
- */
-void test_compute_acceleration_one_element() {
-  #define size 1
-  Vector forces[size] = { { 30, 30 } };
-  ParticleProperties particle_properties[size] = { { 3 } };
-  Vector resultant_acceleration[size] = { { 0 } };
-
-  compute_acceleration(size, particle_properties, forces, resultant_acceleration);
-
-  assert(resultant_acceleration[0].x_component, 10.0d, "test_compute_acceleration - x_component");
-  assert(resultant_acceleration[0].y_component, 10.0d, "test_compute_acceleration - y_component");
-  #undef size
-}
-
-/**
- * Checks that the compute_acceleration function works for arrays of multiple elements.
- */
-void test_compute_acceleration_multiple_elements() {
-  #define size 3
-  Vector forces[size] = { { -12.58, -15.896 }, { 13.945, -200.826 }, { -543.62, -0.62 } };
-  ParticleProperties particle_properties[size] = { { 0.367 }, { 3.967 }, { 0.52 } };
-  Vector resultant_acceleration[size] = { { 0 } };
-
-  compute_acceleration(size, particle_properties, forces, resultant_acceleration);
-
-  Vector expected[size] = { { -34.2779d, -43.31335149863761d }, { 3.5152508192588856d, -50.6241d }, { -1045.4231d, -1.1923d } };
-  for (int i = 0; i < size; i++) {
-    for_assert(resultant_acceleration[i].x_component, expected[i].x_component, "test_compute_acceleration_multiple_elements - x_component", i);
-    for_assert(resultant_acceleration[i].y_component, expected[i].y_component, "test_compute_acceleration_multiple_elements - y_component", i);
-  }
-  #undef size
-}
-
-/**
  * Tests entry point.
  * All tests run here.
  */
@@ -135,8 +100,6 @@ int main(void) {
   test_size_triangular_matrix();
   test_sum_vectors_one_element();
   test_sum_vectors_multiple_elements();
-  test_compute_acceleration_one_element();
-  test_compute_acceleration_multiple_elements();
 
   // If, at least one test failed, exit with an error code.
   return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
