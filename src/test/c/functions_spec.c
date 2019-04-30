@@ -124,6 +124,43 @@ void test_compute_acceleration_multiple_elements() {
 }
 
 /**
+ * Checks that the compute_velocity function works for arrays of one element.
+ */
+//void test_compute_velocity_one_element() {
+//  #define size 1
+//  Vector acceleration[size] = { { 42.53, -631.431 } };
+//  double dt = 0.00025;
+//  Vector velocities[size] = { { 0, 0 } };
+//  Vector resultant_velocity[size] = { { 0 } };
+//
+//  compute_velocity(size, acceleration, dt, velocities, resultant_velocity);
+//
+//  assert(resultant_velocity[0].x_component, 0.010632500000000001d, "test_compute_velocity - x_component");
+//  assert(resultant_velocity[0].y_component, -0.15785775000000002d, "test_compute_velocity - y_component");
+//  #undef size
+//}
+
+/**
+ * Checks that the compute_velocity function works for arrays of multiple elements.
+ */
+//void test_compute_velocity_multiple_elements() {
+//  #define size 3
+//  Vector acceleration[size] = { { -10.59, 162.35 }, { , }, { , } };
+//  double dt = 0.00025;
+//  Vector velocities[size] = { { 5, 2 }, { , }, { , } };
+//  Vector resultant_velocity[size] = { { 0 } };
+//
+//  compute_velocity(size, acceleration, dt, velocities, resultant_velocity);
+//
+//  Vector expected[size] = { { -34.2779d, -43.31335149863761d }, { 3.5152508192588856d, -50.6241d }, { -1045.4231d, -1.1923d } };
+//  for (int i = 0; i < size; i++) {
+//    for_assert(resultant_velocity[i].x_component, expected[i].x_component, "test_compute_velocity_multiple_elements - x_component", i);
+//    for_assert(resultant_velocity[i].y_component, expected[i].y_component, "test_compute_velocity_multiple_elements - y_component", i);
+//  }
+//  #undef size
+//}
+
+/**
  * Tests entry point.
  * All tests run here.
  */
@@ -137,7 +174,9 @@ int main(void) {
   test_sum_vectors_multiple_elements();
   test_compute_acceleration_one_element();
   test_compute_acceleration_multiple_elements();
-
+  //test_compute_velocity_one_element();
+  //test_compute_velocity_multiple_elements();
+  
   // If, at least one test failed, exit with an error code.
   return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
 }

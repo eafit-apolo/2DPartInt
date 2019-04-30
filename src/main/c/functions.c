@@ -42,6 +42,18 @@ void compute_acceleration(const int size, const ParticleProperties *particles, c
 }
 
 /**
+
+* Derives the resultant velocity,
+ * of an initial velocity with an applied acceleration for given a time delta.
+ */
+void compute_velocity(const int size, const Vector *accelerations, const double dt, Vector *velocities){
+  for (int i = 0; i < size; ++i) {
+    velocities[i].x_component = velocities[i].x_component + accelerations[i].x_component * dt;
+    velocities[i].y_component = velocities[i].y_component + accelerations[i].y_component * dt;
+  }
+}
+
+/**
  * Computes the contacts between all particles.
  * Returns the number of contacts written on the buffer.
  * Note: The size of the buffer should be equals to
