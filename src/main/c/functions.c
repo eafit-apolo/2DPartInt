@@ -42,7 +42,8 @@ void compute_acceleration(const int size, const ParticleProperties *particles, c
 }
 
 /**
- * Derives the resultant velocity,
+
+* Derives the resultant velocity,
  * of an initial velocity with an applied acceleration for given a time delta.
  */
 void compute_velocity(const int size, const Vector *accelerations, const double dt, Vector *velocities){

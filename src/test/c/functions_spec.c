@@ -176,7 +176,7 @@ int main(void) {
   test_compute_acceleration_multiple_elements();
   //test_compute_velocity_one_element();
   //test_compute_velocity_multiple_elements();
-
+  
   // If, at least one test failed, exit with an error code.
   return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
 }
