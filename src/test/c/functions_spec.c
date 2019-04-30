@@ -99,8 +99,8 @@ void test_compute_acceleration_one_element() {
 
   compute_acceleration(size, particle_properties, forces, resultant_acceleration);
 
-  assert(resultant_acceleration[0].x_component, 10.0d, "test_compute_acceleration - x_component");
-  assert(resultant_acceleration[0].y_component, 10.0d, "test_compute_acceleration - y_component");
+  assert(resultant_acceleration[0].x_component, 10.0d, "test_compute_acceleration_one_element - x_component");
+  assert(resultant_acceleration[0].y_component, 10.0d, "test_compute_acceleration_one_element - y_component");
   #undef size
 }
 
@@ -135,8 +135,8 @@ void test_compute_acceleration_multiple_elements() {
 //
 //  compute_velocity(size, acceleration, dt, velocities, resultant_velocity);
 //
-//  assert(resultant_velocity[0].x_component, 0.010632500000000001d, "test_compute_velocity - x_component");
-//  assert(resultant_velocity[0].y_component, -0.15785775000000002d, "test_compute_velocity - y_component");
+//  assert(resultant_velocity[0].x_component, 0.010632500000000001d, "test_compute_velocity_one_element - x_component");
+//  assert(resultant_velocity[0].y_component, -0.15785775000000002d, "test_compute_velocity_one_element - y_component");
 //  #undef size
 //}
 
@@ -176,7 +176,7 @@ int main(void) {
   test_compute_acceleration_multiple_elements();
   //test_compute_velocity_one_element();
   //test_compute_velocity_multiple_elements();
-  
+
   // If, at least one test failed, exit with an error code.
   return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
 }

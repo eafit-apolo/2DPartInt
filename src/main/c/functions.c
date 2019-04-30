@@ -34,6 +34,10 @@ void sum_vectors(const int size, const Vector *v1, const Vector *v2, Vector *res
   }
 }
 
+/**
+ * Applies the forces to the particles with the same index,
+ * and computes the resultant acceleration.
+ */
 void compute_acceleration(const int size, const ParticleProperties *particles, const Vector *forces, Vector *resultant_accelerations){
   for (int i = 0; i < size; ++i) {
     resultant_accelerations[i].x_component = forces[i].x_component / particles[i].mass;
@@ -42,8 +46,17 @@ void compute_acceleration(const int size, const ParticleProperties *particles, c
 }
 
 /**
+ * Computes the displacement of the particles,
+ * with an applied velocity for a given time delta.
+ */
+void compute_displacement(const int size, const double dt, const Vector *velocities, Vector *displacements){
+  for (int i = 0; i < size; ++i) {
+    displacements[i].x_component = displacements[i].x_component + velocities[i].x_component * dt;
+    displacements[i].y_component = displacements[i].y_component + velocities[i].y_component * dt;
+  }
+}
 
-* Derives the resultant velocity,
+/** Derives the resultant velocity,
  * of an initial velocity with an applied acceleration for given a time delta.
  */
 void compute_velocity(const int size, const Vector *accelerations, const double dt, Vector *velocities){
