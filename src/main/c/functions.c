@@ -34,13 +34,12 @@ void sum_vectors(const int size, const Vector *v1, const Vector *v2, Vector *res
   }
 }
 
-<<<<<<< HEAD
 void compute_acceleration(const int size, const ParticleProperties *particles, const Vector *forces, Vector *resultant_accelerations){
   for (int i = 0; i < size; ++i) {
     resultant_accelerations[i].x_component = forces[i].x_component / particles[i].mass;
     resultant_accelerations[i].y_component = forces[i].y_component / particles[i].mass;
   }
-=======
+
 /**
  * Computes the contacts between all particles.
  * Returns the number of contacts written on the buffer.
@@ -66,5 +65,4 @@ int compute_contacts(const int size, const Particle *particles, Contact *contact
     }
   }
   return k;
->>>>>>> b7b1ff35d70c0f0eca1b6ea84981603e7396c9f0
 }
