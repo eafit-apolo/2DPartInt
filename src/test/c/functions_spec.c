@@ -94,7 +94,7 @@ void test_sum_vectors_multiple_elements() {
 void test_compute_acceleration_one_element() {
   #define size 1
   Vector forces[size] = { { 30, 30 } };
-  ParticleProperties particle_properties[size] = { { 3 } };
+  ParticleProperties particle_properties[size] = { { 3, 0, 0 } };
   Vector resultant_acceleration[size] = { { 0 } };
 
   compute_acceleration(size, particle_properties, forces, resultant_acceleration);
@@ -110,7 +110,7 @@ void test_compute_acceleration_one_element() {
 void test_compute_acceleration_multiple_elements() {
   #define size 3
   Vector forces[size] = { { -12.58, -15.896 }, { 13.945, -200.826 }, { -543.62, -0.62 } };
-  ParticleProperties particle_properties[size] = { { 0.367 }, { 3.967 }, { 0.52 } };
+  ParticleProperties particle_properties[size] = { { 0.367, 0, 0 }, { 3.967, 0, 0 }, { 0.52, 0, 0 } };
   Vector resultant_acceleration[size] = { { 0 } };
 
   compute_acceleration(size, particle_properties, forces, resultant_acceleration);
