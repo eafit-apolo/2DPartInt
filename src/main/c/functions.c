@@ -49,7 +49,7 @@ void compute_acceleration(const int size, const ParticleProperties *particles, c
  * Computes the displacement of the particles,
  * with an applied velocity for a given time delta.
  */
-void compute_displacement(const int size, Vector *displacements, const double dt, Vector *velocities){
+void compute_displacement(const int size, const double dt, const Vector *velocities, Vector *displacements){
   for (int i = 0; i < size; ++i) {
     displacements[i].x_component = displacements[i].x_component + velocities[i].x_component * dt;
     displacements[i].y_component = displacements[i].y_component + velocities[i].y_component * dt;

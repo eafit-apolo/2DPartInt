@@ -35,7 +35,7 @@ void compute_velocity(const int size, const Vector *accelerations, const double 
  * Computes the displacement of the particles,
  * with an applied velocity for a given time delta.
  */
-void compute_displacement(const int size, Vector *displacements, const double dt, Vector *velocities);
+void compute_displacement(const int size, const double dt, const Vector *velocities, Vector *displacements);
 
 /**
  * Computes the contacts between all particles.
