@@ -13,7 +13,7 @@
 #define RESETCOLOR "\033[0m"
 
 // Global var to keep track of the number of failed tests.
-int number_failed;
+unsigned int number_failed;
 
 /**
  * Asserts that two double values are equals, within the allowed tolerance.
@@ -21,7 +21,7 @@ int number_failed;
  */
 void assert(const double result, const double expected, const char* test_description) {
   if (fabs(result - expected) > TOLERANCE) {
-    number_failed++;
+    ++number_failed;
     printf(RED "Test: '%s' FAILED!\n\t%f did not equal %f\n" RESETCOLOR, test_description, expected, result);
   } else {
     printf(GREEN "Test: '%s' PASSED!\n" RESETCOLOR, test_description);
@@ -34,7 +34,7 @@ void assert(const double result, const double expected, const char* test_descrip
  */
 void for_assert(const double result, const double expected, const char* test_description, const int i) {
   if (fabs(result - expected) > TOLERANCE) {
-    number_failed++;
+    ++number_failed;
     printf(RED "Test: '%s' (%i) FAILED!\n\t%f did not equal %f\n" RESETCOLOR, test_description, i, expected, result);
   } else {
     printf(GREEN "Test: '%s' (%i) PASSED!\n" RESETCOLOR, test_description, i);
@@ -42,13 +42,13 @@ void for_assert(const double result, const double expected, const char* test_des
 }
 
 /**
- *
+ * Checks that the size_triangular_matrix return correct results.
  */
 void test_size_triangular_matrix() {
-  int n = 5;
-  int expected = 10;
+  size_t n = 5;
+  size_t expected = 10;
 
-  int result = size_triangular_matrix(n);
+  size_t result = size_triangular_matrix(n);
 
   assert(result, expected, "test_size_triangular_matrix");
 }
@@ -81,7 +81,7 @@ void test_sum_vectors_multiple_elements() {
   sum_vectors(size, v1, v2, result);
 
   Vector expected[size] = { { 10.0d, 10.0d }, { -12.61d, 4.56d }, { -2.0d, 8.0d } };
-  for (int i = 0; i < size; i++) {
+  for (size_t i = 0; i < size; ++i) {
     for_assert(result[i].x_component, expected[i].x_component, "test_sum_vectors_multiple_elements - x_component", i);
     for_assert(result[i].y_component, expected[i].y_component, "test_sum_vectors_multiple_elements - y_component", i);
   }
@@ -116,7 +116,7 @@ void test_compute_acceleration_multiple_elements() {
   compute_acceleration(size, particle_properties, forces, resultant_acceleration);
 
   Vector expected[size] = { { -34.2779d, -43.31335149863761d }, { 3.5152508192588856d, -50.6241d }, { -1045.4231d, -1.1923d } };
-  for (int i = 0; i < size; i++) {
+  for (size_t i = 0; i < size; ++i) {
     for_assert(resultant_acceleration[i].x_component, expected[i].x_component, "test_compute_acceleration_multiple_elements - x_component", i);
     for_assert(resultant_acceleration[i].y_component, expected[i].y_component, "test_compute_acceleration_multiple_elements - y_component", i);
   }
@@ -153,7 +153,7 @@ void test_compute_acceleration_multiple_elements() {
 //  compute_velocity(size, acceleration, dt, velocities, resultant_velocity);
 //
 //  Vector expected[size] = { { -34.2779d, -43.31335149863761d }, { 3.5152508192588856d, -50.6241d }, { -1045.4231d, -1.1923d } };
-//  for (int i = 0; i < size; i++) {
+//  for (size_t i = 0; i < size; ++i) {
 //    for_assert(resultant_velocity[i].x_component, expected[i].x_component, "test_compute_velocity_multiple_elements - x_component", i);
 //    for_assert(resultant_velocity[i].y_component, expected[i].y_component, "test_compute_velocity_multiple_elements - y_component", i);
 //  }
