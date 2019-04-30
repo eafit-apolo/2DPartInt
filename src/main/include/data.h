@@ -29,7 +29,7 @@ typedef struct {
  * Represents a contact between two particles.
  */
 typedef struct {
-  int p1_idx;
-  int p2_idx;
+  size_t p1_idx;
+  size_t p2_idx;
   double overlap;
 } Contact;
