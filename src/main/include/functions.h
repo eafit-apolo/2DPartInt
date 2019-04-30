@@ -35,9 +35,6 @@ void compute_velocity(const int size, const Vector *accelerations, const double 
  * Computes the displacement of the particles,
  * with an applied velocity for a given time delta.
  */
-<<<<<<< HEAD
-void compute_displacement(const int size, const Vector *displacements, const double dt, Vector *velocities);
-=======
 void compute_displacement(const int size, const Vector *velocities, const double dt, Particle *particles);
 
 /**
@@ -47,4 +44,3 @@ void compute_displacement(const int size, const Vector *velocities, const double
  *       the size of a triangular matrix for the number of particles.
  */
 int compute_contacts(const int size, const Particle *particles, Contact *contacts_buffer);
->>>>>>> b7b1ff35d70c0f0eca1b6ea84981603e7396c9f0

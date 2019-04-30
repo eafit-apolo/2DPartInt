@@ -39,6 +39,7 @@ void compute_acceleration(const int size, const ParticleProperties *particles, c
     resultant_accelerations[i].x_component = forces[i].x_component / particles[i].mass;
     resultant_accelerations[i].y_component = forces[i].y_component / particles[i].mass;
   }
+}
 
 /**
  * Computes the contacts between all particles.
