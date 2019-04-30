@@ -46,7 +46,6 @@ void compute_acceleration(const int size, const ParticleProperties *particles, c
 }
 
 /**
-<<<<<<< HEAD
  * Computes the displacement of the particles,
  * with an applied velocity for a given time delta.
  */
@@ -54,16 +53,16 @@ void compute_displacement(const int size, Vector *displacements, const double dt
   for (int i = 0; i < size; ++i) {
     displacements[i].x_component = displacements[i].x_component + velocities[i].x_component * dt;
     displacements[i].y_component = displacements[i].y_component + velocities[i].y_component * dt;
-=======
+  }
+}
 
-* Derives the resultant velocity,
+/** Derives the resultant velocity,
  * of an initial velocity with an applied acceleration for given a time delta.
  */
 void compute_velocity(const int size, const Vector *accelerations, const double dt, Vector *velocities){
   for (int i = 0; i < size; ++i) {
     velocities[i].x_component = velocities[i].x_component + accelerations[i].x_component * dt;
     velocities[i].y_component = velocities[i].y_component + accelerations[i].y_component * dt;
->>>>>>> master
   }
 }
 
