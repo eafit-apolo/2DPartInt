@@ -14,11 +14,11 @@ $(objects_folder)/functions.o: $(main_src_folder)/functions.c $(headers_folder)/
 
 $(objects_folder)/functions_spec.o: $(test_src_folder)/functions_spec.c $(headers_folder)/data.h $(headers_folder)/functions.h
 	mkdir -p $(objects_folder)
-	gcc $(c_flags) -I$(headers_folder) -o $@ -c $< -lm
+	gcc $(c_flags) -I$(headers_folder) -o $@ -c $<
 
 $(test_folder)/functions_spec: $(objects_folder)/functions.o $(objects_folder)/functions_spec.o
 	mkdir -p $(test_folder)
-	gcc $(c_flags) -o $@ $^
+	gcc $(c_flags) -o $@ $^ -lm
 
 .PHONY: functions_spec
 functions_spec: $(test_folder)/functions_spec

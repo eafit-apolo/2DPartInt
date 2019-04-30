@@ -42,6 +42,18 @@ void for_assert(const double result, const double expected, const char* test_des
 }
 
 /**
+ *
+ */
+void test_size_triangular_matrix() {
+  int n = 5;
+  int expected = 10;
+
+  int result = size_triangular_matrix(n);
+
+  assert(result, expected, "test_size_triangular_matrix");
+}
+
+/**
  * Checks that the sum_vectors function works for arrays of one element.
  */
 void test_sum_vectors_one_element() {
@@ -193,6 +205,7 @@ int main(void) {
   number_failed = 0;
 
   // Execute all tests.
+  test_size_triangular_matrix();
   test_sum_vectors_one_element();
   test_sum_vectors_multiple_elements();
   test_compute_acceleration_one_element();

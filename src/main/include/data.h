@@ -24,3 +24,12 @@ typedef struct {
   double x_component;
   double y_component;
 } Vector;
+
+/**
+ * Represents a contact between two particles.
+ */
+typedef struct {
+  int p1_idx;
+  int p2_idx;
+  double overlap;
+} Contact;
