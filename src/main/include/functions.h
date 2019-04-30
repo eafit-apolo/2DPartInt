@@ -3,6 +3,17 @@
 #include "data.h"
 
 /**
+ * Returns the size of a triangular matrix, without the diagonal.
+ */
+int size_triangular_matrix(const int n);
+
+/**
+ * Computes the overlap between two particles.
+ * Note: If the overlap is negative, there is no overlap.
+ */
+double compute_overlap(const Particle p1, const Particle p2);
+
+/**
  * Takes two arrays of vectors,
  * and sums together the vectors with the same index.
  */
@@ -24,4 +35,16 @@ void compute_velocity(const int size, const Vector *accelerations, const double 
  * Computes the displacement of the particles,
  * with an applied velocity for a given time delta.
  */
+<<<<<<< HEAD
 void compute_displacement(const int size, const Vector *displacements, const double dt, Vector *velocities);
+=======
+void compute_displacement(const int size, const Vector *velocities, const double dt, Particle *particles);
+
+/**
+ * Computes the contacts between all particles.
+ * Returns the number of contacts written on the buffer.
+ * Note: The size of the buffer should be equals to
+ *       the size of a triangular matrix for the number of particles.
+ */
+int compute_contacts(const int size, const Particle *particles, Contact *contacts_buffer);
+>>>>>>> b7b1ff35d70c0f0eca1b6ea84981603e7396c9f0
