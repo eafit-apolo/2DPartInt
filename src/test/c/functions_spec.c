@@ -126,75 +126,75 @@ void test_compute_acceleration_multiple_elements() {
 /**
  * Checks that the compute_velocity function works for arrays of one element.
  */
-void test_compute_velocity_one_element() {
-  #define size 1
-  Vector acceleration[size] = { { 42.53, -631.431 } };
-  double dt = 0.00025;
-  Vector velocities[size] = { { 0, 0 } };
-  Vector resultant_velocity[size] = { { 0 } };
-
-  compute_velocity(size, acceleration, dt, velocities, resultant_velocity);
-
-  assert(resultant_velocity[0].x_component, 0.010632500000000001d, "test_compute_velocity_one_element - x_component");
-  assert(resultant_velocity[0].y_component, -0.15785775000000002d, "test_compute_velocity_one_element - y_component");
-  #undef size
-}
+//void test_compute_velocity_one_element() {
+//  #define size 1
+//  Vector acceleration[size] = { { 42.53, -631.431 } };
+//  double dt = 0.00025;
+//  Vector velocities[size] = { { 0, 0 } };
+//  Vector resultant_velocity[size] = { { 0 } };
+//
+//  compute_velocity(size, acceleration, dt, velocities, resultant_velocity);
+//
+//  assert(resultant_velocity[0].x_component, 0.010632500000000001d, "test_compute_velocity_one_element - x_component");
+//  assert(resultant_velocity[0].y_component, -0.15785775000000002d, "test_compute_velocity_one_element - y_component");
+//  #undef size
+//}
 
 /**
  * Checks that the compute_velocity function works for arrays of multiple elements.
  */
-void test_compute_velocity_multiple_elements() {
-  #define size 3
-  Vector accelerations[size] = { { -10.59, 162.35 }, { , }, { , } };
-  double dt = 0.00025;
-  Vector velocities[size] = { { 5, 2 }, { , }, { , } };
-
-  compute_velocity(size, accelerations, dt, velocities, resultant_velocity);
-
-  Vector expected[size] = { { -34.2779d, -43.31335149863761d }, { d, d }, { d, d } };
-  for (int i = 0; i < size; i++) {
-    for_assert(velocities[i].x_component, expected[i].x_component, "test_compute_velocity_multiple_elements - x_component", i);
-    for_assert(velocities[i].y_component, expected[i].y_component, "test_compute_velocity_multiple_elements - y_component", i);
-  }
-  #undef size
-}
+//void test_compute_velocity_multiple_elements() {
+//  #define size 3
+//  Vector accelerations[size] = { { -10.59, 162.35 }, { , }, { , } };
+//  double dt = 0.00025;
+//  Vector velocities[size] = { { 5, 2 }, { , }, { , } };
+//
+//  compute_velocity(size, accelerations, dt, velocities, resultant_velocity);
+//
+//  Vector expected[size] = { { -34.2779d, -43.31335149863761d }, { d, d }, { d, d } };
+//  for (int i = 0; i < size; i++) {
+//    for_assert(velocities[i].x_component, expected[i].x_component, "test_compute_velocity_multiple_elements - x_component", i);
+//    for_assert(velocities[i].y_component, expected[i].y_component, "test_compute_velocity_multiple_elements - y_component", i);
+//  }
+//  #undef size
+//}
 
 /**
  * Checks that the compute_displacement function works for arrays of one element.
  */
-void test_compute_displacement_one_element() {
-  #define size 1
-  Vector displacement[size] = { { ,  } };
-  double dt = 0.00025;
-  Vector velocities[size] = { { ,  } };
-
-  compute_displacement(size, displacement, dt, velocities);
-
-  assert(velocities[0].x_component, d, "test_compute_displacement_one_element - x_component");
-  assert(velocities[0].y_component, d, "test_compute_displacement_one_element - y_component");
-  #undef size
-}
+//void test_compute_displacement_one_element() {
+//  #define size 1
+//  Vector displacement[size] = { { ,  } };
+//  double dt = 0.00025;
+//  Vector velocities[size] = { { ,  } };
+//
+//  compute_displacement(size, displacement, dt, velocities);
+//
+//  assert(velocities[0].x_component, d, "test_compute_displacement_one_element - x_component");
+//  assert(velocities[0].y_component, d, "test_compute_displacement_one_element - y_component");
+//  #undef size
+//}
 
 /**
  * Checks that the compute_displacement function works for arrays of multiple elements.
  */
-void test_compute_displacement_multiple_elements() {
-  #define size 3
-  Vector displacement[size] = { { ,  }, { , }, { , } };
- { ,  } };
-  double dt = 0.00025;
-  Vector velocities[size] = { { ,  }, { , }, { , } };
-
-
-  compute_displacement(size, displacement, dt, velocities);
-
-  Vector expected[size] = { { d, d }, { d, d }, { d, d } };
-  for (int i = 0; i < size; i++) {
-    for_assert(velocities[i].x_component, expected[i].x_component, "test_compute_displacement_multiple_elements - x_component", i);
-    for_assert(velocities[i].y_component, expected[i].y_component, "test_compute_displacement_multiple_elements - y_component", i);
-  }
-  #undef size
-}
+//void test_compute_displacement_multiple_elements() {
+//  #define size 3
+//  Vector displacement[size] = { { ,  }, { , }, { , } };
+// { ,  } };
+//  double dt = 0.00025;
+//  Vector velocities[size] = { { ,  }, { , }, { , } };
+//
+//
+//  compute_displacement(size, displacement, dt, velocities);
+//
+//  Vector expected[size] = { { d, d }, { d, d }, { d, d } };
+//  for (int i = 0; i < size; i++) {
+//    for_assert(velocities[i].x_component, expected[i].x_component, "test_compute_displacement_multiple_elements - x_component", i);
+//    for_assert(velocities[i].y_component, expected[i].y_component, "test_compute_displacement_multiple_elements - y_component", i);
+//  }
+//  #undef size
+//}
 
 /**
  * Tests entry point.
@@ -210,10 +210,10 @@ int main(void) {
   test_sum_vectors_multiple_elements();
   test_compute_acceleration_one_element();
   test_compute_acceleration_multiple_elements();
-  test_compute_velocity_one_element();
-  test_compute_velocity_multiple_elements();
-  test_compute_displacement_one_element();
-  test_compute_displacement_multiple_elements();
+  //test_compute_velocity_one_element();
+  //test_compute_velocity_multiple_elements();
+  //test_compute_displacement_one_element();
+  //test_compute_displacement_multiple_elements();
 
   // If, at least one test failed, exit with an error code.
   return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
