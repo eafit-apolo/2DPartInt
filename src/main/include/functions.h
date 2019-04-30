@@ -34,13 +34,13 @@ void compute_acceleration(const int size, const ParticleProperties *particles, c
  * Derives the resultant velocity,
  * of an initial velocity with an applied acceleration for given a time delta.
  */
-void compute_velocity(const int size, const Vector *accelerations, const double dt, Vector velocities);
+void compute_velocity(const int size, const Vector *accelerations, const double dt, Vector *velocities);
 
 /**
  * Computes the displacement of the particles,
  * with an applied velocity for a given time delta.
  */
-void compute_displacement(const int size, const Vector *velocities, const double dt, Particle *particles);
+void compute_displacement(const int size, const double dt, const Vector *velocities, Vector *displacements);
 
 /**
  * Computes the contacts between all particles.
