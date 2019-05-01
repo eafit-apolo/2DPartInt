@@ -35,6 +35,49 @@ void sum_vectors(const size_t size, const Vector *v1, const Vector *v2, Vector *
 }
 
 /**
+ * Computes the forces applied to each particle.
+ */
+void compute_forces(const size_t particles_size, const size_t contacts_size, const Particle *particles,
+        const ParticleProperties *properties, const Vector *velocities, const Vector *displacements,
+        const Vector *normal_forces, const Vector *tangent_forces, const double dt,
+        const Contacts *contacts, Vector *resultant_forces){
+    
+    double distance, normal_vector_x, normal_vector_y, Fs_1_2max;
+    size_t p1_idx, p2_idx;
+    for(size_t i = 0;i<contacts_size;++i){
+        p1_idx = contacts[i].p1_idx;
+        p2_idx = contacts[i].p2_idx;
+        distance = sqrt(pow((particles[p1_idx].x_coordinate - particles[p2_idx].x_coordinate),2) + pow((particles[p1_idx].y_coordinate - particles[p2_idx].y_coordinate), 2));
+        normal_vector_x = (particles[p1_idx].x_coordinate - particles[p2_idx].x_coordinate)/distance;
+        normal_vector_y = (particles[p1_idx].y_coordinate - particles[p2_idx].y_coordinate)/distance;
+
+        normal_velocity = normal_vector_x * (velocities[p1_idx].x_coordinate - velocities[p2_idx].x_coordinate) +
+            normal_vector_y * (velocities[p1_idx].y_coordinate - velocities[p2_idx].y_coordinate);
+        tangent_velocity =  normal_vector_y * (velocities[p1_idx].x_coordinate - velocities[p2_idx].x_coordinate) -
+            normal_vector_x * (velocities[p1_idx].y_coordinate - velocities[p2_idx].y_coordinate);
+
+        dfn = properties->kn * normal_velocity * dt;
+        dfs = properties->ks * tangent_velocity * dt;
+          
+        Fn_1_2 = normal_forces[p2_idx] * dfn;
+        Fs_1_2 = tangent_forces[p2_idx] * dfs;
+
+        if( Fn_1_2 < 0 ){
+            Fn_1_2 = 0;
+            Fs_1_2 = 0;
+        }
+
+        Fs_1_2max = Fn_1_2 * tan(30*M_PI / 180);
+        
+        if( abs(Fs_1_2) > Fs_1_2max){
+            Fs_1_2 = abs(Fs_1_2max) * abs(Fs_1_2)/Fs_1_2;
+        }
+
+        normal_forces[p1_idx
+    }
+}
+
+/**
  * Applies the forces to the particles with the same index,
  * and computes the resultant acceleration.
  */
