@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := all
 
-MAIN                = main
+PROGRAM_NAME        = 2DpartInt
 SRC                 = src
 BIN                 = bin
 OBJ                 = $(BIN)/obj
@@ -35,15 +35,15 @@ $(OBJ)/main.o: $(SRC)/main.c $(INC)/data.h $(INC)/functions.h
 	$(MKDIR) $(OBJ)
 	$(CC) $(ALL_CFLAGS) -I$(INC) -o $@ -c $<
 
-$(BIN)/$(MAIN): $(OBJ)/functions.o $(OBJ)/main.o
+$(BIN)/$(PROGRAM_NAME): $(OBJ)/functions.o $(OBJ)/main.o
 	$(CC) $(ALL_CFLAGS) -o $@ $^ -lm
 
 .PHONY: all
-all: $(BIN)/$(MAIN)
+all: $(BIN)/$(PROGRAM_NAME)
 
 .PHONY: run
 run: all
-	$(BIN)/$(MAIN)
+	$(BIN)/$(PROGRAM_NAME)
 
 .PHONY: clean
 clean:
