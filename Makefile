@@ -1,49 +1,52 @@
 .DEFAULT_GOAL := default
 
-program_name = main
-main_src_folder = src/main/c
-test_src_folder = src/test/c
-headers_folder = src/main/include
-objects_folder = bin/objects
-test_folder = bin/tests
-c_flags = -std=c11 -O3 -Wall -Wextra -Werror
+program_name 		= main
+SRCdir				= src
+BINdir				= bin
+OBJdir 				= $(BINdir)/obj
+INCdir				= include
+TESTdir 			= $(SRCdir)/test
+CC 					= gcc
+CFLAGS 				= -std=c11 -O3 -Wall -Wextra -Werror
+RM 					= rm -rf
+MKDIR 				= mkdir -p
 
-$(objects_folder)/functions.o: $(main_src_folder)/functions.c $(headers_folder)/data.h $(headers_folder)/functions.h
-	mkdir -p $(objects_folder)
-	gcc $(c_flags) -I$(headers_folder) -o $@ -c $<
+$(OBJdir)/functions.o: $(SRCdir)/functions.c $(INCdir)/data.h $(INCdir)/functions.h
+	$(MKDIR) $(OBJdir)
+	$(CC) $(CFLAGS) -I$(INCdir) -o $@ -c $<
 
-$(objects_folder)/functions_spec.o: $(test_src_folder)/functions_spec.c $(headers_folder)/data.h $(headers_folder)/functions.h
-	mkdir -p $(objects_folder)
-	gcc $(c_flags) -I$(headers_folder) -o $@ -c $<
+$(OBJdir)/functions_spec.o: $(TESTdir)/functions_spec.c $(INCdir)/data.h $(INCdir)/functions.h
+	$(MKDIR) $(OBJdir)
+	$(CC) $(CFLAGS) -I$(INCdir) -o $@ -c $<
 
-$(test_folder)/functions_spec: $(objects_folder)/functions.o $(objects_folder)/functions_spec.o
-	mkdir -p $(test_folder)
-	gcc $(c_flags) -o $@ $^ -lm
+$(TESTdir)/functions_spec: $(OBJdir)/functions.o $(OBJdir)/functions_spec.o
+	$(MKDIR) $(TESTdir)
+	$(CC) $(CFLAGS) -o $@ $^ -lm
 
 .PHONY: functions_spec
-functions_spec: $(test_folder)/functions_spec
-	$(test_folder)/functions_spec
+functions_spec: $(TESTdir)/functions_spec
+	$(TESTdir)/functions_spec
 
 .PHONY: test
 test: functions_spec
 
-$(objects_folder)/main.o: $(main_src_folder)/main.c $(headers_folder)/data.h $(headers_folder)/functions.h
-	mkdir -p $(objects_folder)
-	gcc $(c_flags) -I$(headers_folder) -o $@ -c $<
+$(OBJdir)/main.o: $(SRCdir)/main.c $(INCdir)/data.h $(INCdir)/functions.h
+	$(MKDIR) $(OBJdir)
+	$(CC) $(CFLAGS) -I$(INCdir) -o $@ -c $<
 
-bin/$(program_name): $(objects_folder)/functions.o $(objects_folder)/main.o
-	gcc $(c_flags) -o $@ $^ -lm
+$(BINdir)/$(program_name): $(OBJdir)/functions.o $(OBJdir)/main.o
+	$(CC) $(CFLAGS) -o $@ $^ -lm
 
 .PHONY: compile
-compile: bin/$(program_name)
+compile: $(BINdir)/$(program_name)
 
 .PHONY: run
 run: compile
-	bin/$(program_name)
+	$(BINdir)/$(program_name)
 
 .PHONY: clean
 clean:
-	rm -rf bin
+	$(RM) $(BINdir)
 
 .PHONY: default
 default: compile
