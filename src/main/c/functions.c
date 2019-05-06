@@ -4,7 +4,7 @@
 #include "functions.h"
 
 #ifndef M_PI
-#    define M_PI 3.14159265358979323846
+    #define M_PI 3.14159265358979323846
 #endif
 
 /**
@@ -15,16 +15,22 @@ size_t size_triangular_matrix(const size_t n) {
 }
 
 /**
+ * Computes the distance between two particles.
+ */
+double compute_distance(const Particle p1, const Particle p2) {
+  double x_diff = p1.x_coordinate - p2.x_coordinate;
+  double y_diff = p1.y_coordinate - p2.y_coordinate;
+
+  return sqrt((x_diff * x_diff) + (y_diff * y_diff));
+}
+
+/**
  * Computes the overlap between two particles.
  * Note: If the overlap is negative, there is no overlap.
  */
 double compute_overlap(const Particle p1, const Particle p2) {
   double d = p1.radious + p2.radious;
-
-  double x_diff = p1.x_coordinate - p2.x_coordinate;
-  double y_diff = p1.y_coordinate - p2.y_coordinate;
-  double distance = sqrt((x_diff * x_diff) + (y_diff * y_diff));
-
+  double distance = compute_distance(p1, p2);
   return d - distance;
 }
 
@@ -39,55 +45,65 @@ void sum_vectors(const size_t size, const Vector *v1, const Vector *v2, Vector *
 }
 
 /**
+ * Apply gravity to a vector of forces.
+ */
+void apply_gravity(const size_t size, const ParticleProperties *particles, Vector *forces) {
+  for (size_t i = 0; i < size; ++i) {
+    forces[i].y_component -= (particles[i].mass * 9.81d);
+  }
+}
+
+/**
  * Computes the forces applied to each particle.
  */
-void compute_forces(const size_t size, const size_t contacts_size, ParticleProperties* properties, const Particle *particles, 
-        const Vector *velocities, double normal_forces[size][size], double tangent_forces[size][size], const double dt,
-        const Contact *contacts, Vector *resultant_forces){
-    
-    double distance, normal_vector_x, normal_vector_y, Fs_1_2max, normal_velocity, tangent_velocity, dfn, dfs, Fn_1_2, Fs_1_2;
-    size_t p1_idx, p2_idx;
-    for(size_t i = 0;i<contacts_size;++i){
-        p1_idx = contacts[i].p1_idx;
-        p2_idx = contacts[i].p2_idx;
-        
-        distance = sqrt(pow((particles[p1_idx].x_coordinate - particles[p2_idx].x_coordinate),2) +
-                pow((particles[p1_idx].y_coordinate - particles[p2_idx].y_coordinate), 2));
-        normal_vector_x = (particles[p1_idx].x_coordinate - particles[p2_idx].x_coordinate)/distance;
-        normal_vector_y = (particles[p1_idx].y_coordinate - particles[p2_idx].y_coordinate)/distance;
+void compute_forces(const size_t particles_size, const size_t contacts_size, ParticleProperties *properties, const Particle *particles,
+        const Vector *velocities, double *normal_forces, double *tangent_forces, const double dt,
+        const Contact *contacts, Vector *resultant_forces) {
 
-        normal_velocity = normal_vector_x * (velocities[p1_idx].x_component - velocities[p2_idx].x_component) +
-            normal_vector_y * (velocities[p1_idx].y_component - velocities[p2_idx].y_component);
-        tangent_velocity =  normal_vector_y * (velocities[p1_idx].x_component - velocities[p2_idx].x_component) -
-            normal_vector_x * (velocities[p1_idx].y_component - velocities[p2_idx].y_component);
+  double distance, Fs_1_2max, normal_velocity, tangent_velocity, dfn, dfs, Fn_1_2, Fs_1_2;
+  size_t p1_idx, p2_idx, ij_idx;
+  Vector normal;
 
-        dfn = properties->kn * normal_velocity * dt;
-        dfs = properties->ks * tangent_velocity * dt;
-          
+  for(size_t i = 0; i < contacts_size; ++i) {
+    p1_idx = contacts[i].p1_idx;
+    p2_idx = contacts[i].p2_idx;
+    ij_idx = (p1_idx * particles_size) + p2_idx;
 
-        Fn_1_2 = normal_forces[p1_idx][p2_idx] + dfn;
-        Fs_1_2 = tangent_forces[p1_idx][p2_idx] + dfs;
+    distance = compute_distance(particles[p1_idx], particles[p2_idx]);
 
-        if( Fn_1_2 < 0 ){
-            Fn_1_2 = 0;
-            Fs_1_2 = 0;
-        }
+    normal.x_component = (particles[p1_idx].x_coordinate - particles[p2_idx].x_coordinate) / distance;
+    normal.y_component = (particles[p1_idx].y_coordinate - particles[p2_idx].y_coordinate) / distance;
 
-        Fs_1_2max = Fn_1_2 * tan(30*M_PI / 180);
-        
-        
-        if( abs(Fs_1_2) > Fs_1_2max){
-            Fs_1_2 = abs(Fs_1_2max) * abs(Fs_1_2)/Fs_1_2;
-        }
+    normal_velocity = normal.x_component * (velocities[p1_idx].x_component - velocities[p2_idx].x_component) +
+        normal.y_component * (velocities[p1_idx].y_component - velocities[p2_idx].y_component);
 
-        normal_forces[p1_idx][p2_idx] = Fn_1_2;
-        tangent_forces[p1_idx][p2_idx] = Fs_1_2;
-    
-        resultant_forces[p2_idx].x_component = -normal_vector_x * Fn_1_2 -
-            normal_vector_y * Fs_1_2;
-        resultant_forces[p2_idx].y_component = -normal_vector_y * Fn_1_2 +
-            normal_vector_x * Fs_1_2;
+    tangent_velocity =  normal.y_component * (velocities[p1_idx].x_component - velocities[p2_idx].x_component) -
+        normal.x_component * (velocities[p1_idx].y_component - velocities[p2_idx].y_component);
+
+    dfn = properties[p2_idx].kn * normal_velocity * dt;
+    dfs = properties[p2_idx].ks * tangent_velocity * dt;
+
+    Fn_1_2 = normal_forces[ij_idx] + dfn;
+    Fs_1_2 = tangent_forces[ij_idx] + dfs;
+
+    if (Fn_1_2 < 0) {
+      Fn_1_2 = 0;
+      Fs_1_2 = 0;
     }
+
+    Fs_1_2max = Fn_1_2 * tan((30 * M_PI) / 180);
+
+    if (abs(Fs_1_2) > Fs_1_2max) {
+      Fs_1_2 = (abs(Fs_1_2max) * abs(Fs_1_2)) / Fs_1_2;
+    }
+
+    resultant_forces[p2_idx].x_component = (-normal.x_component * Fn_1_2) - (normal.y_component * Fs_1_2);
+    resultant_forces[p2_idx].y_component = (-normal.y_component * Fn_1_2) + (normal.x_component * Fs_1_2);
+
+    // Update the normal and tangent forces for the next simulation step.
+    normal_forces[ij_idx] = Fn_1_2;
+    tangent_forces[ij_idx] = Fs_1_2;
+  }
 }
 
 /**
@@ -131,8 +147,7 @@ void compute_velocity(const size_t size, const Vector *accelerations, const doub
 size_t compute_contacts(const size_t size, const Particle *particles, Contact *contacts_buffer) {
   size_t k = 0;
   double overlap;
-  Particle p1;
-  Particle p2;
+  Particle p1, p2;
   for (size_t i = 0; i < size; ++i) {
     for (size_t j = i + 1; j < size; ++j) {
       p1 = particles[i];

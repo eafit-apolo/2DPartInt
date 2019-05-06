@@ -91,25 +91,24 @@ void test_sum_vectors_multiple_elements() {
 /**
  * Checks whether compute_forces works or not.
  */
-void test_compute_forces_one_element(){
+void test_compute_forces_one_element() {
   #define size 2
   #define contacts_size 1
-  ParticleProperties properties = { 0, 247435.829652697, 19033.5253578998  };
-  Particle particles[size] = { { 24.9999, 29, 50 }, { 25, 74.6253249615872, 50} };
-  Vector velocities[size] = { { -0.0016, 0}, { -0.00159733057834793, -5} };
-  double normal_forces[size][size] = {   { 0, 53.253}, { 53.253, 0} };
-  double tangent_forces[size][size] = {   { 0, 2.0526062679878}, { 2.0526062679878, 0} };
-  Contact contacts[contacts_size] = { { 0, 1, 50 - sqrt(49.62582891) } };
-  Vector resultant_forces[size];
+  ParticleProperties properties[size] = { { 0, 247435.829652697, 19033.5253578998 }, { 0, 247435.829652697, 19033.5253578998 } };
+  Particle particles[size] = { { 24.9999428493601, 25, 50 }, { 24.7762980060664, 74.6253249615872, 50 } };
+  Vector velocities[size] = { { -0.00159733057834793, 0 }, { -4.64544001147225, -6.36971454859269 } };
+  double normal_forces[size * size] = { 0, 53.2634277334533, 53.2634277334533, 0 };
+  double tangent_forces[size * size] = { 0, 2.0526062679878, 2.0526062679878, 0 };
   double dt = 0.000025;
+  Contact contacts[contacts_size] = { { 0, 1, 42.9554 } };
+  Vector resultant_forces[size] = { { 0 } };
 
-  compute_forces(size, contacts_size, &properties, particles, velocities, normal_forces, tangent_forces, dt, contacts, resultant_forces);
-
+  compute_forces(size, contacts_size, properties, particles, velocities, normal_forces, tangent_forces, dt, contacts, resultant_forces);
 
   assert(resultant_forces[1].x_component, -3.85889294289366d, "test_compute_forces_one_element - resultant_forces[1].x_component");
   assert(resultant_forces[1].y_component, -92.5542894643503d, "test_compute_forces_one_element - resultant_forces[1].y_component");
-  assert(normal_forces[0][1], 92.53595901628790d, "test_compute_forces_one_element - resultant_forces[1].y_component");
-  assert(tangent_forces[0][1], 4.275960624d, "test_compute_forces_one_element - resultant_forces[1].y_component");
+  assert(normal_forces[1], 92.53595901628790d, "test_compute_forces_one_element - resultant_forces[1].y_component");
+  assert(tangent_forces[1], 4.275960624d, "test_compute_forces_one_element - resultant_forces[1].y_component");
   #undef size
   #undef contacts_size
 }
