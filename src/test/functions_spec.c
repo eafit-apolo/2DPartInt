@@ -1,8 +1,8 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "data.h"
-#include "functions.h"
+#include <data.h>
+#include <functions.h>
 
 // Maximum acceptable error when comparing double values.
 #define TOLERANCE 0.00005d

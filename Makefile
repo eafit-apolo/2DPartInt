@@ -20,13 +20,13 @@ $(OBJ)/functions_spec.o: $(TEST)/functions_spec.c $(INC)/data.h $(INC)/functions
 	$(MKDIR) $(OBJ)
 	$(CC) $(ALL_CFLAGS) -I$(INC) -o $@ -c $<
 
-$(TEST)/functions_spec: $(OBJ)/functions.o $(OBJ)/functions_spec.o
-	$(MKDIR) $(TEST)
+$(BIN)/functions_spec: $(OBJ)/functions.o $(OBJ)/functions_spec.o
+	$(MKDIR) $(OBJ)
 	$(CC) $(ALL_CFLAGS) -o $@ $^ -lm
 
 .PHONY: functions_spec
-functions_spec: $(TEST)/functions_spec
-	$(TEST)/functions_spec
+functions_spec: $(BIN)/functions_spec
+	$(BIN)/functions_spec
 
 .PHONY: test
 test: functions_spec
