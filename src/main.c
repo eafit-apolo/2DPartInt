@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include <data.h>
-#include <functions.h>
+#include "data.h"
+#include "functions.h"
 
 /**
  * Main method - All code logic runs here.

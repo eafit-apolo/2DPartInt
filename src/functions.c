@@ -1,7 +1,7 @@
 #include <math.h>
 #include <stdlib.h>
-#include <data.h>
-#include <functions.h>
+#include "data.h"
+#include "functions.h"
 
 /**
  * Returns the size of a triangular matrix, without the diagonal.
