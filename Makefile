@@ -1,16 +1,16 @@
 .DEFAULT_GOAL := all
 
-program_name 		= main
-SRCdir				= src
-BINdir				= bin
-OBJdir 				= $(BINdir)/obj
-INCdir				= include
-TESTdir 			= $(SRCdir)/test
-CC 					= gcc
-CFLAGS 				= 
-ALL_CFLAGS			= -std=c11 -O3 -Wall -Wextra -Werror $(CFLAGS)
-RM 					= rm -rf
-MKDIR 				= mkdir -p
+program_name        = main
+SRCdir              = src
+BINdir              = bin
+OBJdir              = $(BINdir)/obj
+INCdir              = include
+TESTdir             = $(SRCdir)/test
+CC                  = gcc
+CFLAGS              = 
+ALL_CFLAGS          = -std=c11 -O3 -Wall -Wextra -Werror $(CFLAGS)
+RM                  = rm -rf
+MKDIR               = mkdir -p
 
 $(OBJdir)/functions.o: $(SRCdir)/functions.c $(INCdir)/data.h $(INCdir)/functions.h
 	$(MKDIR) $(OBJdir)
