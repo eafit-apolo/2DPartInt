@@ -1,50 +1,52 @@
 .DEFAULT_GOAL := all
 
 PROGRAM_NAME        = 2DpartInt
-SRC                 = src
-BIN                 = bin
-OBJ                 = $(BIN)/obj
-INC                 = include
-TEST                = $(SRC)/test
+SRC_DIR             = src
+BIN_DIR             = bin
+OBJ_DIR             = obj
+INC_DIR             = include
+TEST_DIR            = test
 CC                  = gcc
 CFLAGS              = 
 ALL_CFLAGS          = -std=c11 -O3 -Wall -Wextra -Werror $(CFLAGS)
 RM                  = rm -rf
 MKDIR               = mkdir -p
 
-$(OBJ)/functions.o: $(SRC)/functions.c $(INC)/data.h $(INC)/functions.h
-	$(MKDIR) $(OBJ)
-	$(CC) $(ALL_CFLAGS) -I$(INC) -o $@ -c $<
+$(OBJ_DIR)/functions.o: $(SRC_DIR)/functions.c $(INC_DIR)/data.h $(INC_DIR)/functions.h
+	$(MKDIR) $(OBJ_DIR)
+	$(CC) $(ALL_CFLAGS) -I$(INC_DIR) -o $@ -c $<
 
-$(OBJ)/functions_spec.o: $(TEST)/functions_spec.c $(INC)/data.h $(INC)/functions.h
-	$(MKDIR) $(OBJ)
-	$(CC) $(ALL_CFLAGS) -I$(INC) -o $@ -c $<
+$(OBJ_DIR)/functions_spec.o: $(TEST_DIR)/functions_spec.c $(INC_DIR)/data.h $(INC_DIR)/functions.h
+	$(MKDIR) $(OBJ_DIR)
+	$(CC) $(ALL_CFLAGS) -I$(INC_DIR) -o $@ -c $<
 
-$(BIN)/functions_spec: $(OBJ)/functions.o $(OBJ)/functions_spec.o
-	$(MKDIR) $(OBJ)
+$(BIN_DIR)/functions_spec: $(OBJ_DIR)/functions.o $(OBJ_DIR)/functions_spec.o
+	$(MKDIR) $(BIN_DIR)
 	$(CC) $(ALL_CFLAGS) -o $@ $^ -lm
 
 .PHONY: functions_spec
-functions_spec: $(BIN)/functions_spec
-	$(BIN)/functions_spec
+functions_spec: $(BIN_DIR)/functions_spec
+	$(BIN_DIR)/functions_spec
 
 .PHONY: test
 test: functions_spec
 
-$(OBJ)/main.o: $(SRC)/main.c $(INC)/data.h $(INC)/functions.h
-	$(MKDIR) $(OBJ)
-	$(CC) $(ALL_CFLAGS) -I$(INC) -o $@ -c $<
+$(OBJ_DIR)/main.o: $(SRC_DIR)/main.c $(INC_DIR)/data.h $(INC_DIR)/functions.h
+	$(MKDIR) $(OBJ_DIR)
+	$(CC) $(ALL_CFLAGS) -I$(INC_DIR) -o $@ -c $<
 
-$(BIN)/$(PROGRAM_NAME): $(OBJ)/functions.o $(OBJ)/main.o
+$(BIN_DIR)/$(PROGRAM_NAME): $(OBJ_DIR)/functions.o $(OBJ_DIR)/main.o
+	$(MKDIR) $(BIN_DIR)
 	$(CC) $(ALL_CFLAGS) -o $@ $^ -lm
 
 .PHONY: all
-all: $(BIN)/$(PROGRAM_NAME)
+all: $(BIN_DIR)/$(PROGRAM_NAME)
 
 .PHONY: run
 run: all
-	$(BIN)/$(PROGRAM_NAME)
+	$(BIN_DIR)/$(PROGRAM_NAME)
 
 .PHONY: clean
 clean:
-	$(RM) $(BIN)
+	$(RM) $(BIN_DIR)
+	$(RM) $(OBJ_DIR)
