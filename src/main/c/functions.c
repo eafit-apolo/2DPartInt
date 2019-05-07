@@ -38,21 +38,10 @@ void sum_vectors(const size_t size, const Vector *v1, const Vector *v2, Vector *
  * Applies the forces to the particles with the same index,
  * and computes the resultant acceleration.
  */
-void compute_acceleration(const size_t size, const ParticleProperties *particles, const Vector *forces, Vector *resultant_accelerations){
+void compute_acceleration(const size_t size, const ParticleProperties *particles, const Vector *forces, Vector *accelerations) {
   for (size_t i = 0; i < size; ++i) {
-    resultant_accelerations[i].x_component = forces[i].x_component / particles[i].mass;
-    resultant_accelerations[i].y_component = forces[i].y_component / particles[i].mass;
-  }
-}
-
-/**
- * Computes the displacement of the particles,
- * with an applied velocity for a given time delta.
- */
-void compute_displacement(const size_t size, const double dt, const Vector *velocities, Vector *displacements){
-  for (size_t i = 0; i < size; ++i) {
-    displacements[i].x_component = displacements[i].x_component + velocities[i].x_component * dt;
-    displacements[i].y_component = displacements[i].y_component + velocities[i].y_component * dt;
+    accelerations[i].x_component = forces[i].x_component / particles[i].mass;
+    accelerations[i].y_component = forces[i].y_component / particles[i].mass;
   }
 }
 
@@ -63,6 +52,17 @@ void compute_velocity(const size_t size, const Vector *accelerations, const doub
   for (size_t i = 0; i < size; ++i) {
     velocities[i].x_component = velocities[i].x_component + accelerations[i].x_component * dt;
     velocities[i].y_component = velocities[i].y_component + accelerations[i].y_component * dt;
+  }
+}
+
+/**
+ * Computes the displacement of the particles,
+ * with an applied velocity for a given time delta.
+ */
+void compute_displacement(const size_t size, const double dt, const Vector *velocities, Vector *displacements) {
+  for (size_t i = 0; i < size; ++i) {
+    displacements[i].x_component = displacements[i].x_component + velocities[i].x_component * dt;
+    displacements[i].y_component = displacements[i].y_component + velocities[i].y_component * dt;
   }
 }
 

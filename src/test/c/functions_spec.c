@@ -95,12 +95,12 @@ void test_compute_acceleration_one_element() {
   #define size 1
   Vector forces[size] = { { 30, 30 } };
   ParticleProperties particle_properties[size] = { { 3 } };
-  Vector resultant_acceleration[size] = { { 0 } };
+  Vector accelerations[size] = { { 0 } };
 
-  compute_acceleration(size, particle_properties, forces, resultant_acceleration);
+  compute_acceleration(size, particle_properties, forces, accelerations);
 
-  assert(resultant_acceleration[0].x_component, 10.0d, "test_compute_acceleration_one_element - x_component");
-  assert(resultant_acceleration[0].y_component, 10.0d, "test_compute_acceleration_one_element - y_component");
+  assert(accelerations[0].x_component, 10.0d, "test_compute_acceleration_one_element - x_component");
+  assert(accelerations[0].y_component, 10.0d, "test_compute_acceleration_one_element - y_component");
   #undef size
 }
 
@@ -111,14 +111,14 @@ void test_compute_acceleration_multiple_elements() {
   #define size 3
   Vector forces[size] = { { -12.58, -15.896 }, { 13.945, -200.826 }, { -543.62, -0.62 } };
   ParticleProperties particle_properties[size] = { { 0.367 }, { 3.967 }, { 0.52 } };
-  Vector resultant_acceleration[size] = { { 0 } };
+  Vector accelerations[size] = { { 0 } };
 
-  compute_acceleration(size, particle_properties, forces, resultant_acceleration);
+  compute_acceleration(size, particle_properties, forces, accelerations);
 
   Vector expected[size] = { { -34.2779d, -43.31335149863761d }, { 3.5152508192588856d, -50.6241d }, { -1045.4231d, -1.1923d } };
   for (size_t i = 0; i < size; ++i) {
-    for_assert(resultant_acceleration[i].x_component, expected[i].x_component, "test_compute_acceleration_multiple_elements - x_component", i);
-    for_assert(resultant_acceleration[i].y_component, expected[i].y_component, "test_compute_acceleration_multiple_elements - y_component", i);
+    for_assert(accelerations[i].x_component, expected[i].x_component, "test_compute_acceleration_multiple_elements - x_component", i);
+    for_assert(accelerations[i].y_component, expected[i].y_component, "test_compute_acceleration_multiple_elements - y_component", i);
   }
   #undef size
 }
