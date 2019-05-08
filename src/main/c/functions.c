@@ -67,6 +67,16 @@ void compute_displacement(const size_t size, const double dt, const Vector *velo
 }
 
 /**
+ * Displace all particles given their displacements.
+ */
+void displace_particles(const size_t size, const Vector *displacements, Particle *particles) {
+  for (size_t i = 0; i < size; ++i) {
+    particles[i].x_coordinate += displacements[i].x_component;
+    particles[i].y_coordinate += displacements[i].y_component;
+  }
+}
+
+/**
  * Computes the contacts between all particles.
  * Returns the number of contacts written on the buffer.
  * Note: The size of the buffer should be equals to

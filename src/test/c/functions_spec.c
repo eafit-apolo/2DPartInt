@@ -161,6 +161,39 @@ void test_compute_acceleration_multiple_elements() {
 //}
 
 /**
+ * Checks that the displace_particles function works for arrays of one element.
+ */
+void test_displace_particles_one_element() {
+  #define size 1
+  Vector displacements[size] = { { 50, -50 } };
+  Particle particles[size] = { { 0, 100, 0 } };
+
+  displace_particles(size, displacements, particles);
+
+  assert(particles[0].x_coordinate, 50.0d, "test_displace_particles_one_element - x_coordinate");
+  assert(particles[0].y_coordinate, 50.0d, "test_displace_particles_one_element - y_coordinate");
+  #undef size
+}
+
+/**
+ * Checks that the displace_particles function works for arrays of multiple elements.
+ */
+void test_displace_particles_multiple_elements() {
+  #define size 3
+  Vector displacements[size] = { { 0, 0 }, { 0.000015, -0.000033 }, { -15, 30 } };
+  Particle particles[size] = { { 0, 100, 0 }, { 0.11111, 2.100000, 0 }, { 15, -30, 0 } };
+
+  displace_particles(size, displacements, particles);
+
+  Particle expected[size] = { { 0.0d, 100.0d, 0 }, { 0.111125, 2.0999967, 0 }, { 0.0d, 0.0d, 0 } };
+  for (size_t i = 0; i < size; ++i) {
+    for_assert(particles[i].x_coordinate, expected[i].x_coordinate, "test_displace_particles_multiple_elements - x_coordinate", i);
+    for_assert(particles[i].y_coordinate, expected[i].y_coordinate, "test_displace_particles_multiple_elements - y_coordinate", i);
+  }
+  #undef size
+}
+
+/**
  * Tests entry point.
  * All tests run here.
  */
@@ -176,6 +209,8 @@ int main(void) {
   test_compute_acceleration_multiple_elements();
   //test_compute_velocity_one_element();
   //test_compute_velocity_multiple_elements();
+  test_displace_particles_one_element();
+  test_displace_particles_multiple_elements();
 
   // If, at least one test failed, exit with an error code.
   return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;

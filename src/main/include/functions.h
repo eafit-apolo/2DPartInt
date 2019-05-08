@@ -38,6 +38,11 @@ void compute_velocity(const size_t size, const Vector *accelerations, const doub
 void compute_displacement(const size_t size, const double dt, const Vector *velocities, Vector *displacements);
 
 /**
+ * Displace all particles given their displacements.
+ */
+void displace_particles(const size_t size, const Vector *displacements, Particle *particles);
+
+/**
  * Computes the contacts between all particles.
  * Returns the number of contacts written on the buffer.
  * Note: The size of the buffer should be equals to
