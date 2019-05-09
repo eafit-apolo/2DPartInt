@@ -71,8 +71,8 @@ void compute_forces(const size_t particles_size, const size_t contacts_size, Par
 
     distance = compute_distance(particles[p1_idx], particles[p2_idx]);
 
-    normal.x_component = (particles[p1_idx].x_coordinate - particles[p2_idx].x_coordinate) / distance;
-    normal.y_component = (particles[p1_idx].y_coordinate - particles[p2_idx].y_coordinate) / distance;
+    normal.x_component = (particles[p2_idx].x_coordinate - particles[p1_idx].x_coordinate) / distance;
+    normal.y_component = (particles[p2_idx].y_coordinate - particles[p1_idx].y_coordinate) / distance;
 
     normal_velocity = normal.x_component * (velocities[p1_idx].x_component - velocities[p2_idx].x_component) +
         normal.y_component * (velocities[p1_idx].y_component - velocities[p2_idx].y_component);
