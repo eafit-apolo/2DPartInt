@@ -1,5 +1,6 @@
 #include <math.h>
 #include <stdlib.h>
+#include <string.h>
 #include "data.h"
 #include "functions.h"
 
@@ -90,8 +91,8 @@ void collide_two_particles(const double dt, const Particle *p1, const Particle *
   }
 
   // Update the forces of p2.
-  force_p2->x_component = (-normal.x_component * Fn_1_2) - (normal.y_component * Fs_1_2);
-  force_p2->y_component = (-normal.y_component * Fn_1_2) + (normal.x_component * Fs_1_2);
+  force_p2->x_component += (-normal.x_component * Fn_1_2) - (normal.y_component * Fs_1_2);
+  force_p2->y_component += (-normal.y_component * Fn_1_2) + (normal.x_component * Fs_1_2);
 
   // Update the normal and tangent forces between p1 and p2 for the next simulation step.
   *previous_normal = Fn_1_2;
@@ -104,8 +105,9 @@ void collide_two_particles(const double dt, const Particle *p1, const Particle *
 void compute_forces(const size_t particles_size, const size_t contacts_size, ParticleProperties *properties, const Particle *particles,
         const Vector *velocities, double *normal_forces, double *tangent_forces, const double dt,
         const Contact *contacts, Vector *resultant_forces) {
-  size_t p1_idx, p2_idx;
+  memset(resultant_forces, 0, sizeof(Vector) * particles_size);
 
+  size_t p1_idx, p2_idx;
   for(size_t i = 0; i < contacts_size; ++i) {
     p1_idx = contacts[i].p1_idx;
     p2_idx = contacts[i].p2_idx;
@@ -136,6 +138,8 @@ void compute_forces(const size_t particles_size, const size_t contacts_size, Par
       &tangent_forces[(p2_idx * particles_size) + p1_idx]
     );
   }
+
+  apply_gravity(particles_size, properties, resultant_forces);
 }
 
 /**
