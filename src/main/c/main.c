@@ -1,6 +1,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "config.h"
 #include "data.h"
 #include "functions.h"
 
@@ -19,7 +20,11 @@ Vector *displacements;
  * Initialize all simulation structures according to the number of particles.
  * The structures are effectively initialized with zeros.
  */
-void initialize(const size_t num_particles) {
+void initialize(const Config *config) {
+  // The number of particles is equals to the simulation size,
+  // plus the falling particle (the first one).
+  size_t num_particles = config->simulation_size + 1;
+
   // Allocate memory.
   particles = calloc(num_particles, sizeof(Particle));
   properties = calloc(num_particles, sizeof(ParticleProperties));
@@ -30,6 +35,15 @@ void initialize(const size_t num_particles) {
   accelerations = calloc(num_particles, sizeof(Vector));
   velocities = calloc(num_particles, sizeof(Vector));
   displacements = calloc(num_particles, sizeof(Vector));
+
+  // Initialize the structures.
+  for (size_t i = 0; i < num_particles; ++i) {
+    particles[i].radious = config->r;
+    properties[i].mass = config->m;
+    properties[i].kn = config->kn;
+    properties[i].ks = config->ks;
+  }
+  velocities[0].x_component = config->v0;
 }
 
 /**
@@ -51,7 +65,7 @@ void free_all() {
  * Executes one step of the simulation.
  */
 void simulation_step(const size_t particles_size, const double dt) {
-  size_t contact_size = compute_contacts(particles_size, particles, contacts_buffer);
+  size_t contacts_size = compute_contacts(particles_size, particles, contacts_buffer);
   compute_forces(dt, particles_size, contacts_size, particles, properties,
                  contacts_buffer, velocities, normal_forces, tangent_forces, forces);
   compute_acceleration(particles_size, properties, forces, accelerations);
@@ -63,21 +77,26 @@ void simulation_step(const size_t particles_size, const double dt) {
 /**
  * Main method - All code logic runs here.
  */
-int main(void) {
-  // The simulation size is equals to the number of particles.
-  const size_t simulation_size = 100;
-  initialize(simulation_size);
-  // The simulation time and dt determine the maximum number of steps to execute.
-  const double simulation_time = 10;
-  const double dt = 0.000025;
-  const int max_steps = ceil(simulation_time / dt);
+int main(int argc, char *argv[]) {
+  // Ensure the program was called with the correct number of arguments.
+  if (argc != 2) {
+    fprintf(stderr, "Wrong number of arguments: %d\nUsage: 2DPartInt [simulation_config_file]", argc);
+    return -1;
+  }
+
+  Config *config = malloc(sizeof(Config));
+  parse_config(argv[1], config);
+  initialize(config);
+  const int max_steps = ceil(config->simulation_time / config->dt);
+  const size_t num_particles = config->simulation_size + 1;
 
   // Run the simulation until the max number of steps is reached.
   for (int step = 0; step < max_steps; ++step) {
-    simulation_step(simulation_size, dt);
+    simulation_step(num_particles, config->dt);
   }
 
   // Free all memory resources and exit.
+  free(config);
   free_all();
   return 0;
 }
