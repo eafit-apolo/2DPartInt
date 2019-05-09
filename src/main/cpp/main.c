@@ -1,9 +1,11 @@
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include "config.h"
-#include "data.h"
-#include "functions.h"
+#include <cstdio>
+#include <cstdlib>
+#include <cmath>
+extern "C" {
+  #include "config.h"
+  #include "data.h"
+  #include "functions.h"
+}
 
 // Simulation structures.
 Particle *particles;
@@ -26,15 +28,15 @@ void initialize(const Config *config) {
   size_t num_particles = config->simulation_size + 1;
 
   // Allocate memory.
-  particles = calloc(num_particles, sizeof(Particle));
-  properties = calloc(num_particles, sizeof(ParticleProperties));
-  contacts_buffer = calloc(size_triangular_matrix(num_particles), sizeof(Contact));
-  normal_forces = calloc(num_particles * num_particles, sizeof(double));
-  tangent_forces = calloc(num_particles * num_particles, sizeof(double));
-  forces = calloc(num_particles, sizeof(Vector));
-  accelerations = calloc(num_particles, sizeof(Vector));
-  velocities = calloc(num_particles, sizeof(Vector));
-  displacements = calloc(num_particles, sizeof(Vector));
+  particles = (Particle*) calloc(num_particles, sizeof(Particle));
+  properties = (ParticleProperties*) calloc(num_particles, sizeof(ParticleProperties));
+  contacts_buffer = (Contact*) calloc(size_triangular_matrix(num_particles), sizeof(Contact));
+  normal_forces = (double*) calloc(num_particles * num_particles, sizeof(double));
+  tangent_forces = (double*) calloc(num_particles * num_particles, sizeof(double));
+  forces = (Vector*) calloc(num_particles, sizeof(Vector));
+  accelerations = (Vector*) calloc(num_particles, sizeof(Vector));
+  velocities = (Vector*) calloc(num_particles, sizeof(Vector));
+  displacements = (Vector*) calloc(num_particles, sizeof(Vector));
 
   // Initialize the structures.
   for (size_t i = 0; i < num_particles; ++i) {
@@ -80,11 +82,15 @@ void simulation_step(const size_t particles_size, const double dt) {
 int main(int argc, char *argv[]) {
   // Ensure the program was called with the correct number of arguments.
   if (argc != 2) {
-    fprintf(stderr, "Wrong number of arguments: %d\nUsage: 2DPartInt [simulation_config_file]", argc);
+    fprintf(
+      stderr,
+      "Wrong number of arguments: %d\nUsage: 2DPartInt [simulation_config_file]\n",
+      argc - 1
+    );
     return -1;
   }
 
-  Config *config = malloc(sizeof(Config));
+  Config *config = new Config;
   parse_config(argv[1], config);
   initialize(config);
   const int max_steps = ceil(config->simulation_time / config->dt);

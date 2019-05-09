@@ -18,4 +18,4 @@ typedef struct {
  * Parses the provided config file,
  * and stores the results in the provided structure.
  */
-void parse_config(const char *config_file, Config *config);
+void parse_config(const char *filename, Config *config);
