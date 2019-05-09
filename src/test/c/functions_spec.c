@@ -54,41 +54,6 @@ void test_size_triangular_matrix() {
 }
 
 /**
- * Checks that the sum_vectors function works for arrays of one element.
- */
-void test_sum_vectors_one_element() {
-  #define size 1
-  Vector v1[size] = { { 0, 0 } };
-  Vector v2[size] = { { 10, 10 } };
-  Vector result[size] = { { 0 } };
-
-  sum_vectors(size, v1, v2, result);
-
-  assert(result[0].x_component, 10.0d, "test_sum_vectors_one_element - x_component");
-  assert(result[0].y_component, 10.0d, "test_sum_vectors_one_element - y_component");
-  #undef size
-}
-
-/**
- * Checks that the sum_vectors function works for arrays of multiple elements.
- */
-void test_sum_vectors_multiple_elements() {
-  #define size 3
-  Vector v1[size] = { { 0, 0 }, { -1.5, 9.99 }, { 3.0, 5.0 } };
-  Vector v2[size] = { { 10, 10 }, { -11.11, -5.43 }, { -5.0, 3.0 } };
-  Vector result[size] = { { 0 } };
-
-  sum_vectors(size, v1, v2, result);
-
-  Vector expected[size] = { { 10.0d, 10.0d }, { -12.61d, 4.56d }, { -2.0d, 8.0d } };
-  for (size_t i = 0; i < size; ++i) {
-    for_assert(result[i].x_component, expected[i].x_component, "test_sum_vectors_multiple_elements - x_component", i);
-    for_assert(result[i].y_component, expected[i].y_component, "test_sum_vectors_multiple_elements - y_component", i);
-  }
-  #undef size
-}
-
-/**
  * Checks that the compute_acceleration function works for arrays of one element.
  */
 void test_compute_acceleration_one_element() {
@@ -203,8 +168,6 @@ int main(void) {
 
   // Execute all tests.
   test_size_triangular_matrix();
-  test_sum_vectors_one_element();
-  test_sum_vectors_multiple_elements();
   test_compute_acceleration_one_element();
   test_compute_acceleration_multiple_elements();
   //test_compute_velocity_one_element();

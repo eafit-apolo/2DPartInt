@@ -14,12 +14,6 @@ size_t size_triangular_matrix(const size_t n);
 double compute_overlap(const Particle p1, const Particle p2);
 
 /**
- * Takes two arrays of vectors,
- * and sums together the vectors with the same index.
- */
-void sum_vectors(const size_t size, const Vector *v1, const Vector *v2, Vector *result);
-
-/**
  * Applies the forces to the particles with the same index,
  * and computes the resultant acceleration.
  */
