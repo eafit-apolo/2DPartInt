@@ -16,9 +16,9 @@ void sum_vectors(const size_t size, const Vector *v1, const Vector *v2, Vector *
 /**
  * Computes the forces applied to each particle.
  */
-void compute_forces(const size_t size, const size_t contacts_size, ParticleProperties* properties, const Particle *particles,
-        const Vector *velocities, double *normal_forces, double *tangent_forces, const double dt,
-        const Contact *contacts, Vector *resultant_forces);
+void compute_forces(const double dt, const size_t particles_size, const size_t contacts_size,
+                    const Particle *particles, const ParticleProperties *properties, const Contact *contacts,
+                    const Vector *velocities, double *normal_forces, double *tangent_forces, Vector *forces);
 
 /**
  * Applies the forces to the particles with the same index,

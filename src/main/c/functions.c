@@ -1,6 +1,6 @@
 #include <math.h>
 #include <stdlib.h>
-#include <string.h>
+#include <string.h> // For memset.
 #include "data.h"
 #include "functions.h"
 
@@ -99,13 +99,10 @@ void collide_two_particles(const double dt, const Particle *p1, const Particle *
   *previous_tangent = Fs_1_2;
 }
 
-/**
- * Computes the forces applied to each particle.
- */
-void compute_forces(const size_t particles_size, const size_t contacts_size, ParticleProperties *properties, const Particle *particles,
-        const Vector *velocities, double *normal_forces, double *tangent_forces, const double dt,
-        const Contact *contacts, Vector *resultant_forces) {
-  memset(resultant_forces, 0, sizeof(Vector) * particles_size);
+void compute_forces(const double dt, const size_t particles_size, const size_t contacts_size,
+                    const Particle *particles, const ParticleProperties *properties, const Contact *contacts,
+                    const Vector *velocities, double *normal_forces, double *tangent_forces, Vector *forces) {
+  memset(forces, 0, sizeof(Vector) * particles_size);
 
   size_t p1_idx, p2_idx;
   for(size_t i = 0; i < contacts_size; ++i) {
@@ -120,7 +117,7 @@ void compute_forces(const size_t particles_size, const size_t contacts_size, Par
       &velocities[p1_idx],
       &velocities[p2_idx],
       &properties[p2_idx],
-      &resultant_forces[p2_idx],
+      &forces[p2_idx],
       &normal_forces[(p1_idx * particles_size) + p2_idx],
       &tangent_forces[(p1_idx * particles_size) + p2_idx]
     );
@@ -133,13 +130,13 @@ void compute_forces(const size_t particles_size, const size_t contacts_size, Par
       &velocities[p2_idx],
       &velocities[p1_idx],
       &properties[p1_idx],
-      &resultant_forces[p1_idx],
+      &forces[p1_idx],
       &normal_forces[(p2_idx * particles_size) + p1_idx],
       &tangent_forces[(p2_idx * particles_size) + p1_idx]
     );
   }
 
-  apply_gravity(particles_size, properties, resultant_forces);
+  apply_gravity(particles_size, properties, forces);
 }
 
 /**

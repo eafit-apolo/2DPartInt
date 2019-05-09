@@ -103,7 +103,7 @@ void test_compute_forces_one_element() {
   Contact contacts[contacts_size] = { { 0, 1, 42.9554 } };
   Vector resultant_forces[size] = { { 0 } };
 
-  compute_forces(size, contacts_size, properties, particles, velocities, normal_forces, tangent_forces, dt, contacts, resultant_forces);
+  compute_forces(dt, size, contacts_size, particles, properties, contacts, velocities, normal_forces, tangent_forces, resultant_forces);
 
   // P1.
   assert(resultant_forces[0].x_component, 3.85889294289366d, "test_compute_forces_one_element - resultant_forces[P1].x_component");
