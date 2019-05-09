@@ -8,26 +8,10 @@
 size_t size_triangular_matrix(const size_t n);
 
 /**
- * Computes the distance between two particles.
- */
-double compute_distance(const Particle p1, const Particle p2);
-
-/**
- * Computes the overlap between two particles.
- * Note: If the overlap is negative, there is no overlap.
- */
-double compute_overlap(const Particle p1, const Particle p2);
-
-/**
  * Takes two arrays of vectors,
  * and sums together the vectors with the same index.
  */
 void sum_vectors(const size_t size, const Vector *v1, const Vector *v2, Vector *result);
-
-/**
- * Apply gravity to a vector of forces.
- */
-void apply_gravity(const size_t size, const ParticleProperties *particles, Vector *forces);
 
 /**
  * Computes the forces applied to each particle.
