@@ -8,6 +8,8 @@
 Particle *particles;
 ParticleProperties *properties;
 Contact *contacts_buffer;
+double *normal_forces;
+double *tangent_forces;
 Vector *forces;
 Vector *accelerations;
 Vector *velocities;
@@ -22,6 +24,8 @@ void initialize(const size_t num_particles) {
   particles = calloc(num_particles, sizeof(Particle));
   properties = calloc(num_particles, sizeof(ParticleProperties));
   contacts_buffer = calloc(size_triangular_matrix(num_particles), sizeof(Contact));
+  normal_forces = calloc(num_particles * num_particles, sizeof(double));
+  tangent_forces = calloc(num_particles * num_particles, sizeof(double));
   forces = calloc(num_particles, sizeof(Vector));
   accelerations = calloc(num_particles, sizeof(Vector));
   velocities = calloc(num_particles, sizeof(Vector));
@@ -35,6 +39,8 @@ void free_all() {
   free(particles);
   free(properties);
   free(contacts_buffer);
+  free(normal_forces);
+  free(tangent_forces);
   free(forces);
   free(accelerations);
   free(velocities);
@@ -46,10 +52,11 @@ void free_all() {
  */
 void simulation_step(const size_t particles_size, const double dt) {
   size_t contact_size = compute_contacts(particles_size, particles, contacts_buffer);
-  //compute_forces(particles_size, contacts_size, contacts_buffer, particles, properties, velocities, dt, forces);
+  compute_forces(dt, particles_size, contacts_size, particles, properties,
+                 contacts_buffer, velocities, normal_forces, tangent_forces, forces);
   compute_acceleration(particles_size, properties, forces, accelerations);
-  compute_velocity(particles_size, accelerations, dt, velocities);
-  compute_displacement(particles_size, dt, velocities, displacements);
+  compute_velocity(dt, particles_size, accelerations, velocities);
+  compute_displacement(dt, particles_size, velocities, displacements);
   displace_particles(particles_size, displacements, particles);
 }
 
