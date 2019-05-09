@@ -105,10 +105,17 @@ void test_compute_forces_one_element() {
 
   compute_forces(size, contacts_size, properties, particles, velocities, normal_forces, tangent_forces, dt, contacts, resultant_forces);
 
-  assert(resultant_forces[1].x_component, -3.85889294289366d, "test_compute_forces_one_element - resultant_forces[1].x_component");
-  assert(resultant_forces[1].y_component, -92.5542894643503d, "test_compute_forces_one_element - resultant_forces[1].y_component");
-  assert(normal_forces[1], 92.53595901628790d, "test_compute_forces_one_element - resultant_forces[1].y_component");
-  assert(tangent_forces[1], 4.275960624d, "test_compute_forces_one_element - resultant_forces[1].y_component");
+  // P1.
+  assert(resultant_forces[0].x_component, 3.85889294289366d, "test_compute_forces_one_element - resultant_forces[P1].x_component");
+  assert(resultant_forces[0].y_component, 92.5542894643503d, "test_compute_forces_one_element - resultant_forces[P1].y_component");
+  assert(normal_forces[2], 92.53595901628790d, "test_compute_forces_one_element - resultant_forces[P1].y_component");
+  assert(tangent_forces[2], 4.275960624d, "test_compute_forces_one_element - resultant_forces[P1].y_component");
+
+  // P2.
+  assert(resultant_forces[1].x_component, -3.85889294289366d, "test_compute_forces_one_element - resultant_forces[P2].x_component");
+  assert(resultant_forces[1].y_component, -92.5542894643503d, "test_compute_forces_one_element - resultant_forces[P2].y_component");
+  assert(normal_forces[1], 92.53595901628790d, "test_compute_forces_one_element - resultant_forces[P2].y_component");
+  assert(tangent_forces[1], 4.275960624d, "test_compute_forces_one_element - resultant_forces[P2].y_component");
   #undef size
   #undef contacts_size
 }

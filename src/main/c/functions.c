@@ -55,8 +55,8 @@ void apply_gravity(const size_t size, const ParticleProperties *particles, Vecto
 }
 
 /**
- * Compute the forces applied to p2 given a contact with p1.
- * Note: previous_normal and previous_tangent correspond to p2 with respect to p1.
+ * Compute the forces applied to P2 given it was collided by P1.
+ * Note: previous_normal and previous_tangent correspond to P2 with respect to P1.
  */
 void collide_two_particles(const double dt, const Particle *p1, const Particle *p2, const Vector *velocity_p1, const Vector *velocity_p2, const ParticleProperties *properties_p2, Vector *force_p2, double *previous_normal, double *previous_tangent) {
   const double distance = compute_distance(p1, p2);
@@ -121,6 +121,19 @@ void compute_forces(const size_t particles_size, const size_t contacts_size, Par
       &resultant_forces[p2_idx],
       &normal_forces[(p1_idx * particles_size) + p2_idx],
       &tangent_forces[(p1_idx * particles_size) + p2_idx]
+    );
+
+    // P2 collides P1.
+    collide_two_particles(
+      dt,
+      &particles[p2_idx],
+      &particles[p1_idx],
+      &velocities[p2_idx],
+      &velocities[p1_idx],
+      &properties[p1_idx],
+      &resultant_forces[p1_idx],
+      &normal_forces[(p2_idx * particles_size) + p1_idx],
+      &tangent_forces[(p2_idx * particles_size) + p1_idx]
     );
   }
 }
