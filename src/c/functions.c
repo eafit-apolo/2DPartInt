@@ -91,8 +91,8 @@ void collide_two_particles(const double dt, const Particle *p1, const Particle *
   }
 
   // Update the forces of p2.
-  force_p2->x_component += (-normal.x_component * Fn_1_2) - (normal.y_component * Fs_1_2);
-  force_p2->y_component += (-normal.y_component * Fn_1_2) + (normal.x_component * Fs_1_2);
+  force_p2->x_component -= (-normal.x_component * Fn_1_2) - (normal.y_component * Fs_1_2);
+  force_p2->y_component -= (-normal.y_component * Fn_1_2) + (normal.x_component * Fs_1_2);
 
   // Update the normal and tangent forces between p1 and p2 for the next simulation step.
   *previous_normal = Fn_1_2;

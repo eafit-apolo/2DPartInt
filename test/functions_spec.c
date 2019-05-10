@@ -122,14 +122,14 @@ void test_compute_forces_one_contact() {
                  velocities, normal_forces, tangent_forces, resultant_forces);
 
   // P1.
-  assert(resultant_forces[0].x_component, 3.858892943d, "test_compute_forces_one_contact - resultant_forces[P1].x_component");
-  assert(resultant_forces[0].y_component, 92.07359946d, "test_compute_forces_one_contact - resultant_forces[P1].y_component");
+  assert(resultant_forces[0].x_component, -3.858892943d, "test_compute_forces_one_contact - resultant_forces[P1].x_component");
+  assert(resultant_forces[0].y_component, -93.03497946d, "test_compute_forces_one_contact - resultant_forces[P1].y_component");
   assert(normal_forces[2], 92.53595901628790d, "test_compute_forces_one_contact - normal_forces[P1 <- P2]");
   assert(tangent_forces[2], 4.275960624d, "test_compute_forces_one_contact - tangent_forces[P1 <- P2]");
 
   // P2.
-  assert(resultant_forces[1].x_component, -3.85889294289366d, "test_compute_forces_one_contact - resultant_forces[P2].x_component");
-  assert(resultant_forces[1].y_component, -93.03497946d, "test_compute_forces_one_contact - resultant_forces[P2].y_component");
+  assert(resultant_forces[1].x_component, 3.858892943d, "test_compute_forces_one_contact - resultant_forces[P2].x_component");
+  assert(resultant_forces[1].y_component, 92.07359946d, "test_compute_forces_one_contact - resultant_forces[P2].y_component");
   assert(normal_forces[1], 92.53595901628790d, "test_compute_forces_one_contact - normal_forces[P2 <- P1]");
   assert(tangent_forces[1], 4.275960624d, "test_compute_forces_one_contact - tangent_forces[P2 <- P1]");
   #undef size
@@ -187,7 +187,7 @@ void test_compute_forces_multiple_contacts() {
   };
   double dt = 0.000025;
   Contact contacts[contacts_size] = {
-    { 1, 0, 49.18334413}, { 1, 2, 48.89259718}, { 1, 8, 25.71643207}
+    { 1, 0, 49.18334413 }, { 1, 2, 48.89259718 }, { 1, 8, 25.71643207 }
   };
   Vector resultant_forces[size] = { { 0 } };
 
