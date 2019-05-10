@@ -5,3 +5,10 @@
 *.exe
 *.out
 /bin/
+
+# IDE files
+*.swp
+*~*
+*#*
+*.dev
+*.layout

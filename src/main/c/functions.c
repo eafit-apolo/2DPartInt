@@ -4,7 +4,6 @@
 #include "data.h"
 #include "functions.h"
 
-
 #ifndef M_PI
     #define M_PI 3.14159265358979323846
 #endif
@@ -98,7 +97,6 @@ void collide_two_particles(const double dt, const Particle *p1, const Particle *
   // Update the normal and tangent forces between p1 and p2 for the next simulation step.
   *previous_normal = Fn_1_2;
   *previous_tangent = Fs_1_2;
-
 }
 
 void compute_forces(const double dt, const size_t particles_size, const size_t contacts_size,
