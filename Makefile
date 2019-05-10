@@ -1,51 +1,53 @@
-.DEFAULT_GOAL := default
+.DEFAULT_GOAL := all
 
-program_name = 2DPartInt
-c_src_folder = src/main/c
-cpp_src_folder = src/main/cpp
-test_src_folder = src/test/c
-headers_folder = src/main/include
-objects_folder = bin/objects
-test_folder = bin/tests
-c_flags = -std=c11 -O3 -Wall -Wextra -Werror
-cpp_flags = -std=c++11 -O3 -Wall -Wextra -Werror
+PROGRAM_NAME        = 2DpartInt
+SRC_C_DIR           = src/c
+SRC_CXX_DIR         = src/cpp
+BIN_DIR             = bin
+BUILD_DIR           = build
+INC_DIR             = include
+TEST_DIR            = test
+CC                  = gcc
+CXX                 = g++
+CFLAGS              =
+CXXFLAGS            =
+COMMON_FLAGS        = -O3 -Wall -Wextra -Werror
+ALL_CFLAGS          = -std=c11 $(COMMON_FLAGS) $(CFLAGS)
+ALL_CXXFLAGS        = -std=c++11 $(COMMON_FLAGS) $(CXXFLAGS)
+RM                  = rm -rf
+MKDIR               = mkdir -p
 
-$(objects_folder)/config.o: $(cpp_src_folder)/config.cpp $(headers_folder)/config.h
-	mkdir -p $(objects_folder)
-	g++ $(cpp_flags) -I$(headers_folder) -o $@ -c $<
+$(BUILD_DIR)/functions.o: $(SRC_C_DIR)/functions.c $(INC_DIR)/data.h $(INC_DIR)/functions.h
+	$(MKDIR) $(BUILD_DIR)
+	$(CC) $(ALL_CFLAGS) -I$(INC_DIR) -o $@ -c $<
 
-$(objects_folder)/functions.o: $(c_src_folder)/functions.c $(headers_folder)/data.h $(headers_folder)/functions.h
-	mkdir -p $(objects_folder)
-	gcc $(c_flags) -I$(headers_folder) -o $@ -c $<
+$(BUILD_DIR)/config.o: $(SRC_CXX_DIR)/config.cpp $(INC_DIR)/config.h
+	$(MKDIR) $(BUILD_DIR)
+	$(CXX) $(ALL_CXXFLAGS) -I$(INC_DIR) -o $@ -c $<
 
-$(objects_folder)/functions_spec.o: $(test_src_folder)/functions_spec.c $(headers_folder)/data.h $(headers_folder)/functions.h
-	mkdir -p $(objects_folder)
-	gcc $(c_flags) -I$(headers_folder) -o $@ -c $<
+$(BUILD_DIR)/main.o: $(SRC_CXX_DIR)/main.cpp $(INC_DIR)/config.h $(INC_DIR)/data.h $(INC_DIR)/functions.h
+	$(MKDIR) $(BUILD_DIR)
+	$(CXX) $(ALL_CXXFLAGS) -I$(INC_DIR) -o $@ -c $<
 
-$(test_folder)/functions_spec: $(objects_folder)/functions.o $(objects_folder)/functions_spec.o
-	mkdir -p $(test_folder)
-	gcc $(c_flags) -o $@ $^ -lm
+$(BIN_DIR)/$(PROGRAM_NAME): $(BUILD_DIR)/config.o $(BUILD_DIR)/functions.o $(BUILD_DIR)/main.o
+	$(MKDIR) $(BIN_DIR)
+	$(CXX) $(ALL_CXXFLAGS) -o $@ $^ -lm
 
-.PHONY: functions_spec
-functions_spec: $(test_folder)/functions_spec
-	$(test_folder)/functions_spec
+.PHONY: all
+all: $(BIN_DIR)/$(PROGRAM_NAME)
+
+$(BUILD_DIR)/functions_spec.o: $(TEST_DIR)/functions_spec.c $(INC_DIR)/data.h $(INC_DIR)/functions.h
+	$(MKDIR) $(BUILD_DIR)
+	$(CC) $(ALL_CFLAGS) -I$(INC_DIR) -o $@ -c $<
+
+$(BIN_DIR)/functions_spec: $(BUILD_DIR)/functions.o $(BUILD_DIR)/functions_spec.o
+	$(MKDIR) $(BIN_DIR)
+	$(CC) $(ALL_CFLAGS) -o $@ $^ -lm
 
 .PHONY: test
-test: functions_spec
-
-$(objects_folder)/main.o: $(cpp_src_folder)/main.c $(headers_folder)/data.h $(headers_folder)/functions.h
-	mkdir -p $(objects_folder)
-	g++ $(cpp_flags) -I$(headers_folder) -o $@ -c $<
-
-bin/$(program_name): $(objects_folder)/functions.o $(objects_folder)/config.o $(objects_folder)/main.o
-	g++ $(cpp_flags) -o $@ $^ -lm
-
-.PHONY: compile
-compile: bin/$(program_name)
+test: $(BIN_DIR)/functions_spec
 
 .PHONY: clean
 clean:
-	rm -rf bin
-
-.PHONY: default
-default: compile
+	$(RM) $(BIN_DIR)
+	$(RM) $(BUILD_DIR)
