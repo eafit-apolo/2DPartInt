@@ -5,6 +5,7 @@
 *.exe
 *.out
 /bin/
+/build/
 
 # IDE files
 *.swp
