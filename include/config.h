@@ -4,13 +4,14 @@
  * Represents the parsed config file.
  */
 typedef struct {
-  size_t simulation_size;
   int simulation_time;
   double dt;
+  int m; // Size in X.
+  int n; // Size in Y.
+  double r;
   double kn;
   double ks;
-  double r;
-  double m;
+  double mass;
   double v0;
 } Config;
 

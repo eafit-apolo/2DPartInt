@@ -7,7 +7,7 @@ extern "C" {
   #include "functions.h"
 }
 
-// Simulation structures.
+// Simulation data structures.
 Particle *particles;
 ParticleProperties *properties;
 Contact *contacts_buffer;
@@ -19,15 +19,22 @@ Vector *velocities;
 Vector *displacements;
 
 /**
- * Initialize all simulation structures according to the number of particles.
- * The structures are effectively initialized with zeros.
+ * Initialize all simulation data structures,
+ * according to the simulation size.
+ * Returns the number of initialized particles.
+ *
+ * Note: Except for the particles,
+ * all structures are effectively initialized with zeros.
  */
-void initialize(const Config *config) {
-  // The number of particles is equals to the simulation size,
-  // plus the falling particle (the first one).
-  size_t num_particles = config->simulation_size + 1;
+size_t initialize(const Config *config) {
+  const double diameter = 2 * config->r;
 
-  // Allocate memory.
+  // The number of particles is equals to the simulation size,
+  // divided by the size of each particle,
+  // plus the falling particle (the first one).
+  const size_t num_particles = floor((config->m * config->n) / (2 * diameter)) + 1;
+
+  // Allocate the memory for all the data structures.
   particles = (Particle*) calloc(num_particles, sizeof(Particle));
   properties = (ParticleProperties*) calloc(num_particles, sizeof(ParticleProperties));
   contacts_buffer = (Contact*) calloc(size_triangular_matrix(num_particles), sizeof(Contact));
@@ -38,14 +45,40 @@ void initialize(const Config *config) {
   velocities = (Vector*) calloc(num_particles, sizeof(Vector));
   displacements = (Vector*) calloc(num_particles, sizeof(Vector));
 
-  // Initialize the structures.
-  for (size_t i = 0; i < num_particles; ++i) {
+  // Initialize the particles.
+  const unsigned int max_in_x = floor(config->m / diameter);
+  double x = config->r;
+  double y = config->r;
+  for (size_t i = 1; i < num_particles; ++i) {
+    particles[i].x_coordinate = x;
+    particles[i].y_coordinate = y;
     particles[i].radious = config->r;
-    properties[i].mass = config->m;
+    properties[i].mass = config->mass;
     properties[i].kn = config->kn;
     properties[i].ks = config->ks;
+
+    // Check if this particle is the last one for this row...
+    if ((i % max_in_x) == 0) {
+      // If it is, reset the x value and increment y.
+      x = config->r;
+      y += diameter;
+    } else {
+      // If not, increment the x value.
+      x += diameter;
+    }
   }
+
+  // Initialize the falling particle.
+  particles[0].x_coordinate = config->m / 2;
+  particles[0].y_coordinate = config->n + (4 * config->r);
+  particles[0].radious = config->r;
+  properties[0].mass = config->mass;
+  properties[0].kn = config->kn;
+  properties[0].ks = config->ks;
   velocities[0].x_component = config->v0;
+
+  // Return the number of initialized particles.
+  return num_particles;
 }
 
 /**
@@ -90,14 +123,17 @@ int main(int argc, char *argv[]) {
     return -1;
   }
 
+  // Parse the config file.
   Config *config = new Config;
   parse_config(argv[1], config);
-  initialize(config);
-  const int max_steps = ceil(config->simulation_time / config->dt);
-  const size_t num_particles = config->simulation_size + 1;
+
+  // Initialize the simulation data structures.
+  size_t num_particles = initialize(config);
 
   // Run the simulation until the max number of steps is reached.
-  for (int step = 0; step < max_steps; ++step) {
+  // The simulation time and the dt determine the maximum number of steps to execute.
+  const unsigned int max_steps = ceil(config->simulation_time / config->dt);
+  for (unsigned int step = 0; step < max_steps; ++step) {
     simulation_step(num_particles, config->dt);
   }
 

@@ -1,5 +1,3 @@
-#include <cstdlib>
-#include <cstdio>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -31,20 +29,22 @@ void parse_config(const char *filename, Config *config) {
     istringstream is_line(line);
     if (getline(is_line, key, '=')) {
       if (getline(is_line, value)) {
-        if (key == "n") {
-          sscanf(value.c_str(), "%zu", &config->simulation_size);
-        } else if (key == "time") {
+        if (key == "time") {
           config->simulation_time = stoi(value);
         } else if (key == "dt") {
           config->dt = stod(value);
+        } else if (key == "n") {
+          config->n = stoi(value);
+        } else if (key == "m") {
+          config->m = stoi(value);
+        } else if (key == "r") {
+          config->r = stod(value);
         } else if (key == "kn") {
           config->kn = stod(value);
         } else if (key == "ks") {
           config->ks = stod(value);
-        } else if (key == "r") {
-          config->r = stod(value);
-        } else if (key == "m") {
-          config->m = stod(value);
+        } else if (key == "mass") {
+          config->mass = stod(value);
         } else if (key == "v0") {
           config->v0 = stod(value);
         } else {
