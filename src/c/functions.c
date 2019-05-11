@@ -59,23 +59,23 @@ void apply_gravity(const size_t size, const ParticleProperties *particles, Vecto
  * Compute the forces applied to P2 given it was collided by P1.
  * Note: previous_normal and previous_tangent correspond to P2 with respect to P1.
  */
-void collide_two_particles(const double dt, const Particle *p1, const Particle *p2,
+void collide_two_particles(const double dt, const double distance,
+                           const Particle *p1, const Particle *p2,
                            const Vector *velocity_p1, const Vector *velocity_p2,
                            const ParticleProperties *properties_p2,
                            double *previous_normal, double *previous_tangent,
                            Vector *force_p2) {
-  const double distance = compute_distance(p1, p2);
-
   const Vector normal = {
     .x_component = (p1->x_coordinate - p2->x_coordinate) / distance,
     .y_component = (p1->y_coordinate - p2->y_coordinate) / distance
   };
 
-  const double normal_velocity = (normal.x_component * (velocity_p2->x_component - velocity_p1->x_component))
-      + (normal.y_component * (velocity_p2->y_component - velocity_p1->y_component));
-
-  const double tangent_velocity = (normal.y_component * (velocity_p2->x_component - velocity_p1->x_component))
-      - (normal.x_component * (velocity_p2->y_component - velocity_p1->y_component));
+  const double velocity_x_diff = velocity_p2->x_component - velocity_p1->x_component;
+  const double velocity_y_diff = velocity_p2->y_component - velocity_p1->y_component;
+  const double normal_velocity = (normal.x_component * velocity_x_diff)
+    + (normal.y_component * velocity_y_diff);
+  const double tangent_velocity = (normal.y_component * velocity_x_diff)
+    - (normal.x_component * velocity_y_diff);
 
   const double dfn = normal_velocity * properties_p2->kn * dt;
   const double dfs = tangent_velocity * properties_p2->ks * dt;
@@ -90,7 +90,6 @@ void collide_two_particles(const double dt, const Particle *p1, const Particle *
   }
 
   const double Fs_1_2_max = Fn_1_2 * tan((30 * M_PI) / 180);
-
   if (abs(Fs_1_2) > Fs_1_2_max) {
     Fs_1_2 = (abs(Fs_1_2_max) * abs(Fs_1_2)) / Fs_1_2;
   }
@@ -107,37 +106,43 @@ void collide_two_particles(const double dt, const Particle *p1, const Particle *
 void compute_forces(const double dt, const size_t particles_size, const size_t contacts_size,
                     const Particle *particles, const ParticleProperties *properties, const Contact *contacts,
                     const Vector *velocities, double *normal_forces, double *tangent_forces, Vector *forces) {
-  // Zeroes forces.
+  // Reset forces to zeros.
   memset(forces, 0, sizeof(Vector) * particles_size);
 
-  size_t p1_idx, p2_idx;
   for (size_t i = 0; i < contacts_size; ++i) {
-    p1_idx = contacts[i].p1_idx;
-    p2_idx = contacts[i].p2_idx;
+    const size_t p1_idx = contacts[i].p1_idx;
+    const size_t p2_idx = contacts[i].p2_idx;
+    const size_t p2_p1_idx = (p1_idx * particles_size) + p2_idx;
+    const size_t p1_p2_idx = (p2_idx * particles_size) + p1_idx;
+    const Particle *p1 = &particles[p1_idx];
+    const Particle *p2 = &particles[p2_idx];
+    const double distance = compute_distance(p1, p2);
 
     // P1 collides P2.
     collide_two_particles(
       dt,
-      &particles[p1_idx],
-      &particles[p2_idx],
+      distance,
+      p1,
+      p2,
       &velocities[p1_idx],
       &velocities[p2_idx],
       &properties[p2_idx],
-      &normal_forces[(p1_idx * particles_size) + p2_idx],
-      &tangent_forces[(p1_idx * particles_size) + p2_idx],
+      &normal_forces[p2_p1_idx],
+      &tangent_forces[p2_p1_idx],
       &forces[p2_idx]
     );
 
     // P2 collides P1.
     collide_two_particles(
       dt,
-      &particles[p2_idx],
-      &particles[p1_idx],
+      distance,
+      p2,
+      p1,
       &velocities[p2_idx],
       &velocities[p1_idx],
       &properties[p1_idx],
-      &normal_forces[(p2_idx * particles_size) + p1_idx],
-      &tangent_forces[(p2_idx * particles_size) + p1_idx],
+      &normal_forces[p1_p2_idx],
+      &tangent_forces[p1_p2_idx],
       &forces[p1_idx]
     );
   }
