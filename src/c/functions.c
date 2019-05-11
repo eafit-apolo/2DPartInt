@@ -59,23 +59,28 @@ void apply_gravity(const size_t size, const ParticleProperties *particles, Vecto
  * Compute the forces applied to P2 given it was collided by P1.
  * Note: previous_normal and previous_tangent correspond to P2 with respect to P1.
  */
-void collide_two_particles(const double dt, const Particle *p1, const Particle *p2, const Vector *velocity_p1, const Vector *velocity_p2, const ParticleProperties *properties_p2, Vector *force_p2, double *previous_normal, double *previous_tangent) {
+void collide_two_particles(const double dt, const Particle *p1, const Particle *p2,
+                           const Vector *velocity_p1, const Vector *velocity_p2,
+                           const ParticleProperties *properties_p2,
+                           double *previous_normal, double *previous_tangent,
+                           Vector *force_p2) {
   const double distance = compute_distance(p1, p2);
 
   const Vector normal = {
-    .x_component = (p2->x_coordinate - p1->x_coordinate) / distance,
-    .y_component = (p2->y_coordinate - p1->y_coordinate) / distance
+    .x_component = (p1->x_coordinate - p2->x_coordinate) / distance,
+    .y_component = (p1->y_coordinate - p2->y_coordinate) / distance
   };
 
-  const double normal_velocity = (normal.x_component * (velocity_p1->x_component - velocity_p2->x_component))
-      + (normal.y_component * (velocity_p1->y_component - velocity_p2->y_component));
+  const double normal_velocity = (normal.x_component * (velocity_p2->x_component - velocity_p1->x_component))
+      + (normal.y_component * (velocity_p2->y_component - velocity_p1->y_component));
 
-  const double tangent_velocity = (normal.y_component * (velocity_p1->x_component - velocity_p2->x_component))
-      - (normal.x_component * (velocity_p1->y_component - velocity_p2->y_component));
+  const double tangent_velocity = (normal.y_component * (velocity_p2->x_component - velocity_p1->x_component))
+      - (normal.x_component * (velocity_p2->y_component - velocity_p1->y_component));
 
   const double dfn = normal_velocity * properties_p2->kn * dt;
   const double dfs = tangent_velocity * properties_p2->ks * dt;
 
+  // Forces for P2 with respect to P1.
   double Fn_1_2 = *previous_normal + dfn;
   double Fs_1_2 = *previous_tangent + dfs;
 
@@ -91,8 +96,8 @@ void collide_two_particles(const double dt, const Particle *p1, const Particle *
   }
 
   // Update the forces of p2.
-  force_p2->x_component -= (-normal.x_component * Fn_1_2) - (normal.y_component * Fs_1_2);
-  force_p2->y_component -= (-normal.y_component * Fn_1_2) + (normal.x_component * Fs_1_2);
+  force_p2->x_component += (-normal.x_component * Fn_1_2) - (normal.y_component * Fs_1_2);
+  force_p2->y_component += (-normal.y_component * Fn_1_2) + (normal.x_component * Fs_1_2);
 
   // Update the normal and tangent forces between p1 and p2 for the next simulation step.
   *previous_normal = Fn_1_2;
@@ -102,10 +107,11 @@ void collide_two_particles(const double dt, const Particle *p1, const Particle *
 void compute_forces(const double dt, const size_t particles_size, const size_t contacts_size,
                     const Particle *particles, const ParticleProperties *properties, const Contact *contacts,
                     const Vector *velocities, double *normal_forces, double *tangent_forces, Vector *forces) {
+  // Zeroes forces.
   memset(forces, 0, sizeof(Vector) * particles_size);
 
   size_t p1_idx, p2_idx;
-  for(size_t i = 0; i < contacts_size; ++i) {
+  for (size_t i = 0; i < contacts_size; ++i) {
     p1_idx = contacts[i].p1_idx;
     p2_idx = contacts[i].p2_idx;
 
@@ -117,9 +123,9 @@ void compute_forces(const double dt, const size_t particles_size, const size_t c
       &velocities[p1_idx],
       &velocities[p2_idx],
       &properties[p2_idx],
-      &forces[p2_idx],
       &normal_forces[(p1_idx * particles_size) + p2_idx],
-      &tangent_forces[(p1_idx * particles_size) + p2_idx]
+      &tangent_forces[(p1_idx * particles_size) + p2_idx],
+      &forces[p2_idx]
     );
 
     // P2 collides P1.
@@ -130,9 +136,9 @@ void compute_forces(const double dt, const size_t particles_size, const size_t c
       &velocities[p2_idx],
       &velocities[p1_idx],
       &properties[p1_idx],
-      &forces[p1_idx],
       &normal_forces[(p2_idx * particles_size) + p1_idx],
-      &tangent_forces[(p2_idx * particles_size) + p1_idx]
+      &tangent_forces[(p2_idx * particles_size) + p1_idx],
+      &forces[p1_idx]
     );
   }
 
