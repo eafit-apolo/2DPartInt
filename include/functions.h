@@ -8,10 +8,11 @@
 size_t size_triangular_matrix(const size_t n);
 
 /**
- * Computes the overlap between two particles.
- * Note: If the overlap is negative, there is no overlap.
+ * Computes the forces applied to each particle.
  */
-double compute_overlap(const Particle p1, const Particle p2);
+void compute_forces(const double dt, const size_t particles_size, const size_t contacts_size,
+                    const Particle *particles, const ParticleProperties *properties, const Contact *contacts,
+                    const Vector *velocities, double *normal_forces, double *tangent_forces, Vector *forces);
 
 /**
  * Applies the forces to the particles with the same index,
