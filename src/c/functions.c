@@ -4,9 +4,8 @@
 #include "data.h"
 #include "functions.h"
 
-#ifndef M_PI
-    #define M_PI 3.14159265358979323846
-#endif
+// tan((30 * PI) / 180)
+#define TAN_30_PI_180 0.5773502691896257
 
 /**
  * Returns the size of a triangular matrix, without the diagonal.
@@ -90,7 +89,7 @@ void collide_two_particles(const double dt, const double distance,
     Fs_1_2 = 0;
   }
 
-  const double Fs_1_2_max = Fn_1_2 * tan((30 * M_PI) / 180);
+  const double Fs_1_2_max = Fn_1_2 * TAN_30_PI_180;
   if (abs(Fs_1_2) > Fs_1_2_max) {
     Fs_1_2 = (abs(Fs_1_2_max) * abs(Fs_1_2)) / Fs_1_2;
   }
@@ -191,13 +190,10 @@ void displace_particles(const size_t size, const Vector *displacements, Particle
  */
 size_t compute_contacts(const size_t size, const Particle *particles, Contact *contacts_buffer) {
   size_t k = 0;
-  double overlap;
-  Particle p1, p2;
+
   for (size_t i = 0; i < size; ++i) {
     for (size_t j = i + 1; j < size; ++j) {
-      p1 = particles[i];
-      p2 = particles[j];
-      overlap = compute_overlap(&p1, &p2);
+      const double overlap = compute_overlap(&particles[i], &particles[j]);
       if (overlap > 0) {
         contacts_buffer[k].p1_idx = i;
         contacts_buffer[k].p2_idx = j;
@@ -206,5 +202,6 @@ size_t compute_contacts(const size_t size, const Particle *particles, Contact *c
       }
     }
   }
+
   return k;
 }
