@@ -118,9 +118,21 @@ int main(int argc, char *argv[]) {
   if (argc != 3) {
     fprintf(
       stderr,
-      "Wrong number of arguments: %d\n" \
+      "Wrong number of arguments: %d.\n" \
       "Usage: 2DPartInt [simulation_config_file] [output_folder]\n",
       argc - 1
+    );
+    return -1;
+  }
+
+  // Ensure the output folder exists.
+  const char *output_folder = argv[2];
+  if (ensure_output_folder(output_folder) == -1) {
+    fprintf(
+      stderr,
+      "The output folder does not exists, " \
+      "and could not be created: '%s'.\n",
+      output_folder
     );
     return -1;
   }
@@ -130,16 +142,15 @@ int main(int argc, char *argv[]) {
   parse_config(argv[1], config);
 
   // Initialize the simulation data structures.
-  size_t num_particles = initialize(config);
+  const size_t num_particles = initialize(config);
 
   // Write the initial state of the simulation.
-  char *output_folder = argv[2];
   write_simulation_step(num_particles, particles, output_folder, 0);
 
   // Run the simulation until the max number of steps is reached.
   // The simulation time and the dt determine the maximum number of steps to execute.
-  const unsigned int max_steps = ceil(config->simulation_time / config->dt);
-  for (unsigned int step = 1; step <= max_steps; ++step) {
+  const unsigned long max_steps = ceil(config->simulation_time / config->dt);
+  for (unsigned long step = 1; step <= max_steps; ++step) {
     simulation_step(num_particles, config->dt);
     write_simulation_step(num_particles, particles, output_folder, step);
   }

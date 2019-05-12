@@ -4,7 +4,7 @@
 #include "data.h"
 #include "functions.h"
 
-// tan((30 * PI) / 180)
+// tan((30 * PI) / 180).
 #define TAN_30_PI_180 0.5773502691896257
 
 /**
