@@ -3,6 +3,7 @@
 #include <cmath>
 extern "C" {
   #include "config.h"
+  #include "csv.h"
   #include "data.h"
   #include "functions.h"
 }
@@ -114,10 +115,11 @@ void simulation_step(const size_t particles_size, const double dt) {
  */
 int main(int argc, char *argv[]) {
   // Ensure the program was called with the correct number of arguments.
-  if (argc != 2) {
+  if (argc != 3) {
     fprintf(
       stderr,
-      "Wrong number of arguments: %d\nUsage: 2DPartInt [simulation_config_file]\n",
+      "Wrong number of arguments: %d\n" \
+      "Usage: 2DPartInt [simulation_config_file] [output_folder]\n",
       argc - 1
     );
     return -1;
@@ -130,11 +132,16 @@ int main(int argc, char *argv[]) {
   // Initialize the simulation data structures.
   size_t num_particles = initialize(config);
 
+  // Write the initial state of the simulation.
+  char *output_folder = argv[2];
+  write_simulation_step(num_particles, particles, output_folder, 0);
+
   // Run the simulation until the max number of steps is reached.
   // The simulation time and the dt determine the maximum number of steps to execute.
   const unsigned int max_steps = ceil(config->simulation_time / config->dt);
-  for (unsigned int step = 0; step < max_steps; ++step) {
+  for (unsigned int step = 1; step <= max_steps; ++step) {
     simulation_step(num_particles, config->dt);
+    write_simulation_step(num_particles, particles, output_folder, step);
   }
 
   // Free all memory resources and exit.

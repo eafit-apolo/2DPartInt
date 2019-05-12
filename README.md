@@ -17,10 +17,10 @@ _(Optional)_ run the tests to ensure everything is ok.
 $ make test
 ```
 
-Execute the program passing the `simulation\_config.txt` file as the only argument.
+Execute the program passing the `simulation_config.txt` file & the output folder as the arguments.
 
 ```bash
-$ ./bin/2DPartInt simulation_config.txt
+$ ./bin/2DPartInt simulation_config.txt out/
 ```
 
 ## Simulartion Config File.
