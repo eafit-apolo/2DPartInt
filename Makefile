@@ -28,11 +28,11 @@ $(BIN_DIR)/$(PROGRAM_NAME): $(BUILD_DIR)/functions.o $(BUILD_DIR)/main.o
 	$(MKDIR) $(BIN_DIR)
 	$(CC) $(ALL_CFLAGS) -o $@ $^ $(LDFLAGS)
 
-$(BUILD_DIR)/functions.o: $(SRC_C_DIR)/functions.c
+$(BUILD_DIR)/functions.o: $(SRC_C_DIR)/functions.c $(INC_DIR)/data.h $(INC_DIR)/functions.h
 	$(MKDIR) $(BUILD_DIR)
 	$(CC) $(ALL_CFLAGS) -I$(INC_DIR) -o $@ -c $<
 
-$(BUILD_DIR)/main.o: $(SRC_C_DIR)/main.c
+$(BUILD_DIR)/main.o: $(SRC_C_DIR)/main.c $(INC_DIR)/data.h $(INC_DIR)/functions.h
 	$(MKDIR) $(BUILD_DIR)
 	$(CC) $(ALL_CFLAGS) -I$(INC_DIR) -o $@ -c $<
 
@@ -47,7 +47,7 @@ $(BIN_DIR)/functions_spec: $(BUILD_DIR)/functions.o $(BUILD_DIR)/functions_spec.
 	$(MKDIR) $(BIN_DIR)
 	$(CC) $(ALL_CFLAGS) -o $@ $^ $(LDFLAGS)
 
-$(BUILD_DIR)/functions_spec.o: $(TEST_DIR)/functions_spec.c
+$(BUILD_DIR)/functions_spec.o: $(TEST_DIR)/functions_spec.c $(INC_DIR)/data.h $(INC_DIR)/functions.h
 	$(MKDIR) $(BUILD_DIR)
 	$(CC) $(ALL_CFLAGS) -I$(INC_DIR) -o $@ -c $<
 
