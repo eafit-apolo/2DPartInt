@@ -272,8 +272,8 @@ void test_compute_acceleration_multiple_elements() {
  */
 void test_displace_particles_one_element() {
   #define size 1
-  Vector displacements[size] = { { 50, -50 } };
   Particle particles[size] = { { 0, 100, 0 } };
+  Vector displacements[size] = { { 50, -50 } };
 
   displace_particles(size, displacements, particles);
 
@@ -287,8 +287,8 @@ void test_displace_particles_one_element() {
  */
 void test_displace_particles_multiple_elements() {
   #define size 3
-  Vector displacements[size] = { { 0, 0 }, { 0.000015, -0.000033 }, { -15, 30 } };
   Particle particles[size] = { { 0, 100, 0 }, { 0.11111, 2.100000, 0 }, { 15, -30, 0 } };
+  Vector displacements[size] = { { 0, 0 }, { 0.000015, -0.000033 }, { -15, 30 } };
 
   displace_particles(size, displacements, particles);
 
@@ -297,6 +297,21 @@ void test_displace_particles_multiple_elements() {
     for_assert(particles[i].x_coordinate, expected[i].x_coordinate, "test_displace_particles_multiple_elements - x_coordinate", i);
     for_assert(particles[i].y_coordinate, expected[i].y_coordinate, "test_displace_particles_multiple_elements - y_coordinate", i);
   }
+  #undef size
+}
+
+/**
+ * Checks that the displace_particles function preserves the simulation floor.
+ */
+void test_displace_particles_floor() {
+  #define size 1
+  Particle particles[size] = { { 100, 0, 0 } };
+  Vector displacements[size] = { { -50, -50 } };
+
+  displace_particles(size, displacements, particles);
+
+  assert(particles[0].x_coordinate, 50.0d, "test_displace_particles_one_element - x_coordinate");
+  assert(particles[0].y_coordinate, 0.0d, "test_displace_particles_one_element - y_coordinate");
   #undef size
 }
 
@@ -318,6 +333,7 @@ int main(void) {
   //test_compute_velocity_multiple_elements();
   test_displace_particles_one_element();
   test_displace_particles_multiple_elements();
+  test_displace_particles_floor();
 
   // If, at least one test failed, exit with an error code.
   return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;

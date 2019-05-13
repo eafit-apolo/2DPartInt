@@ -57,4 +57,6 @@ void parse_config(const char *filename, Config *config) {
       cerr << "Missing '=' in: " << line << endl;
     }
   }
+
+  config_file.close();
 }

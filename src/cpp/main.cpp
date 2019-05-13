@@ -76,7 +76,7 @@ size_t initialize(const Config *config) {
   properties[0].mass = config->mass;
   properties[0].kn = config->kn;
   properties[0].ks = config->ks;
-  velocities[0].x_component = config->v0;
+  velocities[0].y_component = config->v0;
 
   // Return the number of initialized particles.
   return num_particles;
@@ -156,7 +156,7 @@ int main(int argc, char *argv[]) {
   }
 
   // Free all memory resources and exit.
-  free(config);
+  delete config;
   free_all();
   return 0;
 }
