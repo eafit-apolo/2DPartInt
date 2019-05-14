@@ -33,7 +33,7 @@ size_t initialize(const Config *config) {
   // The number of particles is equals to the simulation size,
   // divided by the size of each particle,
   // plus the falling particle (the first one).
-  const size_t num_particles = floor((config->m * config->n) / (2 * diameter)) + 1;
+  const size_t num_particles = floor((config->m * config->n)/(diameter*diameter)+1);
 
   // Allocate the memory for all the data structures.
   particles = (Particle*) calloc(num_particles, sizeof(Particle));
