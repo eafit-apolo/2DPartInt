@@ -6,14 +6,12 @@ extern "C" {
   #include "data.h"
 }
 
-using namespace std;
-
 /**
  * Ensures the output folder exists
  * Note: If not, it tries to create it.
  */
 int ensure_output_folder(const char *output_folder) {
-  return system(("mkdir -p " + string(output_folder)).c_str());
+  return system(("mkdir -p " + std::string(output_folder)).c_str());
 }
 
 /**
@@ -25,8 +23,11 @@ int ensure_output_folder(const char *output_folder) {
 void write_simulation_step(const size_t num_particles, const Particle *particles,
                            const char *folder, const unsigned long step) {
   // Open the csv file to write.
-  ofstream output_file;
-  output_file.open(string(folder) + "/2DPartInt-Out.csv." + to_string(step));
+  std::ofstream output_file;
+  output_file.open(
+    std::string(folder) + "/2DPartInt-Out.csv." + std::to_string(step),
+    std::ios_base::out | std::ios_base::trunc
+  );
 
   // Write the header.
   output_file << "x coord, y coord, z coord, radious\n";

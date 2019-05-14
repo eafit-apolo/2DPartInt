@@ -6,55 +6,53 @@ extern "C" {
   #include "config.h"
 }
 
-using namespace std;
-
 /**
  * Parses the provided config file,
  * and stores the results in the provided structure.
  */
 void parse_config(const char *filename, Config *config) {
-  ifstream config_file;
-  config_file.open(filename, std::ifstream::in);
+  std::ifstream config_file;
+  config_file.open(filename, std::ios_base::in);
 
-  string line;
-  string key;
-  string value;
-  while (getline(config_file, line)) {
+  std::string line;
+  std::string key;
+  std::string value;
+  while (std::getline(config_file, line)) {
     // Skip empty lines.
     if (line.empty()) {
       continue;
     }
 
     // Parse each line.
-    istringstream is_line(line);
-    if (getline(is_line, key, '=')) {
-      if (getline(is_line, value)) {
+    std::istringstream is_line(line);
+    if (std::getline(is_line, key, '=')) {
+      if (std::getline(is_line, value)) {
         if (key == "time") {
-          config->simulation_time = stoi(value);
+          config->simulation_time = std::stoi(value);
         } else if (key == "dt") {
-          config->dt = stod(value);
+          config->dt = std::stod(value);
         } else if (key == "n") {
-          config->n = stoi(value);
+          config->n = std::stoi(value);
         } else if (key == "m") {
-          config->m = stoi(value);
+          config->m = std::stoi(value);
         } else if (key == "r") {
-          config->r = stod(value);
+          config->r = std::stod(value);
         } else if (key == "kn") {
-          config->kn = stod(value);
+          config->kn = std::stod(value);
         } else if (key == "ks") {
-          config->ks = stod(value);
+          config->ks = std::stod(value);
         } else if (key == "mass") {
-          config->mass = stod(value);
+          config->mass = std::stod(value);
         } else if (key == "v0") {
-          config->v0 = stod(value);
+          config->v0 = std::stod(value);
         } else {
-          cerr << "Invalid key: " << key << endl;
+          std::cerr << "Invalid key: " << key << std::endl;
         }
       } else {
-        cerr << "Missing value for property: " << key << endl;
+        std::cerr << "Missing value for property: " << key << std::endl;
       }
     } else {
-      cerr << "Missing '=' in: " << line << endl;
+      std::cerr << "Missing '=' in: " << line << std::endl;
     }
   }
 

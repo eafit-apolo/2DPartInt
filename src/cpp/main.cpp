@@ -1,6 +1,6 @@
-#include <cstdio>
 #include <cstdlib>
 #include <cmath>
+#include <iostream>
 extern "C" {
   #include "config.h"
   #include "csv.h"
@@ -33,7 +33,7 @@ size_t initialize(const Config *config) {
   // The number of particles is equals to the simulation size,
   // divided by the size of each particle,
   // plus the falling particle (the first one).
-  const size_t num_particles = floor((config->m * config->n)/(diameter*diameter)+1);
+  const size_t num_particles = floor((config->m * config->n) / (diameter * diameter)) +  1;
 
   // Allocate the memory for all the data structures.
   particles = (Particle*) calloc(num_particles, sizeof(Particle));
@@ -116,24 +116,21 @@ void simulation_step(const size_t particles_size, const double dt) {
 int main(int argc, char *argv[]) {
   // Ensure the program was called with the correct number of arguments.
   if (argc != 3) {
-    fprintf(
-      stderr,
-      "Wrong number of arguments: %d.\n" \
-      "Usage: 2DPartInt [simulation_config_file] [output_folder]\n",
-      argc - 1
-    );
+    std::cerr << "Wrong number of arguments: "
+              << argc - 1
+              << std::endl
+              << "Usage: 2DPartInt [simulation_config_file] [output_folder]"
+              << std::endl;
     return -1;
   }
 
   // Ensure the output folder exists.
   const char *output_folder = argv[2];
-  if (ensure_output_folder(output_folder) == -1) {
-    fprintf(
-      stderr,
-      "The output folder does not exists, " \
-      "and could not be created: '%s'.\n",
-      output_folder
-    );
+  if (ensure_output_folder(output_folder) != 0) {
+    std::cerr << "The output folder does not exists, "
+              << "and could not be created: "
+              << output_folder
+              << std::endl;
     return -1;
   }
 
