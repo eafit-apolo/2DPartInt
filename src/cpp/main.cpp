@@ -28,7 +28,10 @@ Vector *displacements;
  * all structures are effectively initialized with zeros.
  */
 size_t initialize(const Config *config) {
-  const double diameter = 2 * config->r;
+
+  const double max_radious = 50.0d;
+  const double min_radious = 10.0d;
+  double diameter = 2 * max_radious;
 
   // The number of particles is equals to the simulation size,
   // divided by the size of each particle,
@@ -47,32 +50,47 @@ size_t initialize(const Config *config) {
   displacements = (Vector*) calloc(num_particles, sizeof(Vector));
 
   // Initialize the particles.
+
+  // Particles radious generator in milimeters
+  int seed = 7;
+  std::mt19937 generator(seed);
+  std::uniform_real_distribution<double> uniform_distribution(10.0d, 50.0d);
+
+  // In README.md says that m is the parameter for the Y axis ??
   const unsigned int max_in_x = floor(config->m / diameter);
-  double x = config->r;
-  double y = config->r;
+  double current_radious = uniform_distribution(generator);
+  double last_radious;
+  double particles_last_radious[max_in_x]; // Radious of particle below the particle currently positioned
+  double x = current_radious;
+  double y = current_radious;
   for (size_t i = 1; i < num_particles; ++i) {
+    
     particles[i].x_coordinate = x;
     particles[i].y_coordinate = y;
-    particles[i].radious = config->r;
+    particles[i].radious = current_radious;
     properties[i].mass = config->mass;
     properties[i].kn = config->kn;
     properties[i].ks = config->ks;
 
+    last_radious = current_radious;
+    current_radious = uniform_distribution(generator);
+    diameter = 2 * current_radious;
+    
     // Check if this particle is the last one for this row...
     if ((i % max_in_x) == 0) {
       // If it is, reset the x value and increment y.
-      x = config->r;
+      x = current_radious;
       y += diameter;
     } else {
       // If not, increment the x value.
-      x += diameter;
+      x += (last_radious + current_radious);
     }
   }
 
   // Initialize the falling particle.
+  particles[0].radious = uniform_distribution(generator);
   particles[0].x_coordinate = config->m / 2;
-  particles[0].y_coordinate = config->n + (4 * config->r);
-  particles[0].radious = config->r;
+  particles[0].y_coordinate = config->n + (4 * particles[0].radious);
   properties[0].mass = config->mass;
   properties[0].kn = config->kn;
   properties[0].ks = config->ks;
