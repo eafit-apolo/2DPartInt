@@ -35,8 +35,6 @@ void parse_config(const char *filename, Config *config) {
           config->n = std::stoi(value);
         } else if (key == "m") {
           config->m = std::stoi(value);
-        } else if (key == "r") {
-          config->r = std::stod(value);
         } else if (key == "kn") {
           config->kn = std::stod(value);
         } else if (key == "ks") {

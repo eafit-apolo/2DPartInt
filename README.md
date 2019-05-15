@@ -35,7 +35,6 @@ time=[Int] # Total time to simulate, in seconds.
 dt=[Double] # Size of the time window used for each step.
 n=[Int] # Simulation size in X.
 m=[Int] # Simulation size in Y.
-r=[Double] # Radious of the particles.
 kn=[Double] # Normal rigidity of the material.
 ks=[Double] # Tangential rigidity of the material.
 mass=[Double] # Mass of the particles.

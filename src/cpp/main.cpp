@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <iostream>
+#include <random>
 extern "C" {
   #include "config.h"
   #include "csv.h"
@@ -31,7 +32,7 @@ size_t initialize(const Config *config) {
 
   const double max_radious = 50.0d;
   const double min_radious = 10.0d;
-  double diameter = 2 * max_radious;
+  const double diameter = 2 * max_radious;
 
   // The number of particles is equals to the simulation size,
   // divided by the size of each particle,
@@ -54,17 +55,17 @@ size_t initialize(const Config *config) {
   // Particles radious generator in milimeters
   int seed = 7;
   std::mt19937 generator(seed);
-  std::uniform_real_distribution<double> uniform_distribution(10.0d, 50.0d);
+  std::uniform_real_distribution<double> uniform_distribution(min_radious, max_radious);
 
   // In README.md says that m is the parameter for the Y axis ??
   const unsigned int max_in_x = floor(config->m / diameter);
   double current_radious = uniform_distribution(generator);
   double last_radious;
-  double particles_last_radious[max_in_x]; // Radious of particle below the particle currently positioned
+  double particles_last_radious[max_in_x] = {0}; // Radious of particle below the particle currently positioned
   double x = current_radious;
   double y = current_radious;
   for (size_t i = 1; i < num_particles; ++i) {
-    
+
     particles[i].x_coordinate = x;
     particles[i].y_coordinate = y;
     particles[i].radious = current_radious;
@@ -72,17 +73,18 @@ size_t initialize(const Config *config) {
     properties[i].kn = config->kn;
     properties[i].ks = config->ks;
 
+    // Variable update
+    y += particles_last_radious[i % max_in_x];
+    particles_last_radious[i % max_in_x] = current_radious;
     last_radious = current_radious;
     current_radious = uniform_distribution(generator);
-    diameter = 2 * current_radious;
-    
+
     // Check if this particle is the last one for this row...
     if ((i % max_in_x) == 0) {
-      // If it is, reset the x value and increment y.
+      // If it is, reset the x value
       x = current_radious;
-      y += diameter;
     } else {
-      // If not, increment the x value.
+      // Else, increment the x value.
       x += (last_radious + current_radious);
     }
   }

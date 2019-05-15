@@ -8,7 +8,6 @@ typedef struct {
   double dt;
   int m; // Size in X.
   int n; // Size in Y.
-  double r;
   double kn;
   double ks;
   double mass;
