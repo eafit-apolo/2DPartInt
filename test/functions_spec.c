@@ -54,41 +54,6 @@ void test_size_triangular_matrix() {
 }
 
 /**
- * Checks that the sum_vectors function works for arrays of one element.
- */
-void test_sum_vectors_one_element() {
-  #define size 1
-  Vector v1[size] = { { 0, 0 } };
-  Vector v2[size] = { { 10, 10 } };
-  Vector result[size] = { { 0 } };
-
-  sum_vectors(size, v1, v2, result);
-
-  assert(result[0].x_component, 10.0d, "test_sum_vectors_one_element - x_component");
-  assert(result[0].y_component, 10.0d, "test_sum_vectors_one_element - y_component");
-  #undef size
-}
-
-/**
- * Checks that the sum_vectors function works for arrays of multiple elements.
- */
-void test_sum_vectors_multiple_elements() {
-  #define size 3
-  Vector v1[size] = { { 0, 0 }, { -1.5, 9.99 }, { 3.0, 5.0 } };
-  Vector v2[size] = { { 10, 10 }, { -11.11, -5.43 }, { -5.0, 3.0 } };
-  Vector result[size] = { { 0 } };
-
-  sum_vectors(size, v1, v2, result);
-
-  Vector expected[size] = { { 10.0d, 10.0d }, { -12.61d, 4.56d }, { -2.0d, 8.0d } };
-  for (size_t i = 0; i < size; ++i) {
-    for_assert(result[i].x_component, expected[i].x_component, "test_sum_vectors_multiple_elements - x_component", i);
-    for_assert(result[i].y_component, expected[i].y_component, "test_sum_vectors_multiple_elements - y_component", i);
-  }
-  #undef size
-}
-
-/**
  * Checks that compute_forces works for two particles with only one contact.
  */
 void test_compute_forces_one_contact() {
@@ -237,12 +202,12 @@ void test_compute_acceleration_one_element() {
   #define size 1
   Vector forces[size] = { { 30, 30 } };
   ParticleProperties particle_properties[size] = { { 3, 0, 0 } };
-  Vector resultant_acceleration[size] = { { 0 } };
+  Vector accelerations[size] = { { 0 } };
 
-  compute_acceleration(size, particle_properties, forces, resultant_acceleration);
+  compute_acceleration(size, particle_properties, forces, accelerations);
 
-  assert(resultant_acceleration[0].x_component, 10.0d, "test_compute_acceleration_one_element - x_component");
-  assert(resultant_acceleration[0].y_component, 10.0d, "test_compute_acceleration_one_element - y_component");
+  assert(accelerations[0].x_component, 10.0d, "test_compute_acceleration_one_element - x_component");
+  assert(accelerations[0].y_component, 10.0d, "test_compute_acceleration_one_element - y_component");
   #undef size
 }
 
@@ -253,14 +218,14 @@ void test_compute_acceleration_multiple_elements() {
   #define size 3
   Vector forces[size] = { { -12.58, -15.896 }, { 13.945, -200.826 }, { -543.62, -0.62 } };
   ParticleProperties particle_properties[size] = { { 0.367, 0, 0 }, { 3.967, 0, 0 }, { 0.52, 0, 0 } };
-  Vector resultant_acceleration[size] = { { 0 } };
+  Vector accelerations[size] = { { 0 } };
 
-  compute_acceleration(size, particle_properties, forces, resultant_acceleration);
+  compute_acceleration(size, particle_properties, forces, accelerations);
 
   Vector expected[size] = { { -34.2779d, -43.31335149863761d }, { 3.5152508192588856d, -50.6241d }, { -1045.4231d, -1.1923d } };
   for (size_t i = 0; i < size; ++i) {
-    for_assert(resultant_acceleration[i].x_component, expected[i].x_component, "test_compute_acceleration_multiple_elements - x_component", i);
-    for_assert(resultant_acceleration[i].y_component, expected[i].y_component, "test_compute_acceleration_multiple_elements - y_component", i);
+    for_assert(accelerations[i].x_component, expected[i].x_component, "test_compute_acceleration_multiple_elements - x_component", i);
+    for_assert(accelerations[i].y_component, expected[i].y_component, "test_compute_acceleration_multiple_elements - y_component", i);
   }
   #undef size
 }
@@ -303,6 +268,54 @@ void test_compute_acceleration_multiple_elements() {
 //}
 
 /**
+ * Checks that the displace_particles function works for arrays of one element.
+ */
+void test_displace_particles_one_element() {
+  #define size 1
+  Particle particles[size] = { { 0, 100, 0 } };
+  Vector displacements[size] = { { 50, -50 } };
+
+  displace_particles(size, displacements, particles);
+
+  assert(particles[0].x_coordinate, 50.0d, "test_displace_particles_one_element - x_coordinate");
+  assert(particles[0].y_coordinate, 50.0d, "test_displace_particles_one_element - y_coordinate");
+  #undef size
+}
+
+/**
+ * Checks that the displace_particles function works for arrays of multiple elements.
+ */
+void test_displace_particles_multiple_elements() {
+  #define size 3
+  Particle particles[size] = { { 0, 100, 0 }, { 0.11111, 2.100000, 0 }, { 15, -30, 0 } };
+  Vector displacements[size] = { { 0, 0 }, { 0.000015, -0.000033 }, { -15, 30 } };
+
+  displace_particles(size, displacements, particles);
+
+  Particle expected[size] = { { 0.0d, 100.0d, 0 }, { 0.111125, 2.0999967, 0 }, { 0.0d, 0.0d, 0 } };
+  for (size_t i = 0; i < size; ++i) {
+    for_assert(particles[i].x_coordinate, expected[i].x_coordinate, "test_displace_particles_multiple_elements - x_coordinate", i);
+    for_assert(particles[i].y_coordinate, expected[i].y_coordinate, "test_displace_particles_multiple_elements - y_coordinate", i);
+  }
+  #undef size
+}
+
+/**
+ * Checks that the displace_particles function preserves the simulation floor.
+ */
+void test_displace_particles_floor() {
+  #define size 1
+  Particle particles[size] = { { 100, 0, 0 } };
+  Vector displacements[size] = { { -50, -50 } };
+
+  displace_particles(size, displacements, particles);
+
+  assert(particles[0].x_coordinate, 50.0d, "test_displace_particles_one_element - x_coordinate");
+  assert(particles[0].y_coordinate, 0.0d, "test_displace_particles_one_element - y_coordinate");
+  #undef size
+}
+
+/**
  * Tests entry point.
  * All tests run here.
  */
@@ -312,14 +325,15 @@ int main(void) {
 
   // Execute all tests.
   test_size_triangular_matrix();
-  test_sum_vectors_one_element();
-  test_sum_vectors_multiple_elements();
-  test_compute_acceleration_one_element();
-  test_compute_acceleration_multiple_elements();
   test_compute_forces_one_contact();
   test_compute_forces_multiple_contacts();
+  test_compute_acceleration_one_element();
+  test_compute_acceleration_multiple_elements();
   //test_compute_velocity_one_element();
   //test_compute_velocity_multiple_elements();
+  test_displace_particles_one_element();
+  test_displace_particles_multiple_elements();
+  test_displace_particles_floor();
 
   // If, at least one test failed, exit with an error code.
   return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;

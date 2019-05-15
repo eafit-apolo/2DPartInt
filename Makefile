@@ -11,8 +11,11 @@ TEST_DIR            = test
 CC                  = gcc
 CXX                 = g++
 CFLAGS              =
-ALL_CFLAGS          = -std=c11 -O3 -Wall -Wextra -Werror $(CFLAGS)
-LDFLAGS		    = -lm
+CXXFLAGS            =
+COMMON_FLAGS        = -O3 -Wall -Wextra -Werror
+ALL_CFLAGS          = -std=c11 $(COMMON_FLAGS) $(CFLAGS)
+ALL_CXXFLAGS        = -std=c++11 $(COMMON_FLAGS) $(CXXFLAGS)
+LDFLAGS             = -lm
 RM                  = rm -rf
 MKDIR               = mkdir -p
 
@@ -24,17 +27,25 @@ MKDIR               = mkdir -p
 .PHONY: all
 all: $(BIN_DIR)/$(PROGRAM_NAME)
 
-$(BIN_DIR)/$(PROGRAM_NAME): $(BUILD_DIR)/functions.o $(BUILD_DIR)/main.o
+$(BIN_DIR)/$(PROGRAM_NAME): $(BUILD_DIR)/config.o $(BUILD_DIR)/csv.o $(BUILD_DIR)/functions.o $(BUILD_DIR)/main.o
 	$(MKDIR) $(BIN_DIR)
-	$(CC) $(ALL_CFLAGS) -o $@ $^ $(LDFLAGS)
+	$(CXX) $(ALL_CXXFLAGS) -o $@ $^ $(LDFLAGS)
+
+$(BUILD_DIR)/config.o: $(SRC_CXX_DIR)/config.cpp $(INC_DIR)/config.h
+	$(MKDIR) $(BUILD_DIR)
+	$(CXX) $(ALL_CXXFLAGS) -I$(INC_DIR) -o $@ -c $<
+
+$(BUILD_DIR)/csv.o: $(SRC_CXX_DIR)/csv.cpp $(INC_DIR)/csv.h $(INC_DIR)/data.h
+	$(MKDIR) $(BUILD_DIR)
+	$(CXX) $(ALL_CXXFLAGS) -I$(INC_DIR) -o $@ -c $<
 
 $(BUILD_DIR)/functions.o: $(SRC_C_DIR)/functions.c $(INC_DIR)/data.h $(INC_DIR)/functions.h
 	$(MKDIR) $(BUILD_DIR)
 	$(CC) $(ALL_CFLAGS) -I$(INC_DIR) -o $@ -c $<
 
-$(BUILD_DIR)/main.o: $(SRC_C_DIR)/main.c $(INC_DIR)/data.h $(INC_DIR)/functions.h
+$(BUILD_DIR)/main.o: $(SRC_CXX_DIR)/main.cpp $(INC_DIR)/config.h $(INC_DIR)/csv.h $(INC_DIR)/data.h $(INC_DIR)/functions.h
 	$(MKDIR) $(BUILD_DIR)
-	$(CC) $(ALL_CFLAGS) -I$(INC_DIR) -o $@ -c $<
+	$(CXX) $(ALL_CXXFLAGS) -I$(INC_DIR) -o $@ -c $<
 
 ###############################################################################
 # Tests
@@ -50,13 +61,6 @@ $(BIN_DIR)/functions_spec: $(BUILD_DIR)/functions.o $(BUILD_DIR)/functions_spec.
 $(BUILD_DIR)/functions_spec.o: $(TEST_DIR)/functions_spec.c $(INC_DIR)/data.h $(INC_DIR)/functions.h
 	$(MKDIR) $(BUILD_DIR)
 	$(CC) $(ALL_CFLAGS) -I$(INC_DIR) -o $@ -c $<
-
-###############################################################################
-# Run
-
-.PHONY: run
-run: all
-	$(BIN_DIR)/$(PROGRAM_NAME)
 
 ###############################################################################
 # Clean

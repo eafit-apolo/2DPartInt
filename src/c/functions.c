@@ -4,9 +4,8 @@
 #include "data.h"
 #include "functions.h"
 
-#ifndef M_PI
-    #define M_PI 3.14159265358979323846
-#endif
+// tan((30 * PI) / 180).
+#define TAN_30_PI_180 0.5773502691896257
 
 /**
  * Returns the size of a triangular matrix, without the diagonal.
@@ -37,12 +36,13 @@ double compute_overlap(const Particle *p1, const Particle *p2) {
 }
 
 /**
- * Takes two arrays of vectors, and sums together the vectors with the same index.
+ * Applies the forces to the particles with the same index,
+ * and computes the resultant acceleration.
  */
-void sum_vectors(const size_t size, const Vector *v1, const Vector *v2, Vector *result) {
+void compute_acceleration(const size_t size, const ParticleProperties *particles, const Vector *forces, Vector *accelerations) {
   for (size_t i = 0; i < size; ++i) {
-    result[i].x_component = v1[i].x_component + v2[i].x_component;
-    result[i].y_component = v1[i].y_component + v2[i].y_component;
+    accelerations[i].x_component = forces[i].x_component / particles[i].mass;
+    accelerations[i].y_component = forces[i].y_component / particles[i].mass;
   }
 }
 
@@ -89,7 +89,7 @@ void collide_two_particles(const double dt, const double distance,
     Fs_1_2 = 0;
   }
 
-  const double Fs_1_2_max = Fn_1_2 * tan((30 * M_PI) / 180);
+  const double Fs_1_2_max = Fn_1_2 * TAN_30_PI_180;
   if (abs(Fs_1_2) > Fs_1_2_max) {
     Fs_1_2 = (abs(Fs_1_2_max) * abs(Fs_1_2)) / Fs_1_2;
   }
@@ -151,13 +151,13 @@ void compute_forces(const double dt, const size_t particles_size, const size_t c
 }
 
 /**
- * Applies the forces to the particles with the same index,
- * and computes the resultant acceleration.
+ * Derives the resultant velocity,
+ * of an initial velocity with an applied acceleration for given a time delta.
  */
-void compute_acceleration(const size_t size, const ParticleProperties *particles, const Vector *forces, Vector *resultant_accelerations){
+void compute_velocity(const double dt, const size_t size, const Vector *accelerations, Vector *velocities){
   for (size_t i = 0; i < size; ++i) {
-    resultant_accelerations[i].x_component = forces[i].x_component / particles[i].mass;
-    resultant_accelerations[i].y_component = forces[i].y_component / particles[i].mass;
+    velocities[i].x_component = velocities[i].x_component + accelerations[i].x_component * dt;
+    velocities[i].y_component = velocities[i].y_component + accelerations[i].y_component * dt;
   }
 }
 
@@ -165,20 +165,26 @@ void compute_acceleration(const size_t size, const ParticleProperties *particles
  * Computes the displacement of the particles,
  * with an applied velocity for a given time delta.
  */
-void compute_displacement(const size_t size, const double dt, const Vector *velocities, Vector *displacements){
+void compute_displacement(const double dt, const size_t size, const Vector *velocities, Vector *displacements) {
   for (size_t i = 0; i < size; ++i) {
     displacements[i].x_component = displacements[i].x_component + velocities[i].x_component * dt;
     displacements[i].y_component = displacements[i].y_component + velocities[i].y_component * dt;
   }
 }
 
-/** Derives the resultant velocity,
- * of an initial velocity with an applied acceleration for given a time delta.
+/**
+ * Displace all particles given their displacements.
  */
-void compute_velocity(const size_t size, const Vector *accelerations, const double dt, Vector *velocities){
+void displace_particles(const size_t size, const Vector *displacements, Particle *particles) {
   for (size_t i = 0; i < size; ++i) {
-    velocities[i].x_component = velocities[i].x_component + accelerations[i].x_component * dt;
-    velocities[i].y_component = velocities[i].y_component + accelerations[i].y_component * dt;
+    Particle *particle = &particles[i];
+    particle->x_coordinate += displacements[i].x_component;
+    particle->y_coordinate += displacements[i].y_component;
+
+    // Ensure the particles do not overpass the floor.
+    if (particle->y_coordinate < 0.0d) {
+      particle->y_coordinate = 0.0d;
+    }
   }
 }
 
@@ -190,13 +196,10 @@ void compute_velocity(const size_t size, const Vector *accelerations, const doub
  */
 size_t compute_contacts(const size_t size, const Particle *particles, Contact *contacts_buffer) {
   size_t k = 0;
-  double overlap;
-  Particle p1, p2;
+
   for (size_t i = 0; i < size; ++i) {
     for (size_t j = i + 1; j < size; ++j) {
-      p1 = particles[i];
-      p2 = particles[j];
-      overlap = compute_overlap(&p1, &p2);
+      const double overlap = compute_overlap(&particles[i], &particles[j]);
       if (overlap > 0) {
         contacts_buffer[k].p1_idx = i;
         contacts_buffer[k].p2_idx = j;
@@ -205,5 +208,6 @@ size_t compute_contacts(const size_t size, const Particle *particles, Contact *c
       }
     }
   }
+
   return k;
 }
