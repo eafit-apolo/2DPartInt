@@ -23,7 +23,7 @@ Execute the program passing the `simulation_config.txt` file & the output folder
 $ ./bin/2DPartInt simulation_config.txt out/
 ```
 
-## Simulartion Config File.
+## Simulation Config File.
 
 The behaviour of the simulation is determined by the config file.
 
