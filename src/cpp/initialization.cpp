@@ -62,10 +62,10 @@ size_t initialize(const Config *config) {
     properties[i].ks = config->ks;
 
     // Variables update
-    y = particles_last_height[i % max_in_x] + current_radius;
-    particles_last_height[i % max_in_x] = current_radius + particles[i].y_coordinate;
     last_radius = current_radius;
     current_radius = uniform_distribution(generator);
+    y = particles_last_height[i % max_in_x] + current_radius;
+    particles_last_height[i % max_in_x] = current_radius + particles[i].y_coordinate;
 
     // Check if this particle is the last one for this row...
     if ((i % max_in_x) == 0) {
