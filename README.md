@@ -27,14 +27,15 @@ $ ./bin/2DPartInt simulation_config.txt out/
 
 The behaviour of the simulation is determined by the config file.
 
-This is the structure of the file.  
+This is the structure of the file.
 _(All settings are mandatory, but they can be in any order)_
 
 ```
 time=[Int] # Total time to simulate, in seconds.
 dt=[Double] # Size of the time window used for each step.
-n=[Int] # Simulation size in X.
-m=[Int] # Simulation size in Y.
+n=[Int] # Simulation size in Y.
+m=[Int] # Simulation size in X.
+seed=[Int] # Radius random generator seed.
 kn=[Double] # Normal rigidity of the material.
 ks=[Double] # Tangential rigidity of the material.
 mass=[Double] # Mass of the particles.
