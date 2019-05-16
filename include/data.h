@@ -6,7 +6,7 @@
 typedef struct {
   double x_coordinate;
   double y_coordinate;
-  double radious;
+  double radius;
 } Particle;
 
 /**

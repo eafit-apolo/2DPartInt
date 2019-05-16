@@ -8,7 +8,7 @@ typedef struct {
   double dt;
   int m; // Size in X.
   int n; // Size in Y.
-  double r;
+  int seed; // Random generator seed
   double kn;
   double ks;
   double mass;

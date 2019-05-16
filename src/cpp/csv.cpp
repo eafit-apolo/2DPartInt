@@ -30,7 +30,7 @@ void write_simulation_step(const size_t num_particles, const Particle *particles
   );
 
   // Write the header.
-  output_file << "x coord, y coord, z coord, radious\n";
+  output_file << "x coord, y coord, z coord, radius\n";
 
   // Write the current status of each particle.
   for (size_t i = 0; i < num_particles; ++i) {
@@ -40,7 +40,7 @@ void write_simulation_step(const size_t num_particles, const Particle *particles
                 << ", "
                 << 0 // Z Coordinate.
                 << ", "
-                << particles[i].radious
+                << particles[i].radius
                 << "\n";
   }
 
