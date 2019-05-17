@@ -64,8 +64,8 @@ size_t initialize(const Config *config) {
     // Variables update
     last_radius = current_radius;
     current_radius = uniform_distribution(generator);
+    particles_last_height[(i-1) % max_in_x] = current_radius + particles[i].y_coordinate;
     y = particles_last_height[i % max_in_x] + current_radius;
-    particles_last_height[i % max_in_x] = current_radius + particles[i].y_coordinate;
 
     // Check if this particle is the last one for this row...
     if ((i % max_in_x) == 0) {
