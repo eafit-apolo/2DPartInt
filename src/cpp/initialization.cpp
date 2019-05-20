@@ -17,8 +17,26 @@ extern Vector *accelerations;
 extern Vector *velocities;
 extern Vector *displacements;
 
-size_t initialize(const Config *config) {
+#ifndef M_PI
+  #define M_PI 3.141592653589793
+#endif
 
+/**
+ * Computes the mass of a particle, given its radius.
+ */
+double compute_mass(const Config *config, const double radius) {
+  return config->rho * config->thickness * M_PI * radius * radius;
+}
+
+/**
+ * Initialize all simulation data structures,
+ * according to the simulation size.
+ * Returns the number of initialized particles.
+ *
+ * Note: Except for the particles,
+ * all structures are effectively initialized with zeros.
+ */
+size_t initialize(const Config *config) {
   const double min_radius = 10.0d;
   const double max_radius = 50.0d;
   const double diameter = 2 * max_radius;
@@ -41,23 +59,23 @@ size_t initialize(const Config *config) {
 
   // Initialize the particles.
 
-  // Particles radius generator in milimeters
+  // Particles radius generator in millimeters.
   std::mt19937 generator(config->seed);
   std::uniform_real_distribution<double> uniform_distribution(min_radius, max_radius);
 
   const unsigned int max_in_x = floor(config->m / diameter);
   double current_radius = uniform_distribution(generator);
   double last_radius;
+
   // Height + radius of particle below the particle currently positioned
   double particles_last_height[max_in_x] = {0};
   double x = current_radius;
   double y = current_radius;
   for (size_t i = 1; i < num_particles; ++i) {
-
     particles[i].x_coordinate = x;
     particles[i].y_coordinate = y;
     particles[i].radius = current_radius;
-    properties[i].mass = config->mass;
+    properties[i].mass = compute_mass(config, current_radius);
     properties[i].kn = config->kn;
     properties[i].ks = config->ks;
 
@@ -69,7 +87,7 @@ size_t initialize(const Config *config) {
 
     // Check if this particle is the last one for this row...
     if ((i % max_in_x) == 0) {
-      // If it is, reset the x value
+      // If it is, reset the x value.
       x = current_radius;
     } else {
       // Else, increment the x value.
@@ -78,12 +96,10 @@ size_t initialize(const Config *config) {
   }
 
   // Initialize the falling particle.
-  const double height = config->n * 80;
-
-  particles[0].radius = uniform_distribution(generator);
+  particles[0].radius = config->r0;
   particles[0].x_coordinate = config->m / 2;
-  particles[0].y_coordinate = height;
-  properties[0].mass = config->mass;
+  particles[0].y_coordinate = config->n + (max_radius * 2);
+  properties[0].mass = compute_mass(config, config->r0);
   properties[0].kn = config->kn;
   properties[0].ks = config->ks;
   velocities[0].y_component = config->v0;

@@ -38,6 +38,8 @@ m=[Int] # Simulation size in X.
 seed=[Int] # Radius random generator seed.
 kn=[Double] # Normal rigidity of the material.
 ks=[Double] # Tangential rigidity of the material.
-mass=[Double] # Mass of the particles.
+rho=[Double] # Density of the material.
+thickness=[Double] # Thickness of the particles.
 v0=[Double] # Initial velocity of the falling particle.
+r0=[Double] # Radius of the falling particle.
 ```
