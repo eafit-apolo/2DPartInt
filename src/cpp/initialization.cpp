@@ -62,11 +62,9 @@ size_t initialize(const Config *config) {
   // Particles radius generator in millimeters.
   std::mt19937 generator(config->seed);
   std::uniform_real_distribution<double> uniform_distribution(min_radius, max_radius);
-
-  const unsigned int max_in_x = floor(config->m / diameter);
+  
   double current_radius = uniform_distribution(generator);
   double last_radius;
-
   double x = current_radius;
   double y = current_radius;
   for (size_t i = 1; i < num_particles; ++i) {
@@ -80,16 +78,15 @@ size_t initialize(const Config *config) {
     // Variables update
     last_radius = current_radius;
     current_radius = uniform_distribution(generator);
-
-    // Check if this particle is the last one for this row...
-    if ((i % max_in_x) == 0) {
-      // If it is, reset the x value and y value.
+    
+    x += (last_radius + current_radius);
+    // Check if the x coordinate overpasses the width of the simulation
+    if ((x + max_radius) > config->m) {
+      // If it does, reset it
       x = current_radius;
       y += diameter;
-    } else {
-      // Else, increment the x value.
-      x += (last_radius + current_radius);
     }
+    
   }
 
   // Initialize the falling particle.
