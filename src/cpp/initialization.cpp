@@ -67,8 +67,6 @@ size_t initialize(const Config *config) {
   double current_radius = uniform_distribution(generator);
   double last_radius;
 
-  // Height + radius of particle below the particle currently positioned
-  double particles_last_height[max_in_x] = {0};
   double x = current_radius;
   double y = current_radius;
   for (size_t i = 1; i < num_particles; ++i) {
@@ -82,13 +80,12 @@ size_t initialize(const Config *config) {
     // Variables update
     last_radius = current_radius;
     current_radius = uniform_distribution(generator);
-    particles_last_height[(i-1) % max_in_x] = current_radius + particles[i].y_coordinate;
-    y = particles_last_height[i % max_in_x] + current_radius;
 
     // Check if this particle is the last one for this row...
     if ((i % max_in_x) == 0) {
-      // If it is, reset the x value.
+      // If it is, reset the x value and y value.
       x = current_radius;
+      y += diameter;
     } else {
       // Else, increment the x value.
       x += (last_radius + current_radius);
