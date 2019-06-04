@@ -27,7 +27,7 @@ MKDIR               = mkdir -p
 .PHONY: all
 all: $(BIN_DIR)/$(PROGRAM_NAME)
 
-$(BIN_DIR)/$(PROGRAM_NAME): $(BUILD_DIR)/config.o $(BUILD_DIR)/csv.o $(BUILD_DIR)/functions.o $(BUILD_DIR)/main.o
+$(BIN_DIR)/$(PROGRAM_NAME): $(BUILD_DIR)/config.o $(BUILD_DIR)/csv.o $(BUILD_DIR)/functions.o $(BUILD_DIR)/initialization.o $(BUILD_DIR)/main.o
 	$(MKDIR) $(BIN_DIR)
 	$(CXX) $(ALL_CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
@@ -39,11 +39,15 @@ $(BUILD_DIR)/csv.o: $(SRC_CXX_DIR)/csv.cpp $(INC_DIR)/csv.h $(INC_DIR)/data.h
 	$(MKDIR) $(BUILD_DIR)
 	$(CXX) $(ALL_CXXFLAGS) -I$(INC_DIR) -o $@ -c $<
 
+$(BUILD_DIR)/initialization.o: $(SRC_CXX_DIR)/initialization.cpp $(INC_DIR)/initialization.h
+	$(MKDIR) $(BUILD_DIR)
+	$(CXX) $(ALL_CXXFLAGS) -I$(INC_DIR) -o $@ -c $<
+
 $(BUILD_DIR)/functions.o: $(SRC_C_DIR)/functions.c $(INC_DIR)/data.h $(INC_DIR)/functions.h
 	$(MKDIR) $(BUILD_DIR)
 	$(CC) $(ALL_CFLAGS) -I$(INC_DIR) -o $@ -c $<
 
-$(BUILD_DIR)/main.o: $(SRC_CXX_DIR)/main.cpp $(INC_DIR)/config.h $(INC_DIR)/csv.h $(INC_DIR)/data.h $(INC_DIR)/functions.h
+$(BUILD_DIR)/main.o: $(SRC_CXX_DIR)/main.cpp $(INC_DIR)/config.h $(INC_DIR)/csv.h $(INC_DIR)/data.h $(INC_DIR)/functions.h $(INC_DIR)/initialization.h
 	$(MKDIR) $(BUILD_DIR)
 	$(CXX) $(ALL_CXXFLAGS) -I$(INC_DIR) -o $@ -c $<
 

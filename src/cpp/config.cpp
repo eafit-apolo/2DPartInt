@@ -35,16 +35,20 @@ void parse_config(const char *filename, Config *config) {
           config->n = std::stoi(value);
         } else if (key == "m") {
           config->m = std::stoi(value);
-        } else if (key == "r") {
-          config->r = std::stod(value);
+        } else if (key == "seed") {
+          config->seed = std::stoi(value);
         } else if (key == "kn") {
           config->kn = std::stod(value);
         } else if (key == "ks") {
           config->ks = std::stod(value);
-        } else if (key == "mass") {
-          config->mass = std::stod(value);
+        } else if (key == "rho") {
+          config->rho = std::stod(value);
+        } else if (key == "thickness") {
+          config->thickness = std::stod(value);
         } else if (key == "v0") {
           config->v0 = std::stod(value);
+        } else if (key == "r0") {
+          config->r0 = std::stod(value);
         } else {
           std::cerr << "Invalid key: " << key << std::endl;
         }

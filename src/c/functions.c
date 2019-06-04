@@ -29,7 +29,7 @@ double compute_distance(const Particle *p1, const Particle *p2) {
  * Note: If the overlap is negative, there is no overlap.
  */
 double compute_overlap(const Particle *p1, const Particle *p2) {
-  const double d = p1->radious + p2->radious;
+  const double d = p1->radius + p2->radius;
   const double distance = compute_distance(p1, p2);
 
   return d - distance;
@@ -178,13 +178,8 @@ void compute_displacement(const double dt, const size_t size, const Vector *velo
 void displace_particles(const size_t size, const Vector *displacements, Particle *particles) {
   for (size_t i = 0; i < size; ++i) {
     Particle *particle = &particles[i];
-    particle->x_coordinate += displacements[i].x_component;
-    particle->y_coordinate += displacements[i].y_component;
-
-    // Ensure the particles do not overpass the floor.
-    if (particle->y_coordinate < 0.0d) {
-      particle->y_coordinate = 0.0d;
-    }
+    particle->x_coordinate += (displacements[i].x_component * 1000);
+    particle->y_coordinate += (displacements[i].y_component * 1000);
   }
 }
 
