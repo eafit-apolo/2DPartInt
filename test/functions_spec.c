@@ -325,14 +325,14 @@ void test_fix_displacements_one_element() {
  */
 void test_fix_displacements_multiple_elements() {
   #define size 3
-  Particle particles[size] = { { 98, 2, 2 }, { 95.7, 2.7, 4.5 }, { 10, -30, 91 } };
+  Particle particles[size] = { { 98, 2, 2 }, { 95.7, 2.7, 4.5 }, { 10, -30, 50 } };
   Vector velocities[size] = { { 1, 1 }, { 0.015, -0.033 }, { 0.015, 0.03 } };
   int n = 100;
 
   fix_displacements(size, n, velocities, particles);
 
   Vector expected_velocities[size] = { { 1, 1 }, { 0, 0 }, { 0, 0 } };
-  Particle expected[size] = { { 98, 2, 2 }, { 95.5, 4.5, 4.5 }, { 9, 91, 91 } };
+  Particle expected[size] = { { 98, 2, 2 }, { 95.5, 4.5, 4.5 }, { 50, 50, 50 } };
   for (size_t i = 0; i < size; ++i) {
     for_assert(particles[i].x_coordinate, expected[i].x_coordinate, "test_fix_displacements_multiple_elements - x_coordinate", i);
     for_assert(particles[i].y_coordinate, expected[i].y_coordinate, "test_fix_displacements_multiple_elements - y_coordinate", i);

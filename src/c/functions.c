@@ -3,8 +3,6 @@
 #include <string.h> // For memset.
 #include "data.h"
 #include "functions.h"
-#include <stdio.h>
-
 
 // tan((30 * PI) / 180).
 #define TAN_30_PI_180 0.5773502691896257
@@ -193,14 +191,10 @@ void fix_displacements(const size_t size,  const int n, Vector *velocities, Part
     Particle *particle = &particles[i];
     double diff = n - (particle->x_coordinate + particle->radius);
 
-    printf(" n: %d - x_coordinate: %f - radius: %f - diff: %f\n",n, particle->x_coordinate, particle->radius, diff);
-
     if(diff < 0){
       particle->x_coordinate += diff;
       velocities[i].x_component = 0;
-      printf("x_coordinate: %f", particle->x_coordinate);
     }
-    printf("\n\n");
 
     diff = particle->x_coordinate - particle->radius;
     if(diff < 0){
