@@ -301,6 +301,48 @@ void test_displace_particles_multiple_elements() {
 }
 
 /**
+ * Checks that the displace_particles function works for one element.
+ */
+void test_fix_displacements_one_element() {
+  #define size 1
+  Particle particles[size] = { { 98.5, 1.5, 2 } };
+  Vector velocities[size] = { { 2, -2 } };
+  int n = 100;
+
+
+
+  fix_displacements(size, n, velocities, particles);
+
+  assert(particles[0].x_coordinate, 98.0d, "test_fix_displacements_one_element - x_coordinate");
+  assert(particles[0].y_coordinate, 2.0d, "test_fix_displacements_one_element - y_coordinate");
+  assert(velocities[0].x_component, 0, "test_fix_displacements_one_element - velocity x_component");
+  assert(velocities[0].y_component, 0, "test_fix_displacements_one_element - velocity x_component");
+  #undef size
+}
+
+/**
+ * Checks that the displace_particles function works for multiple elements.
+ */
+void test_fix_displacements_multiple_elements() {
+  #define size 3
+  Particle particles[size] = { { 98, 2, 2 }, { 95.7, 2.7, 4.5 }, { 10, -30, 91 } };
+  Vector velocities[size] = { { 1, 1 }, { 0.015, -0.033 }, { 0.015, 0.03 } };
+  int n = 100;
+
+  fix_displacements(size, n, velocities, particles);
+
+  Vector expected_velocities[size] = { { 1, 1 }, { 0, 0 }, { 0, 0 } };
+  Particle expected[size] = { { 98, 2, 2 }, { 95.5, 4.5, 4.5 }, { 9, 91, 91 } };
+  for (size_t i = 0; i < size; ++i) {
+    for_assert(particles[i].x_coordinate, expected[i].x_coordinate, "test_fix_displacements_multiple_elements - x_coordinate", i);
+    for_assert(particles[i].y_coordinate, expected[i].y_coordinate, "test_fix_displacements_multiple_elements - y_coordinate", i);
+    for_assert(velocities[i].x_component, expected_velocities[i].x_component, "test_fix_displacements_multiple_elements - velocity x_component", i);
+    for_assert(velocities[i].y_component, expected_velocities[i].y_component, "test_fix_displacements_multiple_elements - velocity y_component", i);
+  }
+  #undef size
+}
+
+/**
  * Tests entry point.
  * All tests run here.
  */
@@ -318,6 +360,8 @@ int main(void) {
   //test_compute_velocity_multiple_elements();
   test_displace_particles_one_element();
   test_displace_particles_multiple_elements();
+  test_fix_displacements_one_element();
+  test_fix_displacements_multiple_elements();
 
   // If, at least one test failed, exit with an error code.
   return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;

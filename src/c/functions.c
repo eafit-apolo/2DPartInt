@@ -3,6 +3,8 @@
 #include <string.h> // For memset.
 #include "data.h"
 #include "functions.h"
+#include <stdio.h>
+
 
 // tan((30 * PI) / 180).
 #define TAN_30_PI_180 0.5773502691896257
@@ -186,23 +188,30 @@ void displace_particles(const size_t size, const Vector *displacements, Particle
 /**
   * Changes the displacement if the new position would surpass the X or Y limit.
   */
-void fix_displacements(const size_t size, Particle *particles, const int n){
+void fix_displacements(const size_t size,  const int n, Vector *velocities, Particle *particles){
   for(size_t i = 0; i < size; ++i){
     Particle *particle = &particles[i];
     double diff = n - (particle->x_coordinate + particle->radius);
 
+    printf(" n: %d - x_coordinate: %f - radius: %f - diff: %f\n",n, particle->x_coordinate, particle->radius, diff);
+
     if(diff < 0){
       particle->x_coordinate += diff;
+      velocities[i].x_component = 0;
+      printf("x_coordinate: %f", particle->x_coordinate);
     }
+    printf("\n\n");
 
     diff = particle->x_coordinate - particle->radius;
     if(diff < 0){
       particle->x_coordinate -= diff;
+      velocities[i].x_component = 0;
     }
 
     diff = particle->y_coordinate - particle->radius;
     if(diff < 0){
       particle->y_coordinate -= diff;
+      velocities[i].y_component = 0;
     }
   }
 }

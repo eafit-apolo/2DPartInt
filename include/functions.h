@@ -40,7 +40,7 @@ void displace_particles(const size_t size, const Vector *displacements, Particle
 /**
   * Changes the displacement if the new position would surpass the X or Y limit.
   */
-void fix_displacements(const size_t size, Particle *particles, const int n);
+void fix_displacements(const size_t size, const int n, Vector *velocities, Particle *particles);
 
 /**
  * Computes the contacts between all particles.
