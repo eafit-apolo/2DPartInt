@@ -184,6 +184,30 @@ void displace_particles(const size_t size, const Vector *displacements, Particle
 }
 
 /**
+  * Changes the displacement if the new position would surpass the X or Y limit.
+  */
+void fix_displacements(const size_t size, Particle *particles, const int n){
+  for(size_t i = 0; i < size; ++i){
+    Particle *particle = &particles[i];
+    double diff = n - (particle->x_coordinate + particle->radius);
+
+    if(diff < 0){
+      particle->x_coordinate += diff;
+    }
+
+    diff = particle->x_coordinate - particle->radius;
+    if(diff < 0){
+      particle->x_coordinate -= diff;
+    }
+
+    diff = particle->y_coordinate - particle->radius;
+    if(diff < 0){
+      particle->y_coordinate -= diff;
+    }
+  }
+}
+
+/**
  * Computes the contacts between all particles.
  * Returns the number of contacts written on the buffer.
  * Note: The size of the buffer should be equals to
