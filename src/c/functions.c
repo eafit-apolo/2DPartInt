@@ -90,8 +90,8 @@ void collide_two_particles(const double dt, const double distance,
   }
 
   const double Fs_1_2_max = Fn_1_2 * TAN_30_PI_180;
-  if (abs(Fs_1_2) > Fs_1_2_max) {
-    Fs_1_2 = (abs(Fs_1_2_max) * abs(Fs_1_2)) / Fs_1_2;
+  if (fabs(Fs_1_2) > Fs_1_2_max) {
+    Fs_1_2 = (fabs(Fs_1_2_max) * fabs(Fs_1_2)) / Fs_1_2;
   }
 
   // Update the forces of p2.
