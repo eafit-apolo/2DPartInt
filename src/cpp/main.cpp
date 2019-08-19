@@ -2,12 +2,18 @@
 #include <cmath>
 #include <iostream>
 extern "C" {
-  #include "config.h"
-  #include "csv.h"
-  #include "data.h"
   #include "functions.h"
-  #include "initialization.h"
+  #include "data.h"
 }
+#include "config.h"
+#include "csv.h"
+#include "initialization.h"
+
+#ifdef DEBUG_ITERATION_NUM
+#include "debug.h"
+// Useful to keep track of the contacts buffer size.
+size_t debug_contacts_size;
+#endif
 
 // Simulation data structures.
 Particle *particles;
@@ -40,6 +46,11 @@ void free_all() {
  */
 void simulation_step(const size_t particles_size, const double dt) {
   size_t contacts_size = compute_contacts(particles_size, particles, contacts_buffer);
+
+  #ifdef DEBUG_ITERATION_NUM
+  debug_contacts_size = contacts_size;
+  #endif
+
   compute_forces(dt, particles_size, contacts_size, particles, properties,
                  contacts_buffer, velocities, normal_forces, tangent_forces, forces);
   compute_acceleration(particles_size, properties, forces, accelerations);
@@ -88,6 +99,29 @@ int main(int argc, char *argv[]) {
   for (unsigned long step = 1; step <= max_steps; ++step) {
     simulation_step(num_particles, config->dt);
     write_simulation_step(num_particles, particles, output_folder, step);
+
+    // Write current system state to files.
+#ifdef DEBUG_ITERATION_NUM // Start of debug.
+
+    if (step == DEBUG_ITERATION_NUM) {
+      char *debug_folder = "./debug";
+      if (ensure_output_folder(debug_folder) != 0) {
+        std::cerr << "The debug output folder does not exists, "
+                  << "and could not be created: "
+                  << debug_folder
+                  << std::endl;
+        return -1;
+      }
+
+      size_t particle_num = -1;
+#ifdef DEBUG_PARTICLE_NUM
+      particle_num = DEBUG_PARTICLE_NUM;
+#endif
+
+      write_debug_information(step, particle_num, num_particles,
+                              debug_contacts_size, debug_folder);
+    }
+#endif // End of debug.
   }
 
   // Free all memory resources and exit.

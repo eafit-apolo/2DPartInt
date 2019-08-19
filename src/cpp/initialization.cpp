@@ -1,10 +1,10 @@
 #include <random>
 extern "C" {
-  #include "initialization.h"
-  #include "config.h"
-  #include "data.h"
   #include "functions.h"
 }
+#include "initialization.h"
+#include "config.h"
+#include "data.h"
 
 // Simulation data structures.
 extern Particle *particles;
@@ -62,7 +62,7 @@ size_t initialize(const Config *config) {
   // Particles radius generator in millimeters.
   std::mt19937 generator(config->seed);
   std::uniform_real_distribution<double> uniform_distribution(min_radius, max_radius);
-  
+
   double current_radius = uniform_distribution(generator);
   double last_radius;
   double x = current_radius;
@@ -78,7 +78,7 @@ size_t initialize(const Config *config) {
     // Variables update
     last_radius = current_radius;
     current_radius = uniform_distribution(generator);
-    
+
     x += (last_radius + current_radius);
     // Check if the x coordinate overpasses the width of the simulation
     if ((x + max_radius) > config->m) {
@@ -86,7 +86,7 @@ size_t initialize(const Config *config) {
       x = current_radius;
       y += diameter;
     }
-    
+
   }
 
   // Initialize the falling particle.

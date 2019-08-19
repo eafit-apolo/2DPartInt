@@ -2,9 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-extern "C" {
-  #include "config.h"
-}
+#include "config.h"
 
 /**
  * Parses the provided config file,
