@@ -104,7 +104,7 @@ int main(int argc, char *argv[]) {
 #ifdef DEBUG_ITERATION_NUM // Start of debug.
 
     if (step == DEBUG_ITERATION_NUM) {
-      char *debug_folder = "./debug";
+      const char *debug_folder = "./debug";
       if (ensure_output_folder(debug_folder) != 0) {
         std::cerr << "The debug output folder does not exists, "
                   << "and could not be created: "
