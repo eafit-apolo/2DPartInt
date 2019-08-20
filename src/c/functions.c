@@ -21,7 +21,7 @@ double compute_distance(const Particle *p1, const Particle *p2) {
   const double x_diff = p1->x_coordinate - p2->x_coordinate;
   const double y_diff = p1->y_coordinate - p2->y_coordinate;
 
-  return sqrt((x_diff * x_diff) + (y_diff * y_diff));
+  return sqrt(fabs(x_diff * x_diff) + fabs(y_diff * y_diff));
 }
 
 /**
@@ -90,8 +90,8 @@ void collide_two_particles(const double dt, const double distance,
   }
 
   const double Fs_1_2_max = Fn_1_2 * TAN_30_PI_180;
-  if (abs(Fs_1_2) > Fs_1_2_max) {
-    Fs_1_2 = (abs(Fs_1_2_max) * abs(Fs_1_2)) / Fs_1_2;
+  if (fabs(Fs_1_2) > Fs_1_2_max) {
+    Fs_1_2 = (fabs(Fs_1_2_max) * fabs(Fs_1_2)) / Fs_1_2;
   }
 
   // Update the forces of p2.
@@ -189,8 +189,8 @@ void displace_particles(const size_t size, const Vector *displacements, Particle
 void fix_displacements(const size_t size,  const int n, Vector *velocities, Particle *particles){
   for(size_t i = 0; i < size; ++i){
     Particle *particle = &particles[i];
-    double diff = n - (particle->x_coordinate + particle->radius);
 
+    double diff = n - (particle->x_coordinate + particle->radius);
     if(diff < 0){
       particle->x_coordinate += diff;
       velocities[i].x_component = 0;
