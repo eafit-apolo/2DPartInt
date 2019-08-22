@@ -23,8 +23,6 @@ void write_debug_information(const int step, const size_t num_particles,
                            + "step_" + std::to_string(step),
                       std::ios::out | std::ios::trunc);
 
-  int hola = contacts_size;
-  ++hola;
   // Write the header file. That is, columns for each data structure.
   write_header(step, debug_file);
 
