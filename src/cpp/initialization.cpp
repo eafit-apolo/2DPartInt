@@ -1,10 +1,10 @@
 #include <random>
 extern "C" {
   #include "functions.h"
+  #include "data.h"
 }
 #include "initialization.h"
 #include "config.h"
-#include "data.h"
 
 // Simulation data structures.
 extern Particle *particles;

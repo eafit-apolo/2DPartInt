@@ -1,8 +1,10 @@
 #include <cstdlib>
 #include <fstream>
 #include <string>
+extern "C" {
+  #include "data.h"
+}
 #include "csv.h"
-#include "data.h"
 
 /**
  * Ensures the output folder exists
