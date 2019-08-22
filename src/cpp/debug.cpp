@@ -1,4 +1,5 @@
 #include <fstream>
+#include <iomanip>
 extern "C" {
   #include "data.h"
 }
@@ -15,129 +16,115 @@ extern Vector *accelerations;
 extern Vector *velocities;
 extern Vector *displacements;
 
-// Output file streams.
-std::ofstream particles_file;
-std::ofstream properties_file;
-std::ofstream contacts_file;
-std::ofstream normal_forces_file;
-std::ofstream tangent_forces_file;
-std::ofstream forces_file;
-std::ofstream accelerations_file;
-std::ofstream velocities_file;
-std::ofstream displacements_file;
+void write_debug_information(const int step, const size_t num_particles,
+                             const size_t contacts_size, const char *debug_folder) {
 
-void write_debug_information(const int step, const int particle_num,
-                             const size_t num_particles, const size_t contacts_size,
-                             const char *debug_folder) {
+  std::ofstream debug_file(std::string(debug_folder) + "/"
+                           + "step_" + std::to_string(step),
+                      std::ios::out | std::ios::trunc);
 
-  open_files(step, particle_num, debug_folder);
-
-  // Write the contents of each data structure to its corresponding file.
-  // Write the header of each file.
-  write_header(step, particle_num, "Particles.",
-               "x_coordinate y_coordinate raidus", particles_file);
-  write_header(step, particle_num, "Particle Properties.",
-               "mass kn ks", properties_file);
-  write_header(step, particle_num, "Contacts.",
-               "p1_idx p2_idx overlap", contacts_file);
-  write_header(step, particle_num, "Normal forces.",
-               "", normal_forces_file);
-  write_header(step, particle_num, "Tangent forces.",
-               "", tangent_forces_file);
-  write_header(step, particle_num, "Forces.",
-               "x_component y_component", forces_file);
-  write_header(step, particle_num, "Accelerations.",
-               "x_component y_component", accelerations_file);
-  write_header(step, particle_num, "Velocities.",
-               "x_component y_component", velocities_file);
-  write_header(step, particle_num, "Displacements.",
-               "x_component y_component", displacements_file);
+  int hola = contacts_size;
+  ++hola;
+  // Write the header file. That is, columns for each data structure.
+  write_header(step, debug_file);
 
   // Write data structures content.
-  if (particle_num != -1) // If particle specified.
-    write_values(particle_num);
-  else
-    for (size_t i = 0; i < num_particles; ++i)
-      write_values(i);
+  write_values(num_particles, contacts_size, debug_file);
 
-  // Write contacts data.
-  for (size_t i = 0; i < contacts_size; ++i) {
-    contacts_file << contacts_buffer[i].p1_idx << " "
-                  << contacts_buffer[i].p2_idx << " "
-                  << contacts_buffer[i].overlap << "\n";
+  debug_file.close();
+  exit(0); // Do not continue simulating.
+}
+
+void write_header(const int step, std::ofstream &file) {
+  file << "SIMULATION STEP: " << step << "\n";
+  int column_width = 11;
+  // Particles data structure.
+  file << std::setw(column_width) << "x_coor"
+       << std::setw(column_width) << "y_coor";
+  column_width = 7;
+  file << std::setw(column_width) << "radius";
+  column_width = 11;
+  // Properties data structure.
+  file << std::setw(column_width) << "mass"
+       << std::setw(column_width) << "kn"
+       << std::setw(column_width) << "ks";
+  // Normal forces and tangent forces.
+  column_width = 8;
+  file << std::setw(column_width) << "norm_f"
+       << std::setw(column_width) << "tang_f";
+  column_width = 11;
+  // Forces.
+  file << std::setw(column_width) << "forc_x"
+       << std::setw(column_width) << "forc_y"
+  // Accelerations.
+       << std::setw(column_width) << "accel_x"
+       << std::setw(column_width) << "accel_y"
+  // Velocities.
+       << std::setw(column_width) << "vel_x"
+       << std::setw(column_width) << "vel_y"
+  // Displacements.
+       << std::setw(column_width) << "disp_x"
+       << std::setw(column_width) << "disp_y\n";
+}
+
+void write_values(const size_t num_particles, const size_t contacts_size,
+                  std::ofstream &file) {
+  int column_width = 11;
+  const int precision = 4;
+  for (size_t i = 0; i < num_particles; ++i) {
+    file << std::setw(column_width) << std::setprecision(precision)
+         << particles[i].x_coordinate
+         << std::setw(column_width) << std::setprecision(precision)
+         << particles[i].y_coordinate;
+    column_width = 7;
+    file<< std::setw(column_width) << std::setprecision(precision)
+        << particles[i].radius;
+    column_width = 11;
+      // Properties information.
+    file << std::setw(column_width) << std::setprecision(precision)
+         << properties[i].mass
+         << std::setw(column_width) << std::setprecision(precision)
+         << properties[i].kn
+         << std::setw(column_width) << std::setprecision(precision)
+         << properties[i].ks;
+      // Normal and tanget forces.
+    column_width = 8;
+    file << std::setw(column_width) << std::setprecision(precision)
+         << normal_forces[i]
+         << std::setw(column_width) << std::setprecision(precision)
+         << tangent_forces[i];
+    column_width = 11;
+      // Forces.
+    file<< std::setw(column_width) << std::setprecision(precision)
+         << forces[i].x_component
+         << std::setw(column_width) << std::setprecision(precision)
+         << forces[i].y_component
+      // Accelerations.
+         << std::setw(column_width) << std::setprecision(precision)
+         << accelerations[i].x_component
+         << std::setw(column_width) << std::setprecision(precision)
+         << accelerations[i].y_component
+      // Velocities.
+         << std::setw(column_width) << std::setprecision(precision)
+         << velocities[i].x_component
+         << std::setw(column_width) << std::setprecision(precision)
+         << velocities[i].y_component
+      // Displacements.
+         << std::setw(column_width) << std::setprecision(precision)
+         << displacements[i].x_component
+         << std::setw(column_width) << std::setprecision(precision)
+         << displacements[i].y_component << "\n";
   }
 
-  close_files();
-}
-
-void write_header(const int step, const int particle_num,
-                  const char *data_structure_name,
-                  const char *file_header,
-                  std::ofstream &file) {
-  file << data_structure_name << " Iteration: " << step
-       << ", Particle: "
-       << ((particle_num != -1) ? std::to_string(particle_num).c_str() : "*") << "\n"
-       << std::string(file_header) << "\n";
-}
-
-void write_values(const int index) {
-    particles_file << particles[index].x_coordinate << " "
-                   << particles[index].y_coordinate << " "
-                   << particles[index].radius << "\n";
-
-    properties_file << properties[index].mass << " "
-                   << properties[index].kn << " "
-                   << properties[index].ks << "\n";
-
-    normal_forces_file << normal_forces[index] << "\n";
-    tangent_forces_file << tangent_forces[index] << "\n";
-
-    forces_file << forces[index].x_component << " "
-                << forces[index].y_component << "\n";
-
-    accelerations_file << accelerations[index].x_component << " "
-                << accelerations[index].y_component << "\n";
-
-    velocities_file << velocities[index].x_component << " "
-                    << velocities[index].y_component << "\n";
-
-    displacements_file << displacements[index].x_component << " "
-                       << displacements[index].y_component << "\n";
-}
-
-void open_files(const int step, const int particle_num, const char *debug_folder) {
-  std::string file_name(std::string(debug_folder) + "/"
-                        + std::to_string(step) + "_"
-                        + ((particle_num != -1) ? std::to_string(particle_num).c_str() : "*")
-                        + "_");
-  particles_file.open(file_name + "particles.debug",
-                      std::ios::out | std::ios::trunc);
-  properties_file.open(file_name + "properties.debug",
-                       std::ios::out | std::ios::trunc);
-  contacts_file.open(file_name + "contacts.debug",
-                     std::ios::out | std::ios::trunc);
-  normal_forces_file.open(file_name + "normal_forces.debug",
-                          std::ios::out | std::ios::trunc);
-  tangent_forces_file.open(file_name + "tangent_forces.debug",
-                           std::ios::out | std::ios::trunc);
-  forces_file.open(file_name + "forces.debug",
-                   std::ios::out | std::ios::trunc);
-  accelerations_file.open(file_name + "accelerations.debug",
-                          std::ios::out | std::ios::trunc);
-  velocities_file.open(file_name + "velocities.debug",
-                       std::ios::out | std::ios::trunc);
-  displacements_file.open(file_name + "displacements.debug",
-                          std::ios::out | std::ios::trunc);
-}
-
-void close_files() {
-  particles_file.close();
-  properties_file.close();
-  contacts_file.close();
-  normal_forces_file.close();
-  tangent_forces_file.close();
-  forces_file.close();
-  accelerations_file.close();
-  velocities_file.close();
-  displacements_file.close();
+  // Write contacts data.
+  file << "\nCONTACTS\n"
+       << std::setw(column_width) << "p1_idx"
+       << std::setw(column_width) << "p2_idx"
+       << std::setw(column_width) << "overlap\n";
+  for (size_t i = 0; i < contacts_size; ++i) {
+    file << std::setw(column_width) << contacts_buffer[i].p1_idx
+         << std::setw(column_width) << contacts_buffer[i].p2_idx
+         << std::setw(column_width) << std::setprecision(precision)
+         << contacts_buffer[i].overlap << "\n";
+  }
 }

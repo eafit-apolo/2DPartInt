@@ -9,7 +9,7 @@ extern "C" {
 #include "csv.h"
 #include "initialization.h"
 
-#ifdef DEBUG_ITERATION_NUM
+#ifdef DEBUG_STEP
 #include "debug.h"
 // Useful to keep track of the contacts buffer size.
 size_t debug_contacts_size;
@@ -47,7 +47,7 @@ void free_all() {
 void simulation_step(const size_t particles_size, const double dt) {
   size_t contacts_size = compute_contacts(particles_size, particles, contacts_buffer);
 
-  #ifdef DEBUG_ITERATION_NUM
+  #ifdef DEBUG_STEP
   debug_contacts_size = contacts_size;
   #endif
 
@@ -83,6 +83,13 @@ int main(int argc, char *argv[]) {
     return -1;
   }
 
+  #ifdef DEBUG_STEP
+  // Receive simulation step as input.
+  unsigned long debug_step;
+  std::cout << "Enter the simulation step number to debug: ";
+  std::cin >> debug_step;
+  #endif
+
   // Parse the config file.
   Config *config = new Config;
   parse_config(argv[1], config);
@@ -101,9 +108,8 @@ int main(int argc, char *argv[]) {
     write_simulation_step(num_particles, particles, output_folder, step);
 
     // Write current system state to files.
-#ifdef DEBUG_ITERATION_NUM // Start of debug.
-
-    if (step == DEBUG_ITERATION_NUM) {
+#ifdef DEBUG_STEP // Start of debug.
+    if (step == debug_step) {
       const char *debug_folder = "./debug";
       if (ensure_output_folder(debug_folder) != 0) {
         std::cerr << "The debug output folder does not exists, "
@@ -113,13 +119,8 @@ int main(int argc, char *argv[]) {
         return -1;
       }
 
-      size_t particle_num = -1;
-#ifdef DEBUG_PARTICLE_NUM
-      particle_num = DEBUG_PARTICLE_NUM;
-#endif
-
-      write_debug_information(step, particle_num, num_particles,
-                              debug_contacts_size, debug_folder);
+      write_debug_information(step, num_particles, debug_contacts_size,
+                              debug_folder);
     }
 #endif // End of debug.
   }

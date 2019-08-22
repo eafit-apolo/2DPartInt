@@ -17,6 +17,12 @@ _(Optional)_ run the tests to ensure everything is ok.
 $ make test
 ```
 
+To debug some simulation step compile like this.
+
+```bash
+$ make DEBUG_STEP=true
+```
+
 Execute the program passing the `simulation_config.txt` file & the output folder as the arguments.
 
 ```bash
