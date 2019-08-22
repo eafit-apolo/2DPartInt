@@ -2,12 +2,18 @@
 #include <cmath>
 #include <iostream>
 extern "C" {
-  #include "config.h"
-  #include "csv.h"
-  #include "data.h"
   #include "functions.h"
-  #include "initialization.h"
+  #include "data.h"
 }
+#include "config.h"
+#include "csv.h"
+#include "initialization.h"
+
+#ifdef DEBUG_STEP
+#include "debug.h"
+// Useful to keep track of the contacts buffer size.
+size_t debug_contacts_size;
+#endif
 
 // Simulation data structures.
 Particle *particles;
@@ -40,6 +46,11 @@ void free_all() {
  */
 void simulation_step(const size_t particles_size, const double dt) {
   size_t contacts_size = compute_contacts(particles_size, particles, contacts_buffer);
+
+  #ifdef DEBUG_STEP
+  debug_contacts_size = contacts_size;
+  #endif
+
   compute_forces(dt, particles_size, contacts_size, particles, properties,
                  contacts_buffer, velocities, normal_forces, tangent_forces, forces);
   compute_acceleration(particles_size, properties, forces, accelerations);
@@ -72,6 +83,13 @@ int main(int argc, char *argv[]) {
     return -1;
   }
 
+  #ifdef DEBUG_STEP
+  // Receive simulation step as input.
+  unsigned long debug_step;
+  std::cout << "Enter the simulation step number to debug: ";
+  std::cin >> debug_step;
+  #endif
+
   // Parse the config file.
   Config *config = new Config;
   parse_config(argv[1], config);
@@ -88,6 +106,23 @@ int main(int argc, char *argv[]) {
   for (unsigned long step = 1; step <= max_steps; ++step) {
     simulation_step(num_particles, config->dt);
     write_simulation_step(num_particles, particles, output_folder, step);
+
+    // Write current system state to files.
+#ifdef DEBUG_STEP // Start of debug.
+    if (step == debug_step) {
+      const char *debug_folder = "./debug";
+      if (ensure_output_folder(debug_folder) != 0) {
+        std::cerr << "The debug output folder does not exists, "
+                  << "and could not be created: "
+                  << debug_folder
+                  << std::endl;
+        return -1;
+      }
+
+      write_debug_information(step, num_particles, debug_contacts_size,
+                              debug_folder);
+    }
+#endif // End of debug.
   }
 
   // Free all memory resources and exit.
