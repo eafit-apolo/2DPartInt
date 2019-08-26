@@ -2,12 +2,18 @@
 #include <cmath>
 #include <iostream>
 extern "C" {
-  #include "config.h"
-  #include "csv.h"
-  #include "data.h"
   #include "functions.h"
-  #include "initialization.h"
+  #include "data.h"
 }
+#include "config.h"
+#include "csv.h"
+#include "initialization.h"
+
+#ifdef DEBUG_STEP
+#include "debug.h"
+// Useful to keep track of the contacts buffer size.
+size_t debug_contacts_size;
+#endif
 
 // Simulation data structures.
 Particle *particles;
@@ -40,6 +46,11 @@ void free_all() {
  */
 void simulation_step(const size_t particles_size, const double dt, const int n, const int m) {
   size_t contacts_size = compute_contacts(particles_size, particles, contacts_buffer);
+
+  #ifdef DEBUG_STEP
+  debug_contacts_size = contacts_size;
+  #endif
+
   compute_forces(dt, particles_size, contacts_size, particles, properties,
                  contacts_buffer, velocities, normal_forces, tangent_forces, forces);
   compute_acceleration(particles_size, properties, forces, accelerations);
@@ -86,9 +97,38 @@ int main(int argc, char *argv[]) {
   // Run the simulation until the max number of steps is reached.
   // The simulation time and the dt determine the maximum number of steps to execute.
   const unsigned long max_steps = ceil(config->simulation_time / config->dt);
+
+#ifdef DEBUG_STEP
+  // Receive simulation step as input.
+  unsigned long debug_step;
+  std::cout << "Enter the simulation step number to debug: ";
+  std::cin >> debug_step;
+  if (debug_step > max_steps) {
+    std::cerr << "The simulation step you provided is too big." << std::endl;
+    return -1;
+  }
+#endif
+
   for (unsigned long step = 1; step <= max_steps; ++step) {
     simulation_step(num_particles, config->dt, config->n, config->m);
     write_simulation_step(num_particles, particles, output_folder, step);
+
+    // Write current system state to files.
+#ifdef DEBUG_STEP // Start of debug.
+    if (step == debug_step) {
+      const char *debug_folder = "./debug";
+      if (ensure_output_folder(debug_folder) != 0) {
+        std::cerr << "The debug output folder does not exists, "
+                  << "and could not be created: "
+                  << debug_folder
+                  << std::endl;
+        return -1;
+      }
+
+      write_debug_information(step, num_particles, debug_contacts_size,
+                              debug_folder);
+    }
+#endif // End of debug.
   }
 
   // Free all memory resources and exit.

@@ -11,7 +11,7 @@ TEST_DIR            = test
 CC                  = gcc
 CXX                 = g++
 CFLAGS              =
-CXXFLAGS            =
+CXXFLAGS	    =
 COMMON_FLAGS        = -O3 -Wall -Wextra -Werror
 ALL_CFLAGS          = -std=c11 $(COMMON_FLAGS) $(CFLAGS)
 ALL_CXXFLAGS        = -std=c++11 $(COMMON_FLAGS) $(CXXFLAGS)
@@ -22,12 +22,24 @@ MKDIR               = mkdir -p
 ###############################################################################
 # Main program compilation
 
+# If compile in debug mode.
+ifdef DEBUG_STEP
+CXXFLAGS	    = -DDEBUG_STEP
+OBJECT_FILES	    = $(BUILD_DIR)/config.o $(BUILD_DIR)/csv.o $(BUILD_DIR)/functions.o $(BUILD_DIR)/initialization.o $(BUILD_DIR)/main.o $(BUILD_DIR)/debug.o
+# main.o dependences.
+MAIN_O_DEPENDENCIES = $(SRC_CXX_DIR)/main.cpp $(INC_DIR)/config.h $(INC_DIR)/csv.h $(INC_DIR)/data.h $(INC_DIR)/functions.h $(INC_DIR)/initialization.h $(INC_DIR)/debug.h
+else
+OBJECT_FILES        = $(BUILD_DIR)/config.o $(BUILD_DIR)/csv.o $(BUILD_DIR)/functions.o $(BUILD_DIR)/initialization.o $(BUILD_DIR)/main.o
+# main.o dependences.
+MAIN_O_DEPENDENCIES = $(SRC_CXX_DIR)/main.cpp $(INC_DIR)/config.h $(INC_DIR)/csv.h $(INC_DIR)/data.h $(INC_DIR)/functions.h $(INC_DIR)/initialization.h
+endif
+
 .DEFAULT_GOAL := all
 
 .PHONY: all
 all: $(BIN_DIR)/$(PROGRAM_NAME)
 
-$(BIN_DIR)/$(PROGRAM_NAME): $(BUILD_DIR)/config.o $(BUILD_DIR)/csv.o $(BUILD_DIR)/functions.o $(BUILD_DIR)/initialization.o $(BUILD_DIR)/main.o
+$(BIN_DIR)/$(PROGRAM_NAME): $(OBJECT_FILES)
 	$(MKDIR) $(BIN_DIR)
 	$(CXX) $(ALL_CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
@@ -47,7 +59,11 @@ $(BUILD_DIR)/functions.o: $(SRC_C_DIR)/functions.c $(INC_DIR)/data.h $(INC_DIR)/
 	$(MKDIR) $(BUILD_DIR)
 	$(CC) $(ALL_CFLAGS) -I$(INC_DIR) -o $@ -c $<
 
-$(BUILD_DIR)/main.o: $(SRC_CXX_DIR)/main.cpp $(INC_DIR)/config.h $(INC_DIR)/csv.h $(INC_DIR)/data.h $(INC_DIR)/functions.h $(INC_DIR)/initialization.h
+$(BUILD_DIR)/debug.o: $(SRC_CXX_DIR)/debug.cpp $(INC_DIR)/debug.h $(INC_DIR)/data.h
+	$(MKDIR) $(BUILD_DIR)
+	$(CXX) $(ALL_CXXFLAGS) -I$(INC_DIR) -o $@ -c $<
+
+$(BUILD_DIR)/main.o: $(MAIN_O_DEPENDENCIES)
 	$(MKDIR) $(BUILD_DIR)
 	$(CXX) $(ALL_CXXFLAGS) -I$(INC_DIR) -o $@ -c $<
 

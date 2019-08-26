@@ -2,9 +2,9 @@
 #include <fstream>
 #include <string>
 extern "C" {
-  #include "csv.h"
   #include "data.h"
 }
+#include "csv.h"
 
 /**
  * Ensures the output folder exists
