@@ -307,11 +307,12 @@ void test_fix_displacements_one_element() {
   #define size 1
   Particle particles[size] = { { 98.5, 1.5, 2 } };
   Vector velocities[size] = { { 2, -2 } };
-  int n = 100;
+  int n = 200;
+  int m = 100;
 
 
 
-  fix_displacements(size, n, velocities, particles);
+  fix_displacements(size, n, m, velocities, particles);
 
   assert(particles[0].x_coordinate, 98.0d, "test_fix_displacements_one_element - x_coordinate");
   assert(particles[0].y_coordinate, 2.0d, "test_fix_displacements_one_element - y_coordinate");
@@ -327,9 +328,10 @@ void test_fix_displacements_multiple_elements() {
   #define size 3
   Particle particles[size] = { { 98, 2, 2 }, { 95.7, 2.7, 4.5 }, { 10, -30, 50 } };
   Vector velocities[size] = { { 1, 1 }, { 0.015, -0.033 }, { 0.015, 0.03 } };
-  int n = 100;
+  int n = 200;
+  int m = 100;
 
-  fix_displacements(size, n, velocities, particles);
+  fix_displacements(size, n, m, velocities, particles);
 
   Vector expected_velocities[size] = { { 1, 1 }, { 0, 0 }, { 0, 0 } };
   Particle expected[size] = { { 98, 2, 2 }, { 95.5, 4.5, 4.5 }, { 50, 50, 50 } };

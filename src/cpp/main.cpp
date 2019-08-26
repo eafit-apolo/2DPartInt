@@ -38,7 +38,7 @@ void free_all() {
 /**
  * Executes one step of the simulation.
  */
-void simulation_step(const size_t particles_size, const double dt, const int n) {
+void simulation_step(const size_t particles_size, const double dt, const int n, const int m) {
   size_t contacts_size = compute_contacts(particles_size, particles, contacts_buffer);
   compute_forces(dt, particles_size, contacts_size, particles, properties,
                  contacts_buffer, velocities, normal_forces, tangent_forces, forces);
@@ -46,7 +46,7 @@ void simulation_step(const size_t particles_size, const double dt, const int n) 
   compute_velocity(dt, particles_size, accelerations, velocities);
   compute_displacement(dt, particles_size, velocities, displacements);
   displace_particles(particles_size, displacements, particles);
-  fix_displacements(particles_size, n, velocities, particles);
+  fix_displacements(particles_size, n, m, velocities, particles);
 }
 
 /**
@@ -87,7 +87,7 @@ int main(int argc, char *argv[]) {
   // The simulation time and the dt determine the maximum number of steps to execute.
   const unsigned long max_steps = ceil(config->simulation_time / config->dt);
   for (unsigned long step = 1; step <= max_steps; ++step) {
-    simulation_step(num_particles, config->dt, config->n);
+    simulation_step(num_particles, config->dt, config->n, config->m);
     write_simulation_step(num_particles, particles, output_folder, step);
   }
 
