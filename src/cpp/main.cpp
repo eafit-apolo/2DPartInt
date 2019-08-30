@@ -83,13 +83,6 @@ int main(int argc, char *argv[]) {
     return -1;
   }
 
-  #ifdef DEBUG_STEP
-  // Receive simulation step as input.
-  unsigned long debug_step;
-  std::cout << "Enter the simulation step number to debug: ";
-  std::cin >> debug_step;
-  #endif
-
   // Parse the config file.
   Config *config = new Config;
   parse_config(argv[1], config);
@@ -103,6 +96,18 @@ int main(int argc, char *argv[]) {
   // Run the simulation until the max number of steps is reached.
   // The simulation time and the dt determine the maximum number of steps to execute.
   const unsigned long max_steps = ceil(config->simulation_time / config->dt);
+
+#ifdef DEBUG_STEP
+  // Receive simulation step as input.
+  unsigned long debug_step;
+  std::cout << "Enter the simulation step number to debug: ";
+  std::cin >> debug_step;
+  if (debug_step > max_steps) {
+    std::cerr << "The simulation step you provided is too big." << std::endl;
+    return -1;
+  }
+#endif
+
   for (unsigned long step = 1; step <= max_steps; ++step) {
     simulation_step(num_particles, config->dt);
     write_simulation_step(num_particles, particles, output_folder, step);
