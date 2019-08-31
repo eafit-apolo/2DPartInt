@@ -63,7 +63,7 @@ size_t initialize(const Config *config) {
   std::mt19937 generator(config->seed);
   std::uniform_real_distribution<double> uniform_distribution(min_radius, max_radius);
 
-  double current_radius = uniform_distribution(generator);
+  double current_radius = 50; //uniform_distribution(generator);
   double last_radius;
   double x = current_radius;
   double y = current_radius;
@@ -77,7 +77,7 @@ size_t initialize(const Config *config) {
 
     // Variables update
     last_radius = current_radius;
-    current_radius = uniform_distribution(generator);
+    current_radius = 50; //uniform_distribution(generator);
 
     x += (last_radius + current_radius);
     // Check if the x coordinate overpasses the width of the simulation

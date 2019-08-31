@@ -1,8 +1,16 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h> // For memset.
+#include <stdio.h>
 #include "data.h"
 #include "functions.h"
+
+#ifdef DEBUG_STEP
+extern unsigned long step;
+extern unsigned long debug_step;
+extern size_t debug_particle_number;
+size_t current_particle;
+#endif
 
 // tan((30 * PI) / 180).
 #define TAN_30_PI_180 0.5773502691896257
@@ -101,11 +109,36 @@ void collide_two_particles(const double dt, const double distance,
   // Update the normal and tangent forces between p1 and p2 for the next simulation step.
   *previous_normal = Fn_1_2;
   *previous_tangent = Fs_1_2;
+
+#ifdef DEBUG_STEP
+  if (current_particle == debug_particle_number) {
+    if (step == debug_step) {
+      fprintf(stderr, "Normal: x: %f, y: %f\n", normal.x_component, normal.y_component);
+      fprintf(stderr, "velocity_x_diff: %f, velocity_x_diff: %f\n",
+              velocity_x_diff, velocity_y_diff);
+      fprintf(stderr, "normal_velocity: %f, tangent_velocity: %f\n",
+              normal_velocity, tangent_velocity);
+      fprintf(stderr, "dfn: %f, dfs: %f\n", dfn, dfs);
+      fprintf(stderr, "Fn_1_2: %f, Fs_1_2: %f, Fs_1_2_max: %f\n",
+              Fn_1_2, Fs_1_2, Fs_1_2_max);
+      fprintf(stderr, "force_p2->x_component: %f, force_p2->y_component: %f\n",
+              force_p2->x_component, force_p2->y_component);
+      fprintf(stderr, "previous_normal: %f, previous_tangent: %f\n",
+              *previous_normal, *previous_tangent);
+    }
+  }
+#endif
 }
 
 void compute_forces(const double dt, const size_t particles_size, const size_t contacts_size,
                     const Particle *particles, const ParticleProperties *properties, const Contact *contacts,
                     const Vector *velocities, double *normal_forces, double *tangent_forces, Vector *forces) {
+
+#ifdef DEBUG_STEP
+  if (step == debug_step)
+    fprintf(stderr, "\nCOMPUTING FORCES OF PARTICLE %zu\n", debug_particle_number);
+#endif
+
   // Reset forces to zeros.
   memset(forces, 0, sizeof(Vector) * particles_size);
 
@@ -117,6 +150,14 @@ void compute_forces(const double dt, const size_t particles_size, const size_t c
     const Particle *p1 = &particles[p1_idx];
     const Particle *p2 = &particles[p2_idx];
     const double distance = compute_distance(p1, p2);
+
+#ifdef DEBUG_STEP
+    current_particle = p1_idx;
+    if (step == debug_step) {
+      if (debug_particle_number == current_particle)
+        fprintf(stderr, "Colliding %zu with %zu\n", p1_idx, p2_idx);
+    }
+#endif
 
     // P1 collides P2.
     collide_two_particles(
@@ -131,6 +172,12 @@ void compute_forces(const double dt, const size_t particles_size, const size_t c
       &tangent_forces[p2_p1_idx],
       &forces[p2_idx]
     );
+
+#ifdef DEBUG_STEP
+    if (step == debug_step)
+      if (debug_particle_number == current_particle)
+        fprintf(stderr, "Colliding %zu with %zu\n", p2_idx, p1_idx);
+#endif
 
     // P2 collides P1.
     collide_two_particles(
@@ -190,8 +237,13 @@ void displace_particles(const size_t size, const Vector *displacements, Particle
  *       the size of a triangular matrix for the number of particles.
  */
 size_t compute_contacts(const size_t size, const Particle *particles, Contact *contacts_buffer) {
-  size_t k = 0;
 
+#ifdef DEBUG_STEP
+  if (step == debug_step)
+    fprintf(stderr, "\nCOMPUTING CONTACTS WITH PARTICLE %zu\n", debug_particle_number);
+#endif
+
+  size_t k = 0;
   for (size_t i = 0; i < size; ++i) {
     for (size_t j = i + 1; j < size; ++j) {
       const double overlap = compute_overlap(&particles[i], &particles[j]);
@@ -200,6 +252,15 @@ size_t compute_contacts(const size_t size, const Particle *particles, Contact *c
         contacts_buffer[k].p2_idx = j;
         contacts_buffer[k].overlap = overlap;
         ++k;
+
+#ifdef DEBUG_STEP
+        if (step == debug_step) {
+          if (debug_particle_number == i) {
+            fprintf(stderr, "Particle %zu with %zu. Overlap: %f",
+                    i, j, overlap);
+          }
+        }
+#endif
       }
     }
   }

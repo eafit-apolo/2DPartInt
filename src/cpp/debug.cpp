@@ -30,7 +30,6 @@ void write_debug_information(const int step, const size_t num_particles,
   write_values(num_particles, contacts_size, debug_file);
 
   debug_file.close();
-  exit(0); // Do not continue simulating.
 }
 
 void write_header(const int step, std::ofstream &file) {
