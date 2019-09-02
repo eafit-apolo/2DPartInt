@@ -48,9 +48,24 @@ double compute_overlap(const Particle *p1, const Particle *p2) {
  * and computes the resultant acceleration.
  */
 void compute_acceleration(const size_t size, const ParticleProperties *particles, const Vector *forces, Vector *accelerations) {
+#ifdef DEBUG_STEP
+  if (step == debug_step)
+    fprintf(stderr, "\nCOMPUTING ACCELERATIONS OF PARTICLE %zu\n",
+            debug_particle_number);
+#endif
+
   for (size_t i = 0; i < size; ++i) {
     accelerations[i].x_component = forces[i].x_component / particles[i].mass;
     accelerations[i].y_component = forces[i].y_component / particles[i].mass;
+
+#ifdef DEBUG_STEP
+    if (i == debug_particle_number) {
+      if (step == debug_step) {
+        fprintf(stderr, "accel.x_component: %f, accel.y_component: %f\n",
+                accelerations[i].x_component, accelerations[i].y_component);
+      }
+    }
+#endif
   }
 }
 
@@ -202,9 +217,23 @@ void compute_forces(const double dt, const size_t particles_size, const size_t c
  * of an initial velocity with an applied acceleration for given a time delta.
  */
 void compute_velocity(const double dt, const size_t size, const Vector *accelerations, Vector *velocities){
+#ifdef DEBUG_STEP
+  if (step == debug_step)
+    fprintf(stderr, "\nCOMPUTING VELOCITIES OF PARTICLE %zu\n", debug_particle_number);
+#endif
+
   for (size_t i = 0; i < size; ++i) {
     velocities[i].x_component = velocities[i].x_component + accelerations[i].x_component * dt;
     velocities[i].y_component = velocities[i].y_component + accelerations[i].y_component * dt;
+
+#ifdef DEBUG_STEP
+    if (i == debug_particle_number) {
+      if (step == debug_step) {
+        fprintf(stderr, "velocities.x_component: %f, velocities.y_component: %f\n",
+                velocities[i].x_component, velocities[i].y_component);
+      }
+    }
+#endif
   }
 }
 
@@ -213,9 +242,24 @@ void compute_velocity(const double dt, const size_t size, const Vector *accelera
  * with an applied velocity for a given time delta.
  */
 void compute_displacement(const double dt, const size_t size, const Vector *velocities, Vector *displacements) {
+#ifdef DEBUG_STEP
+  if (step == debug_step)
+    fprintf(stderr, "\nCOMPUTING DISPLACEMENTS OF PARTICLE %zu\n",
+            debug_particle_number);
+#endif
+
   for (size_t i = 0; i < size; ++i) {
     displacements[i].x_component = displacements[i].x_component + velocities[i].x_component * dt;
     displacements[i].y_component = displacements[i].y_component + velocities[i].y_component * dt;
+
+#ifdef DEBUG_STEP
+    if (i == debug_particle_number) {
+      if (step == debug_step) {
+        fprintf(stderr, "displacements.x_component: %f, displacements.y_component: %f\n",
+                displacements[i].x_component, displacements[i].y_component);
+      }
+    }
+#endif
   }
 }
 
@@ -223,10 +267,24 @@ void compute_displacement(const double dt, const size_t size, const Vector *velo
  * Displace all particles given their displacements.
  */
 void displace_particles(const size_t size, const Vector *displacements, Particle *particles) {
+#ifdef DEBUG_STEP
+  if (step == debug_step)
+    fprintf(stderr, "\nDISPLACING PARTICLE %zu\n", debug_particle_number);
+#endif
+
   for (size_t i = 0; i < size; ++i) {
     Particle *particle = &particles[i];
     particle->x_coordinate += (displacements[i].x_component * 1000);
     particle->y_coordinate += (displacements[i].y_component * 1000);
+
+#ifdef DEBUG_STEP
+    if (i == debug_particle_number) {
+      if (step == debug_step) {
+        fprintf(stderr, "particle->x_component: %f, particle->y_component: %f\n",
+                particle->x_coordinate, particle->y_coordinate);
+      }
+    }
+#endif
   }
 }
 
@@ -240,7 +298,8 @@ size_t compute_contacts(const size_t size, const Particle *particles, Contact *c
 
 #ifdef DEBUG_STEP
   if (step == debug_step)
-    fprintf(stderr, "\nCOMPUTING CONTACTS WITH PARTICLE %zu\n", debug_particle_number);
+    fprintf(stderr, "\nCOMPUTING CONTACTS WITH PARTICLE %zu\n",
+            debug_particle_number);
 #endif
 
   size_t k = 0;
@@ -256,7 +315,7 @@ size_t compute_contacts(const size_t size, const Particle *particles, Contact *c
 #ifdef DEBUG_STEP
         if (step == debug_step) {
           if (debug_particle_number == i) {
-            fprintf(stderr, "Particle %zu with %zu. Overlap: %f",
+            fprintf(stderr, "Particle %zu with %zu. Overlap: %f\n",
                     i, j, overlap);
           }
         }
