@@ -192,20 +192,20 @@ void fix_displacements(const size_t size,  const int n, const int m, Vector *vel
 
     if(particle->y_coordinate <= n){
         double diff = m - (particle->x_coordinate + particle->radius);
-        if(diff < 0){
-          particle->x_coordinate += diff;
-          velocities[i].x_component = 0;
-        }
+        //if(diff < 0){
+        //  particle->x_coordinate += diff;
+        //  velocities[i].x_component = 0;
+        //}
 
-        diff = particle->x_coordinate - particle->radius;
-        if(diff < 0){
-          particle->x_coordinate -= diff;
-          velocities[i].x_component = 0;
-        }
+        //diff = particle->x_coordinate - particle->radius;
+        //if(diff < 0){
+        //  particle->x_coordinate -= diff;
+        //  velocities[i].x_component = 0;
+        //}
 
         diff = particle->y_coordinate - particle->radius;
         if(diff < 0){
-          particle->y_coordinate -= diff;
+          particle->y_coordinate = particle->radius;
           velocities[i].y_component = 0;
         }
       }
