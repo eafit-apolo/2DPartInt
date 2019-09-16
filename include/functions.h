@@ -38,6 +38,11 @@ void compute_displacement(const double dt, const size_t size, const Vector *velo
 void displace_particles(const size_t size, const Vector *displacements, Particle *particles);
 
 /**
+  * Changes the displacement if the new position would surpass the X or Y limit.
+  */
+void fix_displacements(const size_t size, Vector *velocities, Particle *particles);
+
+/**
  * Computes the contacts between all particles.
  * Returns the number of contacts written on the buffer.
  * Note: The size of the buffer should be equals to

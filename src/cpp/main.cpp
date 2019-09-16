@@ -63,6 +63,7 @@ void simulation_step(const size_t particles_size, const double dt) {
   compute_velocity(dt, particles_size, accelerations, velocities);
   compute_displacement(dt, particles_size, velocities, displacements);
   displace_particles(particles_size, displacements, particles);
+  fix_displacements(particles_size, velocities, particles);
 }
 
 /**

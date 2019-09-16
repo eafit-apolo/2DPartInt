@@ -1,4 +1,5 @@
-#include <random>
+#include <cstddef>
+#include <cmath>
 extern "C" {
   #include "functions.h"
   #include "data.h"
@@ -24,9 +25,10 @@ extern Vector *displacements;
 /**
  * Computes the mass of a particle, given its radius.
  */
-double compute_mass(const Config *config, const double radius) {
-  return config->rho * config->thickness * M_PI * radius * radius;
+double compute_mass(const Config *config) {
+  return config->rho * config->thickness * M_PI * config->radius * config->radius;
 }
+
 
 /**
  * Initialize all simulation data structures,
@@ -37,14 +39,17 @@ double compute_mass(const Config *config, const double radius) {
  * all structures are effectively initialized with zeros.
  */
 size_t initialize(const Config *config) {
-  const double min_radius = 10.0d;
-  const double max_radius = 50.0d;
-  const double diameter = 2 * max_radius;
+  const double diameter = 2 * config->radius;
+  const double mass = compute_mass(config);
 
-  // The number of particles is equals to the simulation size,
-  // divided by the size of each particle,
+  // Maximum of particles on each limit
+  const unsigned int max_in_x = floor(config->x_limit / diameter);
+  const unsigned int max_in_y = floor(config->y_limit / diameter);
+
+  // The number of particles is equal to the product
+  // of the particles that can fill each dimension,
   // plus the falling particle (the first one).
-  const size_t num_particles = floor((config->m * config->n) / (diameter * diameter)) +  1;
+  const size_t num_particles = (max_in_x * max_in_y) +  1;
 
   // Allocate the memory for all the data structures.
   particles = (Particle*) calloc(num_particles, sizeof(Particle));
@@ -58,42 +63,32 @@ size_t initialize(const Config *config) {
   displacements = (Vector*) calloc(num_particles, sizeof(Vector));
 
   // Initialize the particles.
-
-  // Particles radius generator in millimeters.
-  std::mt19937 generator(config->seed);
-  std::uniform_real_distribution<double> uniform_distribution(min_radius, max_radius);
-
-  double current_radius = 50; //uniform_distribution(generator);
-  double last_radius;
-  double x = current_radius;
-  double y = current_radius;
+  double x = config->radius;
+  double y = config->radius;
   for (size_t i = 1; i < num_particles; ++i) {
     particles[i].x_coordinate = x;
     particles[i].y_coordinate = y;
-    particles[i].radius = current_radius;
-    properties[i].mass = compute_mass(config, current_radius);
+    particles[i].radius = config->radius;
+    properties[i].mass = mass;
     properties[i].kn = config->kn;
     properties[i].ks = config->ks;
 
-    // Variables update
-    last_radius = current_radius;
-    current_radius = 50; //uniform_distribution(generator);
-
-    x += (last_radius + current_radius);
-    // Check if the x coordinate overpasses the width of the simulation
-    if ((x + max_radius) > config->m) {
-      // If it does, reset it
-      x = current_radius;
+    // Check if this particle is the last one for this row...
+    if ((i % max_in_x) == 0) {
+      // If it is, reset the x value and increment y.
+      x = config->radius;
       y += diameter;
+    } else {
+      // If not, increment the x value.
+      x += diameter;
     }
-
   }
 
   // Initialize the falling particle.
-  particles[0].radius = config->r0;
-  particles[0].x_coordinate = config->m / 2;
-  particles[0].y_coordinate = config->n + (max_radius * 2);
-  properties[0].mass = compute_mass(config, config->r0);
+  particles[0].x_coordinate = config->x_limit / 2;
+  particles[0].y_coordinate = config->y_limit + (4 * config->radius);
+  particles[0].radius = config->radius;
+  properties[0].mass = mass;
   properties[0].kn = config->kn;
   properties[0].ks = config->ks;
   velocities[0].y_component = config->v0;
