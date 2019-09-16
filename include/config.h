@@ -6,8 +6,8 @@
 typedef struct {
   int simulation_time;
   double dt;
-  int x_limit; // Size in X.
-  int y_limit; // Size in Y.
+  int x_limit;
+  int y_limit;
   int radius;
   double kn;
   double ks;
