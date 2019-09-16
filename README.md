@@ -29,7 +29,7 @@ Execute the program passing the `simulation_config.txt` file & the output folder
 $ ./bin/2DPartInt simulation_config.txt out/
 ```
 
-## Simulartion Config File.
+## Simulation Config File.
 
 The behaviour of the simulation is determined by the config file.
 
@@ -39,9 +39,9 @@ _(All settings are mandatory, but they can be in any order)_
 ```
 time=[Int] # Total time to simulate, in seconds.
 dt=[Double] # Size of the time window used for each step.
-n=[Int] # Simulation size in Y.
-m=[Int] # Simulation size in X.
-seed=[Int] # Radius random generator seed.
+x_limit=[Int] # Simulation size in Y.
+y_limit=[Int] # Simulation size in X.
+radius=[Int] # Radius of each particle.
 kn=[Double] # Normal rigidity of the material.
 ks=[Double] # Tangential rigidity of the material.
 rho=[Double] # Density of the material.
