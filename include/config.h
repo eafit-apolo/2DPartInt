@@ -6,9 +6,9 @@
 typedef struct {
   int simulation_time;
   double dt;
-  int m; // Size in X.
-  int n; // Size in Y.
-  int seed; // Random generator seed.
+  int x_limit; // Size in X.
+  int y_limit; // Size in Y.
+  int radius;
   double kn;
   double ks;
   double rho;
