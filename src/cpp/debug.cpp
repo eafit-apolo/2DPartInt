@@ -16,7 +16,7 @@ extern Vector *accelerations;
 extern Vector *velocities;
 extern Vector *displacements;
 
-void write_debug_information(const int step, const size_t num_particles,
+void write_debug_information(const int step, const size_t particle_index,
                              const size_t contacts_size, const char *debug_folder) {
 
   std::ofstream debug_file(std::string(debug_folder) + "/"
@@ -27,7 +27,7 @@ void write_debug_information(const int step, const size_t num_particles,
   write_header(step, debug_file);
 
   // Write data structures content.
-  write_values(num_particles, contacts_size, debug_file);
+  write_values(particle_index, contacts_size, debug_file);
 
   debug_file.close();
   exit(0); // Do not continue simulating.
@@ -65,54 +65,51 @@ void write_header(const int step, std::ofstream &file) {
        << std::setw(column_width) << "disp_y\n";
 }
 
-void write_values(const size_t num_particles, const size_t contacts_size,
-                  std::ofstream &file) {
+void write_values(const size_t particle_index, const size_t contacts_size, std::ofstream &file) {
   int column_width = 11;
   const int precision = 4;
-  for (size_t i = 0; i < num_particles; ++i) {
-    file << std::setw(column_width) << std::setprecision(precision)
-         << particles[i].x_coordinate
-         << std::setw(column_width) << std::setprecision(precision)
-         << particles[i].y_coordinate;
-    column_width = 7;
-    file<< std::setw(column_width) << std::setprecision(precision)
-        << particles[i].radius;
-    column_width = 11;
-      // Properties information.
-    file << std::setw(column_width) << std::setprecision(precision)
-         << properties[i].mass
-         << std::setw(column_width) << std::setprecision(precision)
-         << properties[i].kn
-         << std::setw(column_width) << std::setprecision(precision)
-         << properties[i].ks;
-      // Normal and tanget forces.
-    column_width = 8;
-    file << std::setw(column_width) << std::setprecision(precision)
-         << normal_forces[i]
-         << std::setw(column_width) << std::setprecision(precision)
-         << tangent_forces[i];
-    column_width = 11;
-      // Forces.
-    file<< std::setw(column_width) << std::setprecision(precision)
-         << forces[i].x_component
-         << std::setw(column_width) << std::setprecision(precision)
-         << forces[i].y_component
-      // Accelerations.
-         << std::setw(column_width) << std::setprecision(precision)
-         << accelerations[i].x_component
-         << std::setw(column_width) << std::setprecision(precision)
-         << accelerations[i].y_component
-      // Velocities.
-         << std::setw(column_width) << std::setprecision(precision)
-         << velocities[i].x_component
-         << std::setw(column_width) << std::setprecision(precision)
-         << velocities[i].y_component
-      // Displacements.
-         << std::setw(column_width) << std::setprecision(precision)
-         << displacements[i].x_component
-         << std::setw(column_width) << std::setprecision(precision)
-         << displacements[i].y_component << "\n";
-  }
+  file << std::setw(column_width) << std::setprecision(precision)
+       << particles[particle_index].x_coordinate
+       << std::setw(column_width) << std::setprecision(precision)
+       << particles[particle_index].y_coordinate;
+  column_width = 7;
+  file<< std::setw(column_width) << std::setprecision(precision)
+      << particles[particle_index].radius;
+  column_width = 11;
+  // Properties information.
+  file << std::setw(column_width) << std::setprecision(precision)
+       << properties[particle_index].mass
+       << std::setw(column_width) << std::setprecision(precision)
+       << properties[particle_index].kn
+       << std::setw(column_width) << std::setprecision(precision)
+       << properties[particle_index].ks;
+  // Normal and tanget forces.
+  column_width = 8;
+  file << std::setw(column_width) << std::setprecision(precision)
+       << normal_forces[particle_index]
+       << std::setw(column_width) << std::setprecision(precision)
+       << tangent_forces[particle_index];
+  column_width = 11;
+  // Forces.
+  file<< std::setw(column_width) << std::setprecision(precision)
+      << forces[particle_index].x_component
+      << std::setw(column_width) << std::setprecision(precision)
+      << forces[particle_index].y_component
+    // Accelerations.
+      << std::setw(column_width) << std::setprecision(precision)
+      << accelerations[particle_index].x_component
+      << std::setw(column_width) << std::setprecision(precision)
+      << accelerations[particle_index].y_component
+    // Velocities.
+      << std::setw(column_width) << std::setprecision(precision)
+      << velocities[particle_index].x_component
+      << std::setw(column_width) << std::setprecision(precision)
+      << velocities[particle_index].y_component
+    // Displacements.
+      << std::setw(column_width) << std::setprecision(precision)
+      << displacements[particle_index].x_component
+      << std::setw(column_width) << std::setprecision(precision)
+      << displacements[particle_index].y_component << "\n";
 
   // Write contacts data.
   file << "\nCONTACTS\n"

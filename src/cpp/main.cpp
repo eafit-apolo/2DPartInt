@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <cmath>
+#include <cstring>
 #include <iostream>
 extern "C" {
   #include "functions.h"
@@ -12,7 +13,8 @@ extern "C" {
 #ifdef DEBUG_STEP
 #include "debug.h"
 // Useful to keep track of the contacts buffer size.
-size_t debug_contacts_size;
+size_t current_contacts_size;
+size_t current_particle_index;
 #endif
 
 // Simulation data structures.
@@ -45,19 +47,28 @@ void free_all() {
  * Executes one step of the simulation.
  */
 void simulation_step(const size_t particles_size, const double dt) {
-  size_t contacts_size = compute_contacts(particles_size, particles, contacts_buffer);
 
-  #ifdef DEBUG_STEP
-  debug_contacts_size = contacts_size;
-  #endif
+  // Reset forces to zeros.
+  memset(forces, 0, sizeof(Vector) * particles_size);
 
-  compute_forces(dt, particles_size, contacts_size, particles, properties,
-                 contacts_buffer, velocities, normal_forces, tangent_forces, forces);
-  compute_acceleration(particles_size, properties, forces, accelerations);
-  compute_velocity(dt, particles_size, accelerations, velocities);
-  compute_displacement(dt, particles_size, velocities, displacements);
-  displace_particles(particles_size, displacements, particles);
-  fix_displacements(particles_size, velocities, particles);
+  for (size_t part = 0; part < particles_size; ++part) {
+    size_t contacts_size = compute_contacts(particles_size, particles, part, contacts_buffer);
+
+    compute_forces(dt, particles_size, part, contacts_size, particles, properties,
+                   contacts_buffer, velocities, normal_forces, tangent_forces, forces);
+    compute_acceleration(part, properties, forces, accelerations);
+    compute_velocity(dt, part, accelerations, velocities);
+    compute_displacement(dt, part, velocities, displacements);
+    displace_particle(part, displacements, particles);
+    fix_displacement(part, velocities, particles);
+
+#ifdef DEBUG_STEP
+    current_contacts_size = contacts_size;
+
+    // PROBLEM WITH THIS, always printig 300
+    current_particle_index = part;
+#endif
+  }
 }
 
 /**
@@ -101,12 +112,15 @@ int main(int argc, char *argv[]) {
 #ifdef DEBUG_STEP
   // Receive simulation step as input.
   unsigned long debug_step;
+  size_t debug_particle_index;
   std::cout << "Enter the simulation step number to debug: ";
   std::cin >> debug_step;
   if (debug_step > max_steps) {
     std::cerr << "The simulation step you provided is too big." << std::endl;
     return -1;
   }
+  std::cout << "Enter the particle number to debug: ";
+  std::cin >> debug_particle_index;
 #endif
 
   for (unsigned long step = 1; step <= max_steps; ++step) {
@@ -115,7 +129,8 @@ int main(int argc, char *argv[]) {
 
     // Write current system state to files.
 #ifdef DEBUG_STEP // Start of debug.
-    if (step == debug_step) {
+    std::cout << "Crr: " << current_particle_index << " dbg " << debug_particle_index << "\n";
+    if (step == debug_step && current_particle_index == debug_particle_index) {
       const char *debug_folder = "./debug";
       if (ensure_output_folder(debug_folder) != 0) {
         std::cerr << "The debug output folder does not exists, "
@@ -125,7 +140,7 @@ int main(int argc, char *argv[]) {
         return -1;
       }
 
-      write_debug_information(step, num_particles, debug_contacts_size,
+      write_debug_information(step, current_particle_index, current_contacts_size,
                               debug_folder);
     }
 #endif // End of debug.
