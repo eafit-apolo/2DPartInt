@@ -22,17 +22,24 @@ MKDIR               = mkdir -p
 ###############################################################################
 # Main program compilation
 
-# If compile in debug mode.
+# If compilation in debug mode.
 ifdef DEBUG_STEP
+
 CXXFLAGS	    = -DDEBUG_STEP
 COMMON_FLAGS	    = -g -Wall -Wextra -Werror
 OBJECT_FILES	    = $(BUILD_DIR)/config.o $(BUILD_DIR)/csv.o $(BUILD_DIR)/functions.o $(BUILD_DIR)/initialization.o $(BUILD_DIR)/main.o $(BUILD_DIR)/debug.o
-# main.o dependences.
 MAIN_O_DEPENDENCIES = $(SRC_CXX_DIR)/main.cpp $(INC_DIR)/config.h $(INC_DIR)/csv.h $(INC_DIR)/data.h $(INC_DIR)/functions.h $(INC_DIR)/initialization.h $(INC_DIR)/debug.h
+
 else
+
 OBJECT_FILES        = $(BUILD_DIR)/config.o $(BUILD_DIR)/csv.o $(BUILD_DIR)/functions.o $(BUILD_DIR)/initialization.o $(BUILD_DIR)/main.o
-# main.o dependences.
 MAIN_O_DEPENDENCIES = $(SRC_CXX_DIR)/main.cpp $(INC_DIR)/config.h $(INC_DIR)/csv.h $(INC_DIR)/data.h $(INC_DIR)/functions.h $(INC_DIR)/initialization.h
+
+endif
+
+# If compilation in profiling mode.
+ifdef PROFILING
+LDFLAGS		    = -lm -lprofiler
 endif
 
 .DEFAULT_GOAL := all

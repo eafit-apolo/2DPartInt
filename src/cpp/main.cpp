@@ -12,9 +12,12 @@ extern "C" {
 
 #ifdef DEBUG_STEP
 #include "debug.h"
-// Useful to keep track of the contacts buffer size.
-size_t current_contacts_size;
-size_t current_particle_index;
+// Useful to keep track of the current simulation step.
+size_t current_step;
+
+// Step and particle to debug given by the user.
+unsigned long step_to_debug;
+size_t particle_to_debug;
 #endif
 
 // Simulation data structures.
@@ -63,10 +66,19 @@ void simulation_step(const size_t particles_size, const double dt) {
     fix_displacement(part, velocities, particles);
 
 #ifdef DEBUG_STEP
-    current_contacts_size = contacts_size;
+    if (current_step == step_to_debug && part == particle_to_debug) {
+      const char *debug_folder = "./debug";
+      if (ensure_output_folder(debug_folder) != 0) {
+        std::cerr << "The debug output folder does not exists, "
+                  << "and could not be created: "
+                  << debug_folder
+                  << std::endl;
+        exit(-1);
+      }
 
-    // PROBLEM WITH THIS, always printig 300
-    current_particle_index = part;
+      write_debug_information(step_to_debug, particle_to_debug,
+                              contacts_size, debug_folder);
+    }
 #endif
   }
 }
@@ -111,39 +123,29 @@ int main(int argc, char *argv[]) {
 
 #ifdef DEBUG_STEP
   // Receive simulation step as input.
-  unsigned long debug_step;
-  size_t debug_particle_index;
   std::cout << "Enter the simulation step number to debug: ";
-  std::cin >> debug_step;
-  if (debug_step > max_steps) {
-    std::cerr << "The simulation step you provided is too big." << std::endl;
+  std::cin >> step_to_debug;
+  if (step_to_debug > max_steps) {
+    std::cerr << "The simulation step you provided," << step_to_debug
+              << ", won't be executed." << std::endl;
     return -1;
   }
   std::cout << "Enter the particle number to debug: ";
-  std::cin >> debug_particle_index;
+  std::cin >> particle_to_debug;
+  if (particle_to_debug > num_particles) {
+    std::cerr << "The particle index you provided, " << particle_to_debug
+              << ", doesn't exist." << std::endl;
+    return -1;
+  }
 #endif
 
   for (unsigned long step = 1; step <= max_steps; ++step) {
+#ifdef DEBUG_STEP
+    current_step = step;
+#endif
+
     simulation_step(num_particles, config->dt);
     write_simulation_step(num_particles, particles, output_folder, step);
-
-    // Write current system state to files.
-#ifdef DEBUG_STEP // Start of debug.
-    std::cout << "Crr: " << current_particle_index << " dbg " << debug_particle_index << "\n";
-    if (step == debug_step && current_particle_index == debug_particle_index) {
-      const char *debug_folder = "./debug";
-      if (ensure_output_folder(debug_folder) != 0) {
-        std::cerr << "The debug output folder does not exists, "
-                  << "and could not be created: "
-                  << debug_folder
-                  << std::endl;
-        return -1;
-      }
-
-      write_debug_information(step, current_particle_index, current_contacts_size,
-                              debug_folder);
-    }
-#endif // End of debug.
   }
 
   // Free all memory resources and exit.

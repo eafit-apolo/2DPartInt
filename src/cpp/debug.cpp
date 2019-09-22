@@ -16,15 +16,16 @@ extern Vector *accelerations;
 extern Vector *velocities;
 extern Vector *displacements;
 
-void write_debug_information(const int step, const size_t particle_index,
+void write_debug_information(const unsigned long step, const size_t particle_index,
                              const size_t contacts_size, const char *debug_folder) {
 
-  std::ofstream debug_file(std::string(debug_folder) + "/"
-                           + "step_" + std::to_string(step),
+  std::ofstream debug_file(std::string(debug_folder) + "/" +
+                           "step_" + std::to_string(step) +
+                           "_part_" + std::to_string(particle_index),
                       std::ios::out | std::ios::trunc);
 
   // Write the header file. That is, columns for each data structure.
-  write_header(step, debug_file);
+  write_header(step, particle_index, debug_file);
 
   // Write data structures content.
   write_values(particle_index, contacts_size, debug_file);
@@ -33,8 +34,10 @@ void write_debug_information(const int step, const size_t particle_index,
   exit(0); // Do not continue simulating.
 }
 
-void write_header(const int step, std::ofstream &file) {
-  file << "SIMULATION STEP: " << step << "\n";
+void write_header(const unsigned long step, const size_t particle_index,
+                  std::ofstream &file) {
+  file << "SIMULATION STEP: " << step
+       << " PARTICLE: " << particle_index << "\n";
   int column_width = 11;
   // Particles data structure.
   file << std::setw(column_width) << "x_coor"
