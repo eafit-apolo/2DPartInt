@@ -29,12 +29,12 @@ void parse_config(const char *filename, Config *config) {
           config->simulation_time = std::stoi(value);
         } else if (key == "dt") {
           config->dt = std::stod(value);
-        } else if (key == "n") {
-          config->n = std::stoi(value);
-        } else if (key == "m") {
-          config->m = std::stoi(value);
-        } else if (key == "seed") {
-          config->seed = std::stoi(value);
+        } else if (key == "y_limit") {
+          config->y_limit = std::stoi(value);
+        } else if (key == "x_limit") {
+          config->x_limit = std::stoi(value);
+        } else if (key == "radius") {
+          config->radius = std::stoi(value);
         } else if (key == "kn") {
           config->kn = std::stod(value);
         } else if (key == "ks") {
