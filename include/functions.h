@@ -15,8 +15,9 @@ double compute_overlap(const Particle *p1, const Particle *p2);
 /**
  * Applies gravity to a particle.
  */
-void apply_gravity(const ParticleProperties *particles_properties,
-                   const size_t particle_index, Vector *forces);
+void apply_gravity(const size_t size,
+                   const ParticleProperties *particles_properties,
+                   Vector *forces);
 
 /**
  * Returns the size of a triangular matrix, without the diagonal.
@@ -26,7 +27,7 @@ size_t size_triangular_matrix(const size_t n);
 /**
  * Computes the forces applied to each particle.
  */
-void compute_forces(const double dt, const size_t particles_size, const size_t particle_index,
+void compute_forces(const double dt, const size_t particles_size,
                     const size_t contacts_size, const Particle *particles,
                     const ParticleProperties *properties, const Contact *contacts,
                     const Vector *velocities, double *normal_forces,
@@ -69,5 +70,5 @@ void fix_displacement(const size_t particle_index, Vector *velocities, Particle 
  * Computes the contacts between one particle and the particles with greater index.
  * Returns the number of contacts written on the buffer.
  */
-size_t compute_contacts(const size_t size, const Particle *particles, const size_t particle_index,
+size_t compute_contacts(const size_t size, const Particle *particles,
                         Contact *contacts_buffer);

@@ -84,7 +84,7 @@ void test_compute_forces_one_contact() {
   Contact contacts[contacts_size] = { { 0, 1, 42.9554 } };
   Vector resultant_forces[size] = { { 0 } };
 
-  compute_forces(dt, size, 0, contacts_size, particles, properties, contacts,
+  compute_forces(dt, size, contacts_size, particles, properties, contacts,
                  velocities, normal_forces, tangent_forces, resultant_forces);
 
   // P1.
@@ -160,7 +160,7 @@ void test_compute_forces_multiple_contacts() {
   };
   Vector resultant_forces[size] = { { 0 } };
 
-  compute_forces(dt, size, 1, contacts_size, particles, properties, contacts,
+  compute_forces(dt, size, contacts_size, particles, properties, contacts,
                  velocities, normal_forces, tangent_forces, resultant_forces);
 
   // P2.

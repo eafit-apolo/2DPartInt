@@ -51,9 +51,12 @@ inline void compute_acceleration(const size_t particle_index,
 /**
  * Apply gravity to a vector of forces.
  */
-inline void apply_gravity(const ParticleProperties *particles_properties,
-                          const size_t particle_index, Vector *forces) {
-  forces[particle_index].y_component -= (particles_properties[particle_index].mass * 9.81d);
+inline void apply_gravity(const size_t size,
+                          const ParticleProperties *particles_properties,
+                          Vector *forces) {
+  for (size_t i = 0; i < size; ++i) {
+    forces[i].y_component -= (particles_properties[i].mass * 9.81d);
+  }
 }
 
 /**
@@ -104,7 +107,7 @@ void collide_two_particles(const double dt, const double distance,
   *previous_tangent = Fs_1_2;
 }
 
-inline void compute_forces(const double dt, const size_t particles_size, const size_t particle_index,
+inline void compute_forces(const double dt, const size_t particles_size,
                            const size_t contacts_size, const Particle *particles,
                            const ParticleProperties *properties, const Contact *contacts,
                            const Vector *velocities, double *normal_forces,
@@ -148,7 +151,7 @@ inline void compute_forces(const double dt, const size_t particles_size, const s
                           );
   }
 
-  apply_gravity(properties, particle_index, forces);
+  apply_gravity(particles_size, properties, forces);
 }
 
 /**
@@ -202,17 +205,19 @@ inline void fix_displacement(const size_t particle_index, Vector *velocities, Pa
  * Computes the contacts between one particle and the particles with greater index.
  * Returns the number of contacts written on the buffer.
  */
-size_t compute_contacts(const size_t size, const Particle *particles, const size_t particle_index,
+size_t compute_contacts(const size_t size, const Particle *particles,
                         Contact *contacts_buffer) {
   size_t k = 0;
 
-  for (size_t j = particle_index + 1; j < size; ++j) {
-    const double overlap = compute_overlap(&particles[particle_index], &particles[j]);
-    if (overlap > 0) {
-      contacts_buffer[k].p1_idx = particle_index;
-      contacts_buffer[k].p2_idx = j;
-      contacts_buffer[k].overlap = overlap;
-      ++k;
+  for (size_t i = 0; i < size; ++i) {
+    for (size_t j = i + 1; j < size; ++j) {
+      const double overlap = compute_overlap(&particles[i], &particles[j]);
+      if (overlap > 0) {
+        contacts_buffer[k].p1_idx = i;
+        contacts_buffer[k].p2_idx = j;
+        contacts_buffer[k].overlap = overlap;
+        ++k;
+      }
     }
   }
 

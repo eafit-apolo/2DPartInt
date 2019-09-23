@@ -54,11 +54,11 @@ void simulation_step(const size_t particles_size, const double dt) {
   // Reset forces to zeros.
   memset(forces, 0, sizeof(Vector) * particles_size);
 
-  for (size_t part = 0; part < particles_size; ++part) {
-    size_t contacts_size = compute_contacts(particles_size, particles, part, contacts_buffer);
+  size_t contacts_size = compute_contacts(particles_size, particles, contacts_buffer);
+  compute_forces(dt, particles_size, contacts_size, particles, properties,
+                 contacts_buffer, velocities, normal_forces, tangent_forces, forces);
 
-    compute_forces(dt, particles_size, part, contacts_size, particles, properties,
-                   contacts_buffer, velocities, normal_forces, tangent_forces, forces);
+  for (size_t part = 0; part < particles_size; ++part) {
     compute_acceleration(part, properties, forces, accelerations);
     compute_velocity(dt, part, accelerations, velocities);
     compute_displacement(dt, part, velocities, displacements);
