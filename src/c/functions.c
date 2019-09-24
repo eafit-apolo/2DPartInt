@@ -124,31 +124,31 @@ inline void compute_forces(const double dt, const size_t particles_size,
 
     // P1 collides P2.
     collide_two_particles(
-                          dt,
-                          distance,
-                          p1,
-                          p2,
-                          &velocities[p1_idx],
-                          &velocities[p2_idx],
-                          &properties[p2_idx],
-                          &normal_forces[p2_p1_idx],
-                          &tangent_forces[p2_p1_idx],
-                          &forces[p2_idx]
-                          );
+      dt,
+      distance,
+      p1,
+      p2,
+      &velocities[p1_idx],
+      &velocities[p2_idx],
+      &properties[p2_idx],
+      &normal_forces[p2_p1_idx],
+      &tangent_forces[p2_p1_idx],
+      &forces[p2_idx]
+    );
 
     // P2 collides P1.
     collide_two_particles(
-                          dt,
-                          distance,
-                          p2,
-                          p1,
-                          &velocities[p2_idx],
-                          &velocities[p1_idx],
-                          &properties[p1_idx],
-                          &normal_forces[p1_p2_idx],
-                          &tangent_forces[p1_p2_idx],
-                          &forces[p1_idx]
-                          );
+      dt,
+      distance,
+      p2,
+      p1,
+      &velocities[p2_idx],
+      &velocities[p1_idx],
+      &properties[p1_idx],
+      &normal_forces[p1_p2_idx],
+      &tangent_forces[p1_p2_idx],
+      &forces[p1_idx]
+    );
   }
 
   apply_gravity(particles_size, properties, forces);
@@ -183,20 +183,18 @@ inline void compute_displacement(const double dt, const size_t particle_index,
  */
 inline void displace_particle(const size_t particle_index, const Vector *displacements,
                               Particle *particles) {
-  Particle *particle = &particles[particle_index];
-  particle->x_coordinate += (displacements[particle_index].x_component * 1000);
-  particle->y_coordinate += (displacements[particle_index].y_component * 1000);
+  particles[particle_index].x_coordinate += (displacements[particle_index].x_component * 1000);
+  particles[particle_index].y_coordinate += (displacements[particle_index].y_component * 1000);
 }
 
 /**
   * Changes the displacement if the new position would surpass the Y limit.
   */
 inline void fix_displacement(const size_t particle_index, Vector *velocities, Particle *particles) {
-  Particle *particle = &particles[particle_index];
 
-  double diff = particle->y_coordinate - particle->radius;
+  double diff = particles[particle_index].y_coordinate - particles[particle_index].radius;
   if (diff < 0) {
-    particle->y_coordinate = particle->radius;
+    particles[particle_index].y_coordinate = particles[particle_index].radius;
     velocities[particle_index].y_component = 0;
   }
 }

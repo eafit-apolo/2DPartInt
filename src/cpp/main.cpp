@@ -13,7 +13,7 @@ extern "C" {
 #ifdef DEBUG_STEP
 #include "debug.h"
 // Useful to keep track of the current simulation step.
-size_t current_step;
+unsigned long current_step;
 
 // Step and particle to debug given by the user.
 unsigned long step_to_debug;

@@ -12,7 +12,9 @@ CC                  = gcc
 CXX                 = g++
 CFLAGS              =
 CXXFLAGS	    =
-COMMON_FLAGS        = -O3 -Wall -Wextra -Werror
+BASE_FLAGS	    = -Wall -Wextra -Werror
+EXTRA_FLAGS	    =
+COMMON_FLAGS        = $(EXTRA_FLAGS) $(BASE_FLAGS)
 ALL_CFLAGS          = -std=c11 $(COMMON_FLAGS) $(CFLAGS)
 ALL_CXXFLAGS        = -std=c++11 $(COMMON_FLAGS) $(CXXFLAGS)
 LDFLAGS             = -lm
@@ -26,12 +28,13 @@ MKDIR               = mkdir -p
 ifdef DEBUG_STEP
 
 CXXFLAGS	    = -DDEBUG_STEP
-COMMON_FLAGS	    = -g -Wall -Wextra -Werror
+EXTRA_FLAGS	    = -g
 OBJECT_FILES	    = $(BUILD_DIR)/config.o $(BUILD_DIR)/csv.o $(BUILD_DIR)/functions.o $(BUILD_DIR)/initialization.o $(BUILD_DIR)/main.o $(BUILD_DIR)/debug.o
 MAIN_O_DEPENDENCIES = $(SRC_CXX_DIR)/main.cpp $(INC_DIR)/config.h $(INC_DIR)/csv.h $(INC_DIR)/data.h $(INC_DIR)/functions.h $(INC_DIR)/initialization.h $(INC_DIR)/debug.h
 
 else
 
+EXTRA_FLAGS	    = -O3
 OBJECT_FILES        = $(BUILD_DIR)/config.o $(BUILD_DIR)/csv.o $(BUILD_DIR)/functions.o $(BUILD_DIR)/initialization.o $(BUILD_DIR)/main.o
 MAIN_O_DEPENDENCIES = $(SRC_CXX_DIR)/main.cpp $(INC_DIR)/config.h $(INC_DIR)/csv.h $(INC_DIR)/data.h $(INC_DIR)/functions.h $(INC_DIR)/initialization.h
 

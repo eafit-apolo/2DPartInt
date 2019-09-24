@@ -67,8 +67,10 @@ void displace_particle(const size_t particle_index, const Vector *displacements,
 void fix_displacement(const size_t particle_index, Vector *velocities, Particle *particles);
 
 /**
- * Computes the contacts between one particle and the particles with greater index.
+ * Computes the contacts between all particles.
  * Returns the number of contacts written on the buffer.
+ * Note: The size of the buffer should be equals to
+ *       the size of a triangular matrix for the number of particles.
  */
 size_t compute_contacts(const size_t size, const Particle *particles,
                         Contact *contacts_buffer);
