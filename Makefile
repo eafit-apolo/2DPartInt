@@ -1,48 +1,48 @@
 ###############################################################################
 # Global variables
 
-PROGRAM_NAME			= 2DpartInt
-SRC_C_DIR			= src/c
-SRC_CXX_DIR			= src/cpp
-BIN_DIR				= bin
-BUILD_DIR			= build
-INC_DIR				= include
-TEST_DIR			= test
-CC				= gcc
-CXX				= g++
-CFLAGS				=
-CXXFLAGS			=
-BASE_FLAGS			= -Wall -Wextra -Werror
-EXTRA_FLAGS			=
+PROGRAM_NAME				= 2DpartInt
+SRC_C_DIR					= src/c
+SRC_CXX_DIR					= src/cpp
+BIN_DIR						= bin
+BUILD_DIR					= build
+INC_DIR						= include
+TEST_DIR					= test
+CC							= gcc
+CXX							= g++
+CFLAGS						=
+CXXFLAGS					=
+BASE_FLAGS					= -Wall -Wextra -Werror
+EXTRA_FLAGS					=
 COMMON_FLAGS        		= $(EXTRA_FLAGS) $(BASE_FLAGS)
-ALL_CFLAGS			= -std=c11 $(COMMON_FLAGS) $(CFLAGS)
-ALL_CXXFLAGS			= -std=c++11 $(COMMON_FLAGS) $(CXXFLAGS)
-EXTRA_LDFLAGS			=
-LDFLAGS				= -lm $(EXTRA_LDFLAGS)
-RM				= rm -rf
-MKDIR				= mkdir -p
+ALL_CFLAGS					= -std=c11 $(COMMON_FLAGS) $(CFLAGS)
+ALL_CXXFLAGS				= -std=c++11 $(COMMON_FLAGS) $(CXXFLAGS)
+EXTRA_LDFLAGS				=
+LDFLAGS						= -lm $(EXTRA_LDFLAGS)
+RM							= rm -rf
+MKDIR						= mkdir -p
 
-COMMON_OBJECT_FILES		= $(BUILD_DIR)/config.o $(BUILD_DIR)/csv.o $(BUILD_DIR)/functions.o $(BUILD_DIR)/initialization.o $(BUILD_DIR)/main.o
-EXTRA_OBJECT_FILES		=
-OBJECT_FILES			= $(COMMON_OBJECT_FILES) $(EXTRA_OBJECT_FILES)
+COMMON_OBJECT_FILES			= $(BUILD_DIR)/config.o $(BUILD_DIR)/csv.o $(BUILD_DIR)/functions.o $(BUILD_DIR)/initialization.o $(BUILD_DIR)/main.o
+EXTRA_OBJECT_FILES			=
+OBJECT_FILES				= $(COMMON_OBJECT_FILES) $(EXTRA_OBJECT_FILES)
 
 COMMON_MAIN_DEPENDENCIES	= $(SRC_CXX_DIR)/main.cpp $(INC_DIR)/config.h $(INC_DIR)/csv.h $(INC_DIR)/data.h $(INC_DIR)/functions.h $(INC_DIR)/initialization.h
 EXTRA_MAIN_DEPENDENCIES		=
-MAIN_O_DEPENDENCIES		= $(COMMON_MAIN_DEPENDENCIES) $(EXTRA_MAIN_DEPENDENCIES)
+MAIN_O_DEPENDENCIES			= $(COMMON_MAIN_DEPENDENCIES) $(EXTRA_MAIN_DEPENDENCIES)
 
 # If compilation in debug mode.
 ifdef DEBUG_STEP
-CXXFLAGS			= -DDEBUG_STEP
-EXTRA_FLAGS			= -g
-EXTRA_OBJECT_FILES		= $(BUILD_DIR)/debug.o
+CXXFLAGS					= -DDEBUG_STEP
+EXTRA_FLAGS					= -g
+EXTRA_OBJECT_FILES			= $(BUILD_DIR)/debug.o
 EXTRA_MAIN_DEPENDENCIES		= $(INC_DIR)/debug.h
 else
-EXTRA_FLAGS			= -O3
+EXTRA_FLAGS					= -O3
 endif
 
 # If compilation in profiling mode.
 ifdef PROFILING
-EXTRA_LDFLAGS			= -lprofiler
+EXTRA_LDFLAGS				= -lprofiler
 endif
 
 ###############################################################################
