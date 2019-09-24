@@ -29,6 +29,30 @@ Execute the program passing the `simulation_config.txt` file & the output folder
 $ ./bin/2DPartInt simulation_config.txt out/
 ```
 
+### Profile the program
+
+Install the package `gperftools` or the equivalent in your operating system.
+
+Compile defining the `PROFILING` flag.
+
+```
+$ make PROFILING=true
+```
+
+Run definig where to store the profiler output.
+
+```
+$ CPUPROFILE=profiler_out.prof ./bin/2DPartInt simulation_config.txt out/
+```
+
+Print profiling information.
+
+```
+$ pprof --text ./bin/2DPartInt profiler_out.prof
+```
+
+More runtime and offline options for the profiler [here](https://gperftools.github.io/gperftools/cpuprofile.html).
+
 ## Simulation Config File.
 
 The behaviour of the simulation is determined by the config file.
