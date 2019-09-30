@@ -54,6 +54,7 @@ inline void compute_acceleration(const size_t particle_index,
 inline void apply_gravity(const size_t size,
                           const ParticleProperties *particles_properties,
                           Vector *forces) {
+#pragma acc parallel loop vector
   for (size_t i = 0; i < size; ++i) {
     forces[i].y_component -= (particles_properties[i].mass * 9.81d);
   }
@@ -112,7 +113,7 @@ inline void compute_forces(const double dt, const size_t particles_size,
                            const ParticleProperties *properties, const Contact *contacts,
                            const Vector *velocities, double *normal_forces,
                            double *tangent_forces, Vector *forces) {
-
+#pragma acc parallel loop vector
   for (size_t i = 0; i < contacts_size; ++i) {
     const size_t p1_idx = contacts[i].p1_idx;
     const size_t p2_idx = contacts[i].p2_idx;

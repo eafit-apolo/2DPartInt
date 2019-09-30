@@ -22,10 +22,12 @@ LDFLAGS                         = -lm $(EXTRA_LDFLAGS)
 RM                              = rm -rf
 MKDIR                           = mkdir -p
 
+# Final binary dependencies.
 COMMON_OBJECT_FILES             = $(BUILD_DIR)/config.o $(BUILD_DIR)/csv.o $(BUILD_DIR)/functions.o $(BUILD_DIR)/initialization.o $(BUILD_DIR)/main.o
 EXTRA_OBJECT_FILES              =
 OBJECT_FILES                    = $(COMMON_OBJECT_FILES) $(EXTRA_OBJECT_FILES)
 
+# main.cpp dependencies.
 COMMON_MAIN_DEPENDENCIES        = $(SRC_CXX_DIR)/main.cpp $(INC_DIR)/config.h $(INC_DIR)/csv.h $(INC_DIR)/data.h $(INC_DIR)/functions.h $(INC_DIR)/initialization.h
 EXTRA_MAIN_DEPENDENCIES         =
 MAIN_O_DEPENDENCIES             = $(COMMON_MAIN_DEPENDENCIES) $(EXTRA_MAIN_DEPENDENCIES)
@@ -43,6 +45,11 @@ endif
 # If compilation in profiling mode.
 ifdef PROFILING
 EXTRA_LDFLAGS                   = -lprofiler
+endif
+
+# If compiling with OpenACC directives
+ifdef OPENACC
+EXTRA_FLAGS                     += -fopenacc
 endif
 
 ###############################################################################
