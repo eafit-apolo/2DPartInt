@@ -12,7 +12,7 @@
 #define GREEN "\033[1;32m"
 #define RESETCOLOR "\033[0m"
 
-// Global var to keep track of the number of failed tests.
+// Keeps track of the number of failed tests.
 unsigned int number_failed;
 
 /**
@@ -204,7 +204,7 @@ void test_compute_acceleration_one_element() {
   ParticleProperties particle_properties[size] = { { 3, 0, 0 } };
   Vector accelerations[size] = { { 0 } };
 
-  compute_acceleration(size, particle_properties, forces, accelerations);
+  compute_acceleration(0, particle_properties, forces, accelerations);
 
   assert(accelerations[0].x_component, 10.0d, "test_compute_acceleration_one_element - x_component");
   assert(accelerations[0].y_component, 10.0d, "test_compute_acceleration_one_element - y_component");
@@ -220,7 +220,9 @@ void test_compute_acceleration_multiple_elements() {
   ParticleProperties particle_properties[size] = { { 0.367, 0, 0 }, { 3.967, 0, 0 }, { 0.52, 0, 0 } };
   Vector accelerations[size] = { { 0 } };
 
-  compute_acceleration(size, particle_properties, forces, accelerations);
+  compute_acceleration(0, particle_properties, forces, accelerations);
+  compute_acceleration(1, particle_properties, forces, accelerations);
+  compute_acceleration(2, particle_properties, forces, accelerations);
 
   Vector expected[size] = { { -34.2779d, -43.31335149863761d }, { 3.5152508192588856d, -50.6241d }, { -1045.4231d, -1.1923d } };
   for (size_t i = 0; i < size; ++i) {
@@ -275,7 +277,7 @@ void test_displace_particles_one_element() {
   Particle particles[size] = { { 0, 100, 0 } };
   Vector displacements[size] = { { 0.05, -0.05 } };
 
-  displace_particles(size, displacements, particles);
+  displace_particle(0, displacements, particles);
 
   assert(particles[0].x_coordinate, 50.0d, "test_displace_particles_one_element - x_coordinate");
   assert(particles[0].y_coordinate, 50.0d, "test_displace_particles_one_element - y_coordinate");
@@ -290,7 +292,9 @@ void test_displace_particles_multiple_elements() {
   Particle particles[size] = { { 0, 100, 0 }, { 111, 210, 0 }, { 10, -30, 0 } };
   Vector displacements[size] = { { 0, 0 }, { 0.015, -0.033 }, { -0.015, 0.03 } };
 
-  displace_particles(size, displacements, particles);
+  displace_particle(0, displacements, particles);
+  displace_particle(1, displacements, particles);
+  displace_particle(2, displacements, particles);
 
   Particle expected[size] = { { 0.0d, 100.0d, 0 }, { 126, 177, 0 }, { -5.0d, 0.0d, 0 } };
   for (size_t i = 0; i < size; ++i) {

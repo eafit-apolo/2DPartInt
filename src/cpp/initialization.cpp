@@ -1,5 +1,6 @@
 #include <cstddef>
 #include <cmath>
+#include <cstdlib>
 extern "C" {
   #include "functions.h"
   #include "data.h"

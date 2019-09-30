@@ -17,7 +17,7 @@ size_t size_triangular_matrix(const size_t n) {
 /**
  * Computes the distance between two particles.
  */
-double compute_distance(const Particle *p1, const Particle *p2) {
+inline double compute_distance(const Particle *p1, const Particle *p2) {
   const double x_diff = p1->x_coordinate - p2->x_coordinate;
   const double y_diff = p1->y_coordinate - p2->y_coordinate;
 
@@ -28,7 +28,7 @@ double compute_distance(const Particle *p1, const Particle *p2) {
  * Computes the overlap between two particles.
  * Note: If the overlap is negative, there is no overlap.
  */
-double compute_overlap(const Particle *p1, const Particle *p2) {
+inline double compute_overlap(const Particle *p1, const Particle *p2) {
   const double d = p1->radius + p2->radius;
   const double distance = compute_distance(p1, p2);
 
@@ -39,19 +39,23 @@ double compute_overlap(const Particle *p1, const Particle *p2) {
  * Applies the forces to the particles with the same index,
  * and computes the resultant acceleration.
  */
-void compute_acceleration(const size_t size, const ParticleProperties *particles, const Vector *forces, Vector *accelerations) {
-  for (size_t i = 0; i < size; ++i) {
-    accelerations[i].x_component = forces[i].x_component / particles[i].mass;
-    accelerations[i].y_component = forces[i].y_component / particles[i].mass;
-  }
+inline void compute_acceleration(const size_t particle_index,
+                                 const ParticleProperties *particles_properties,
+                                 const Vector *forces, Vector *accelerations) {
+  accelerations[particle_index].x_component =
+    forces[particle_index].x_component / particles_properties[particle_index].mass;
+  accelerations[particle_index].y_component =
+    forces[particle_index].y_component / particles_properties[particle_index].mass;
 }
 
 /**
  * Apply gravity to a vector of forces.
  */
-void apply_gravity(const size_t size, const ParticleProperties *particles, Vector *forces) {
+inline void apply_gravity(const size_t size,
+                          const ParticleProperties *particles_properties,
+                          Vector *forces) {
   for (size_t i = 0; i < size; ++i) {
-    forces[i].y_component -= (particles[i].mass * 9.81d);
+    forces[i].y_component -= (particles_properties[i].mass * 9.81d);
   }
 }
 
@@ -103,11 +107,11 @@ void collide_two_particles(const double dt, const double distance,
   *previous_tangent = Fs_1_2;
 }
 
-void compute_forces(const double dt, const size_t particles_size, const size_t contacts_size,
-                    const Particle *particles, const ParticleProperties *properties, const Contact *contacts,
-                    const Vector *velocities, double *normal_forces, double *tangent_forces, Vector *forces) {
-  // Reset forces to zeros.
-  memset(forces, 0, sizeof(Vector) * particles_size);
+inline void compute_forces(const double dt, const size_t particles_size,
+                           const size_t contacts_size, const Particle *particles,
+                           const ParticleProperties *properties, const Contact *contacts,
+                           const Vector *velocities, double *normal_forces,
+                           double *tangent_forces, Vector *forces) {
 
   for (size_t i = 0; i < contacts_size; ++i) {
     const size_t p1_idx = contacts[i].p1_idx;
@@ -154,57 +158,53 @@ void compute_forces(const double dt, const size_t particles_size, const size_t c
  * Derives the resultant velocity,
  * of an initial velocity with an applied acceleration for given a time delta.
  */
-void compute_velocity(const double dt, const size_t size, const Vector *accelerations, Vector *velocities){
-  for (size_t i = 0; i < size; ++i) {
-    velocities[i].x_component = velocities[i].x_component + accelerations[i].x_component * dt;
-    velocities[i].y_component = velocities[i].y_component + accelerations[i].y_component * dt;
-  }
+inline void compute_velocity(const double dt, const size_t particle_index,
+                             const Vector *accelerations, Vector *velocities) {
+  velocities[particle_index].x_component =
+    velocities[particle_index].x_component + accelerations[particle_index].x_component * dt;
+  velocities[particle_index].y_component =
+    velocities[particle_index].y_component + accelerations[particle_index].y_component * dt;
 }
 
 /**
  * Computes the displacement of the particles,
  * with an applied velocity for a given time delta.
  */
-void compute_displacement(const double dt, const size_t size, const Vector *velocities, Vector *displacements) {
-  for (size_t i = 0; i < size; ++i) {
-    displacements[i].x_component = displacements[i].x_component + velocities[i].x_component * dt;
-    displacements[i].y_component = displacements[i].y_component + velocities[i].y_component * dt;
-  }
+inline void compute_displacement(const double dt, const size_t particle_index,
+                                 const Vector *velocities, Vector *displacements) {
+  displacements[particle_index].x_component =
+    displacements[particle_index].x_component + velocities[particle_index].x_component * dt;
+  displacements[particle_index].y_component =
+    displacements[particle_index].y_component + velocities[particle_index].y_component * dt;
 }
 
 /**
  * Displace all particles given their displacements.
  */
-void displace_particles(const size_t size, const Vector *displacements, Particle *particles) {
-  for (size_t i = 0; i < size; ++i) {
-    Particle *particle = &particles[i];
-    particle->x_coordinate += (displacements[i].x_component * 1000);
-    particle->y_coordinate += (displacements[i].y_component * 1000);
-  }
+inline void displace_particle(const size_t particle_index, const Vector *displacements,
+                              Particle *particles) {
+  particles[particle_index].x_coordinate += (displacements[particle_index].x_component * 1000);
+  particles[particle_index].y_coordinate += (displacements[particle_index].y_component * 1000);
 }
 
 /**
   * Changes the displacement if the new position would surpass the Y limit.
   */
-void fix_displacements(const size_t size, Vector *velocities, Particle *particles){
-  for(size_t i = 0; i < size; ++i){
-    Particle *particle = &particles[i];
+inline void fix_displacement(const size_t particle_index, Vector *velocities, Particle *particles) {
 
-    double diff = particle->y_coordinate - particle->radius;
-    if(diff < 0){
-      particle->y_coordinate = particle->radius;
-      velocities[i].y_component = 0;
-    }
+  double diff = particles[particle_index].y_coordinate - particles[particle_index].radius;
+  if (diff < 0) {
+    particles[particle_index].y_coordinate = particles[particle_index].radius;
+    velocities[particle_index].y_component = 0;
   }
 }
 
 /**
- * Computes the contacts between all particles.
+ * Computes the contacts between one particle and the particles with greater index.
  * Returns the number of contacts written on the buffer.
- * Note: The size of the buffer should be equals to
- *       the size of a triangular matrix for the number of particles.
  */
-size_t compute_contacts(const size_t size, const Particle *particles, Contact *contacts_buffer) {
+size_t compute_contacts(const size_t size, const Particle *particles,
+                        Contact *contacts_buffer) {
   size_t k = 0;
 
   for (size_t i = 0; i < size; ++i) {
@@ -221,3 +221,4 @@ size_t compute_contacts(const size_t size, const Particle *particles, Contact *c
 
   return k;
 }
+
