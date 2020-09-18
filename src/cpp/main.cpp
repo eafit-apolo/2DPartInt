@@ -58,6 +58,7 @@ void simulation_step(const size_t particles_size, const double dt) {
   compute_forces(dt, particles_size, contacts_size, particles, properties,
                  contacts_buffer, velocities, normal_forces, tangent_forces, forces);
 
+#pragma acc parallel loop vector
   for (size_t part = 0; part < particles_size; ++part) {
     compute_acceleration(part, properties, forces, accelerations);
     compute_velocity(dt, part, accelerations, velocities);
@@ -139,6 +140,11 @@ int main(int argc, char *argv[]) {
   }
 #endif
 
+#pragma acc data copyin(particles[0:num_particles], properties[0:num_particles], \
+                        contacts_buffer[0:size_triangular_matrix(num_particles)], \
+                        normal_forces[0:num_particles], tangent_forces[0:num_particles], \
+                        forces[0:num_particles], accelerations[0:num_particles], \
+                        velocities[0:num_particles], displacements[0:num_particles])
   for (unsigned long step = 1; step <= max_steps; ++step) {
 #ifdef DEBUG_STEP
     current_step = step;
