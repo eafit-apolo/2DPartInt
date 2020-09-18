@@ -251,22 +251,23 @@ void test_compute_velocity_one_element() {
 /**
  * Checks that the compute_velocity function works for arrays of multiple elements.
  */
-//void test_compute_velocity_multiple_elements() {
-//  #define size 3
-//  Vector acceleration[size] = { { -10.59, 162.35 }, { , }, { , } };
-//  double dt = 0.00025;
-//  Vector velocities[size] = { { 5, 2 }, { , }, { , } };
-//  Vector resultant_velocity[size] = { { 0 } };
-//
-//  compute_velocity(size, acceleration, dt, velocities, resultant_velocity);
-//
-//  Vector expected[size] = { { -34.2779d, -43.31335149863761d }, { 3.5152508192588856d, -50.6241d }, { -1045.4231d, -1.1923d } };
-//  for (size_t i = 0; i < size; ++i) {
-//    for_assert(resultant_velocity[i].x_component, expected[i].x_component, "test_compute_velocity_multiple_elements - x_component", i);
-//    for_assert(resultant_velocity[i].y_component, expected[i].y_component, "test_compute_velocity_multiple_elements - y_component", i);
-//  }
-//  #undef size
-//}
+void test_compute_velocity_multiple_elements() {
+  #define size 3
+  Vector accelerations[size] = { { -10.59, 162.35 }, { -53223.12, 4212.124}, { 532521.2124124, 12142.512124} };
+  double dt = 0.00025;
+  Vector velocities[size] = { { 5.332, 2.123 }, { 7.12, 8.96}, { 61.52, 1293.123} };
+
+  compute_velocity(dt, 0, accelerations, velocities);
+  compute_velocity(dt, 1, accelerations, velocities);
+  compute_velocity(dt, 2, accelerations, velocities);
+
+  Vector expected[size] = { { 5.3293525d, 2.1635875d }, { -6.18578d, 10.013031d }, { 194.6503031031d, 1296.158628031d } };
+  for (size_t i = 0; i < size; ++i) {
+    for_assert(velocities[i].x_component, expected[i].x_component, "test_compute_velocity_multiple_elements - x_component", i);
+    for_assert(velocities[i].y_component, expected[i].y_component, "test_compute_velocity_multiple_elements - y_component", i);
+  }
+  #undef size
+}
 
 /**
  * Checks that the displace_particles function works for arrays of one element.
@@ -318,7 +319,7 @@ int main(void) {
   test_compute_acceleration_one_element();
   test_compute_acceleration_multiple_elements();
   test_compute_velocity_one_element();
-  //test_compute_velocity_multiple_elements();
+  test_compute_velocity_multiple_elements();
   test_displace_particles_one_element();
   test_displace_particles_multiple_elements();
 
