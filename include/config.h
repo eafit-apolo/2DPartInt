@@ -4,7 +4,7 @@
  * Represents the parsed config file.
  */
 typedef struct {
-  int simulation_time;
+  double simulation_time;
   double dt;
   int x_limit;
   int y_limit;

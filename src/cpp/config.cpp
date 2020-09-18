@@ -26,7 +26,7 @@ void parse_config(const char *filename, Config *config) {
     if (std::getline(is_line, key, '=')) {
       if (std::getline(is_line, value)) {
         if (key == "time") {
-          config->simulation_time = std::stoi(value);
+          config->simulation_time = std::stod(value);
         } else if (key == "dt") {
           config->dt = std::stod(value);
         } else if (key == "y_limit") {
