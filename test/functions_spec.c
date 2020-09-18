@@ -235,19 +235,18 @@ void test_compute_acceleration_multiple_elements() {
 /**
  * Checks that the compute_velocity function works for arrays of one element.
  */
-//void test_compute_velocity_one_element() {
-//  #define size 1
-//  Vector acceleration[size] = { { 42.53, -631.431 } };
-//  double dt = 0.00025;
-//  Vector velocities[size] = { { 0, 0 } };
-//  Vector resultant_velocity[size] = { { 0 } };
-//
-//  compute_velocity(size, acceleration, dt, velocities, resultant_velocity);
-//
-//  assert(resultant_velocity[0].x_component, 0.010632500000000001d, "test_compute_velocity_one_element - x_component");
-//  assert(resultant_velocity[0].y_component, -0.15785775000000002d, "test_compute_velocity_one_element - y_component");
-//  #undef size
-//}
+void test_compute_velocity_one_element() {
+  #define size 1
+  Vector accelerations[size] = { { 42.53, -631.431 } };
+  double dt = 0.00025;
+  Vector velocities[size] = { { 0, 0 } };
+
+  compute_velocity(dt, 0, accelerations, velocities);
+
+  assert(velocities[0].x_component, 0.010632500000000001d, "test_compute_velocity_one_element - x_component");
+  assert(velocities[0].y_component, -0.15785775000000002d, "test_compute_velocity_one_element - y_component");
+  #undef size
+}
 
 /**
  * Checks that the compute_velocity function works for arrays of multiple elements.
@@ -318,7 +317,7 @@ int main(void) {
   test_compute_forces_multiple_contacts();
   test_compute_acceleration_one_element();
   test_compute_acceleration_multiple_elements();
-  //test_compute_velocity_one_element();
+  test_compute_velocity_one_element();
   //test_compute_velocity_multiple_elements();
   test_displace_particles_one_element();
   test_displace_particles_multiple_elements();
