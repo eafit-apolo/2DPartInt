@@ -115,7 +115,7 @@ int main(int argc, char *argv[]) {
   const size_t num_particles = initialize(config);
 
   // Write the initial state of the simulation.
-  write_simulation_step(num_particles, particles, output_folder, 0);
+  write_simulation_csv(num_particles, particles, output_folder, 0);
 
   // Run the simulation until the max number of steps is reached.
   // The simulation time and the dt determine the maximum number of steps to execute.
@@ -145,7 +145,7 @@ int main(int argc, char *argv[]) {
 #endif
 
     simulation_step(num_particles, config->dt);
-    write_simulation_step(num_particles, particles, output_folder, step);
+    write_simulation_csv(num_particles, particles, output_folder, step);
   }
 
   // Free all memory resources and exit.

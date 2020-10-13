@@ -14,5 +14,9 @@ int ensure_output_folder(const char *output_folder);
  * The file will be written on the specified folder,
  * and suffixed with the step number.
  */
+
+void write_simulation_csv(const size_t num_particles, const Particle *particles,
+                           const char *folder, const unsigned long step);
+
 void write_simulation_step(const size_t num_particles, const Particle *particles,
                            const char *folder, const unsigned long step);
