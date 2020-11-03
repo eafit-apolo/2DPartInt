@@ -3,11 +3,14 @@
 /**
  * Represents a circular shaped particle in a two-dimensional space.
  */
-typedef struct {
+typedef struct Particle Particle;
+struct Particle{
   double x_coordinate;
   double y_coordinate;
   double radius;
-} Particle;
+  Particle* next;
+  int idx;
+};
 
 /**
  * Physical properties of a particle,
