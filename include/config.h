@@ -4,11 +4,14 @@
  * Represents the parsed config file.
  */
 typedef struct {
-  int simulation_time;
+  double simulation_time;
   double dt;
-  int x_limit;
-  int y_limit;
-  int radius;
+  int x_particles;
+  int y_particles;
+  int x_squares;
+  int y_squares;
+  double square_in_grid_length;
+  double radius;
   double kn;
   double ks;
   double rho;
