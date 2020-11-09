@@ -30,13 +30,6 @@ inline double compute_overlap(const Particle *p1, const Particle *p2) {
 }
 
 /**
- * Returns the size of a triangular matrix, without the diagonal.
- */
-size_t size_triangular_matrix(const size_t n) {
-  return ((n - 1) * n) / 2;
-}
-
-/**
  * Applies the forces to the particles with the same index,
  * and computes the resultant acceleration.
  */

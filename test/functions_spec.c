@@ -42,18 +42,6 @@ void for_assert(const double result, const double expected, const char* test_des
 }
 
 /**
- * Checks that the size_triangular_matrix return correct results.
- */
-void test_size_triangular_matrix() {
-  size_t n = 5;
-  size_t expected = 10;
-
-  size_t result = size_triangular_matrix(n);
-
-  assert(result, expected, "test_size_triangular_matrix");
-}
-
-/**
  * Checks that compute_forces works for two particles with only one contact.
  */
 void test_compute_forces_one_contact() {
