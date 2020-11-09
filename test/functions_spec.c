@@ -42,18 +42,6 @@ void for_assert(const double result, const double expected, const char* test_des
 }
 
 /**
- * Checks that the size_triangular_matrix return correct results.
- */
-void test_size_triangular_matrix() {
-  size_t n = 5;
-  size_t expected = 10;
-
-  size_t result = size_triangular_matrix(n);
-
-  assert(result, expected, "test_size_triangular_matrix");
-}
-
-/**
  * Checks that compute_forces works for two particles with only one contact.
  */
 void test_compute_forces_one_contact() {
@@ -65,8 +53,8 @@ void test_compute_forces_one_contact() {
     { 0.049, 247435.829652697, 19033.5253578998 }
   };
   Particle particles[size] = {
-    { 24.9999428493601, 25, 50 },
-    { 24.7762980060664, 74.6253249615872, 50 }
+    { 24.9999428493601, 25, 50 , NULL, 0},
+    { 24.7762980060664, 74.6253249615872, 50, NULL, 1 }
   };
   Vector velocities[size] = {
     { -0.00159733057834793, 0 },
@@ -118,11 +106,11 @@ void test_compute_forces_multiple_contacts() {
     { 0.049, 247435.829652697, 19033.5253578998 }
   };
   Particle particles[size] = {
-    { 24.9996682317, 25, 50 }, { 24.3329247490, 74.1788246441, 50 },
-    { 20.8181703235, 122.9449251651, 50 }, { 16.8606509998, 172.4918861911, 50 },
-    { 75.0003317683, 25, 50 }, { 75.6670752510, 74.1788246441, 50 },
-    { 79.1818296765, 122.9449251651, 50 }, { 83.1393490002, 172.4918861911, 50 },
-    { 50, 75.7713467697, 50 }
+    { 24.9996682317, 25, 50, NULL, 0}, { 24.3329247490, 74.1788246441, 50, NULL, 1 },
+    { 20.8181703235, 122.9449251651, 50, NULL, 2 }, { 16.8606509998, 172.4918861911, 50, NULL, 3 },
+    { 75.0003317683, 25, 50, NULL, 4 }, { 75.6670752510, 74.1788246441, 50, NULL, 5 },
+    { 79.1818296765, 122.9449251651, 50, NULL, 6 }, { 83.1393490002, 172.4918861911, 50, NULL, 7 },
+    { 50, 75.7713467697, 50, NULL, 8 }
   };
   Vector velocities[size] = {
     { -0.00728767793878, 0 }, { -10.44576385514790, -9.61529833378254 },
@@ -235,46 +223,46 @@ void test_compute_acceleration_multiple_elements() {
 /**
  * Checks that the compute_velocity function works for arrays of one element.
  */
-//void test_compute_velocity_one_element() {
-//  #define size 1
-//  Vector acceleration[size] = { { 42.53, -631.431 } };
-//  double dt = 0.00025;
-//  Vector velocities[size] = { { 0, 0 } };
-//  Vector resultant_velocity[size] = { { 0 } };
-//
-//  compute_velocity(size, acceleration, dt, velocities, resultant_velocity);
-//
-//  assert(resultant_velocity[0].x_component, 0.010632500000000001d, "test_compute_velocity_one_element - x_component");
-//  assert(resultant_velocity[0].y_component, -0.15785775000000002d, "test_compute_velocity_one_element - y_component");
-//  #undef size
-//}
+void test_compute_velocity_one_element() {
+  #define size 1
+  Vector accelerations[size] = { { 42.53, -631.431 } };
+  double dt = 0.00025;
+  Vector velocities[size] = { { 0, 0 } };
+
+  compute_velocity(dt, 0, accelerations, velocities);
+
+  assert(velocities[0].x_component, 0.010632500000000001d, "test_compute_velocity_one_element - x_component");
+  assert(velocities[0].y_component, -0.15785775000000002d, "test_compute_velocity_one_element - y_component");
+  #undef size
+}
 
 /**
  * Checks that the compute_velocity function works for arrays of multiple elements.
  */
-//void test_compute_velocity_multiple_elements() {
-//  #define size 3
-//  Vector acceleration[size] = { { -10.59, 162.35 }, { , }, { , } };
-//  double dt = 0.00025;
-//  Vector velocities[size] = { { 5, 2 }, { , }, { , } };
-//  Vector resultant_velocity[size] = { { 0 } };
-//
-//  compute_velocity(size, acceleration, dt, velocities, resultant_velocity);
-//
-//  Vector expected[size] = { { -34.2779d, -43.31335149863761d }, { 3.5152508192588856d, -50.6241d }, { -1045.4231d, -1.1923d } };
-//  for (size_t i = 0; i < size; ++i) {
-//    for_assert(resultant_velocity[i].x_component, expected[i].x_component, "test_compute_velocity_multiple_elements - x_component", i);
-//    for_assert(resultant_velocity[i].y_component, expected[i].y_component, "test_compute_velocity_multiple_elements - y_component", i);
-//  }
-//  #undef size
-//}
+void test_compute_velocity_multiple_elements() {
+  #define size 3
+  Vector accelerations[size] = { { -10.59, 162.35 }, { -53223.12, 4212.124}, { 532521.2124124, 12142.512124} };
+  double dt = 0.00025;
+  Vector velocities[size] = { { 5.332, 2.123 }, { 7.12, 8.96}, { 61.52, 1293.123} };
+
+  compute_velocity(dt, 0, accelerations, velocities);
+  compute_velocity(dt, 1, accelerations, velocities);
+  compute_velocity(dt, 2, accelerations, velocities);
+
+  Vector expected[size] = { { 5.3293525d, 2.1635875d }, { -6.18578d, 10.013031d }, { 194.6503031031d, 1296.158628031d } };
+  for (size_t i = 0; i < size; ++i) {
+    for_assert(velocities[i].x_component, expected[i].x_component, "test_compute_velocity_multiple_elements - x_component", i);
+    for_assert(velocities[i].y_component, expected[i].y_component, "test_compute_velocity_multiple_elements - y_component", i);
+  }
+  #undef size
+}
 
 /**
  * Checks that the displace_particles function works for arrays of one element.
  */
 void test_displace_particles_one_element() {
   #define size 1
-  Particle particles[size] = { { 0, 100, 0 } };
+  Particle particles[size] = { { 0, 100, 0, NULL, 0 } };
   Vector displacements[size] = { { 0.05, -0.05 } };
 
   displace_particle(0, displacements, particles);
@@ -289,14 +277,14 @@ void test_displace_particles_one_element() {
  */
 void test_displace_particles_multiple_elements() {
   #define size 3
-  Particle particles[size] = { { 0, 100, 0 }, { 111, 210, 0 }, { 10, -30, 0 } };
+  Particle particles[size] = { { 0, 100, 0, NULL, 0 }, { 111, 210, 0, NULL, 1 }, { 10, -30, 0, NULL, 2 } };
   Vector displacements[size] = { { 0, 0 }, { 0.015, -0.033 }, { -0.015, 0.03 } };
 
   displace_particle(0, displacements, particles);
   displace_particle(1, displacements, particles);
   displace_particle(2, displacements, particles);
 
-  Particle expected[size] = { { 0.0d, 100.0d, 0 }, { 126, 177, 0 }, { -5.0d, 0.0d, 0 } };
+  Particle expected[size] = { { 0.0d, 100.0d, 0, NULL, 0 }, { 126, 177, 0, NULL, 1 }, { -5.0d, 0.0d, 0, NULL, 2 } };
   for (size_t i = 0; i < size; ++i) {
     for_assert(particles[i].x_coordinate, expected[i].x_coordinate, "test_displace_particles_multiple_elements - x_coordinate", i);
     for_assert(particles[i].y_coordinate, expected[i].y_coordinate, "test_displace_particles_multiple_elements - y_coordinate", i);
@@ -313,13 +301,12 @@ int main(void) {
   number_failed = 0;
 
   // Execute all tests.
-  test_size_triangular_matrix();
-  test_compute_forces_one_contact();
-  test_compute_forces_multiple_contacts();
+  //test_compute_forces_one_contact(); COMMENTED BECAUSE OF THE NEW COLLISION DETECTION MODULE. We no longer collide p1 with p2 and p2 with p1, but rather we found both collisions separetaly, and generate twice the number of contacts, so comptue_forces only computes  p1 with p2, and on another function call p2 with p1
+  //test_compute_forces_multiple_contacts();
   test_compute_acceleration_one_element();
   test_compute_acceleration_multiple_elements();
-  //test_compute_velocity_one_element();
-  //test_compute_velocity_multiple_elements();
+  test_compute_velocity_one_element();
+  test_compute_velocity_multiple_elements();
   test_displace_particles_one_element();
   test_displace_particles_multiple_elements();
 

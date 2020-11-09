@@ -12,7 +12,7 @@ CC                              = gcc
 CXX                             = g++
 CFLAGS                          =
 CXXFLAGS                        =
-BASE_FLAGS                      = -Wall -Wextra -Werror
+BASE_FLAGS                      = -Wall -Wextra -O3
 EXTRA_FLAGS                     =
 COMMON_FLAGS                    = $(EXTRA_FLAGS) $(BASE_FLAGS)
 ALL_CFLAGS                      = -std=c11 $(COMMON_FLAGS) $(CFLAGS)
@@ -22,11 +22,11 @@ LDFLAGS                         = -lm $(EXTRA_LDFLAGS)
 RM                              = rm -rf
 MKDIR                           = mkdir -p
 
-COMMON_OBJECT_FILES             = $(BUILD_DIR)/config.o $(BUILD_DIR)/csv.o $(BUILD_DIR)/functions.o $(BUILD_DIR)/initialization.o $(BUILD_DIR)/main.o
+COMMON_OBJECT_FILES             = $(BUILD_DIR)/config.o $(BUILD_DIR)/csv.o $(BUILD_DIR)/functions.o $(BUILD_DIR)/initialization.o $(BUILD_DIR)/main.o $(BUILD_DIR)/collisions.o
 EXTRA_OBJECT_FILES              =
 OBJECT_FILES                    = $(COMMON_OBJECT_FILES) $(EXTRA_OBJECT_FILES)
 
-COMMON_MAIN_DEPENDENCIES        = $(SRC_CXX_DIR)/main.cpp $(INC_DIR)/config.h $(INC_DIR)/csv.h $(INC_DIR)/data.h $(INC_DIR)/functions.h $(INC_DIR)/initialization.h
+COMMON_MAIN_DEPENDENCIES        = $(SRC_CXX_DIR)/main.cpp $(INC_DIR)/config.h $(INC_DIR)/csv.h $(INC_DIR)/data.h $(INC_DIR)/functions.h $(INC_DIR)/initialization.h $(INC_DIR)/collisions.h
 EXTRA_MAIN_DEPENDENCIES         =
 MAIN_O_DEPENDENCIES             = $(COMMON_MAIN_DEPENDENCIES) $(EXTRA_MAIN_DEPENDENCIES)
 
@@ -37,7 +37,7 @@ EXTRA_FLAGS                     = -g
 EXTRA_OBJECT_FILES              = $(BUILD_DIR)/debug.o
 EXTRA_MAIN_DEPENDENCIES         = $(INC_DIR)/debug.h
 else
-EXTRA_FLAGS                     = -O3
+EXTRA_FLAGS                     =
 endif
 
 # If compilation in profiling mode.
@@ -70,6 +70,10 @@ $(BUILD_DIR)/initialization.o: $(SRC_CXX_DIR)/initialization.cpp $(INC_DIR)/init
 	$(CXX) $(ALL_CXXFLAGS) -I$(INC_DIR) -o $@ -c $<
 
 $(BUILD_DIR)/functions.o: $(SRC_C_DIR)/functions.c $(INC_DIR)/data.h $(INC_DIR)/functions.h
+	$(MKDIR) $(BUILD_DIR)
+	$(CC) $(ALL_CFLAGS) -I$(INC_DIR) -o $@ -c $<
+
+$(BUILD_DIR)/collisions.o: $(SRC_C_DIR)/collisions.c $(INC_DIR)/data.h $(INC_DIR)/collisions.h
 	$(MKDIR) $(BUILD_DIR)
 	$(CC) $(ALL_CFLAGS) -I$(INC_DIR) -o $@ -c $<
 

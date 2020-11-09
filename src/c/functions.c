@@ -8,13 +8,6 @@
 #define TAN_30_PI_180 0.5773502691896257
 
 /**
- * Returns the size of a triangular matrix, without the diagonal.
- */
-size_t size_triangular_matrix(const size_t n) {
-  return ((n - 1) * n) / 2;
-}
-
-/**
  * Computes the distance between two particles.
  */
 inline double compute_distance(const Particle *p1, const Particle *p2) {
@@ -107,6 +100,9 @@ void collide_two_particles(const double dt, const double distance,
   *previous_tangent = Fs_1_2;
 }
 
+/**
+ * Computes the resulting forces each particle.
+ */
 inline void compute_forces(const double dt, const size_t particles_size,
                            const size_t contacts_size, const Particle *particles,
                            const ParticleProperties *properties, const Contact *contacts,
@@ -117,7 +113,6 @@ inline void compute_forces(const double dt, const size_t particles_size,
     const size_t p1_idx = contacts[i].p1_idx;
     const size_t p2_idx = contacts[i].p2_idx;
     const size_t p2_p1_idx = (p1_idx * particles_size) + p2_idx;
-    const size_t p1_p2_idx = (p2_idx * particles_size) + p1_idx;
     const Particle *p1 = &particles[p1_idx];
     const Particle *p2 = &particles[p2_idx];
     const double distance = compute_distance(p1, p2);
@@ -135,22 +130,7 @@ inline void compute_forces(const double dt, const size_t particles_size,
       &tangent_forces[p2_p1_idx],
       &forces[p2_idx]
     );
-
-    // P2 collides P1.
-    collide_two_particles(
-      dt,
-      distance,
-      p2,
-      p1,
-      &velocities[p2_idx],
-      &velocities[p1_idx],
-      &properties[p1_idx],
-      &normal_forces[p1_p2_idx],
-      &tangent_forces[p1_p2_idx],
-      &forces[p1_idx]
-    );
   }
-
   apply_gravity(particles_size, properties, forces);
 }
 
@@ -198,27 +178,3 @@ inline void fix_displacement(const size_t particle_index, Vector *velocities, Pa
     velocities[particle_index].y_component = 0;
   }
 }
-
-/**
- * Computes the contacts between one particle and the particles with greater index.
- * Returns the number of contacts written on the buffer.
- */
-size_t compute_contacts(const size_t size, const Particle *particles,
-                        Contact *contacts_buffer) {
-  size_t k = 0;
-
-  for (size_t i = 0; i < size; ++i) {
-    for (size_t j = i + 1; j < size; ++j) {
-      const double overlap = compute_overlap(&particles[i], &particles[j]);
-      if (overlap > 0) {
-        contacts_buffer[k].p1_idx = i;
-        contacts_buffer[k].p2_idx = j;
-        contacts_buffer[k].overlap = overlap;
-        ++k;
-      }
-    }
-  }
-
-  return k;
-}
-

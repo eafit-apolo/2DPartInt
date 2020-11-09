@@ -32,7 +32,6 @@ void compute_forces(const double dt, const size_t particles_size,
                     const ParticleProperties *properties, const Contact *contacts,
                     const Vector *velocities, double *normal_forces,
                     double *tangent_forces, Vector *forces);
-
 /**
  * Applies the forces to the particles with the same index,
  * and computes the resultant acceleration.
@@ -65,12 +64,3 @@ void displace_particle(const size_t particle_index, const Vector *displacements,
  * Changes the displacement if the new position would surpass the X or Y limit.
  */
 void fix_displacement(const size_t particle_index, Vector *velocities, Particle *particles);
-
-/**
- * Computes the contacts between all particles.
- * Returns the number of contacts written on the buffer.
- * Note: The size of the buffer should be equals to
- *       the size of a triangular matrix for the number of particles.
- */
-size_t compute_contacts(const size_t size, const Particle *particles,
-                        Contact *contacts_buffer);

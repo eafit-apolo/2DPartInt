@@ -5,6 +5,7 @@
 extern "C" {
   #include "functions.h"
   #include "data.h"
+  #include "collisions.h"
 }
 #include "config.h"
 #include "csv.h"
@@ -30,6 +31,8 @@ Vector *forces;
 Vector *accelerations;
 Vector *velocities;
 Vector *displacements;
+Particle **grid;
+Particle **grid_lasts;
 
 /**
  * Free all the structures allocated by initialize.
@@ -44,17 +47,22 @@ void free_all() {
   free(accelerations);
   free(velocities);
   free(displacements);
+  free(grid);
+  free(grid_lasts);
 }
 
 /**
  * Executes one step of the simulation.
  */
-void simulation_step(const size_t particles_size, const double dt) {
+void simulation_step(const size_t particles_size, const double dt, const int x_squares, const int y_squares, const double squares_length) {
 
   // Reset forces to zeros.
   memset(forces, 0, sizeof(Vector) * particles_size);
+  memset(grid, 0, sizeof(Particle*) * x_squares * y_squares);
+  memset(grid_lasts, 0, sizeof(Particle*) * x_squares * y_squares);
 
-  size_t contacts_size = compute_contacts(particles_size, particles, contacts_buffer);
+  fill_grid(particles_size, x_squares, y_squares, squares_length, particles, grid, grid_lasts);
+  size_t contacts_size = compute_contacts(grid, x_squares, y_squares, squares_length, contacts_buffer);
   compute_forces(dt, particles_size, contacts_size, particles, properties,
                  contacts_buffer, velocities, normal_forces, tangent_forces, forces);
 
@@ -139,12 +147,14 @@ int main(int argc, char *argv[]) {
   }
 #endif
 
+  write_grid(config->x_squares, config->y_squares, config->square_in_grid_length, output_folder);
+
   for (unsigned long step = 1; step <= max_steps; ++step) {
 #ifdef DEBUG_STEP
     current_step = step;
 #endif
 
-    simulation_step(num_particles, config->dt);
+    simulation_step(num_particles, config->dt, config->x_squares, config->y_squares, config->square_in_grid_length);
     write_simulation_step(num_particles, particles, output_folder, step);
   }
 

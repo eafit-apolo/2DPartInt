@@ -26,15 +26,21 @@ void parse_config(const char *filename, Config *config) {
     if (std::getline(is_line, key, '=')) {
       if (std::getline(is_line, value)) {
         if (key == "time") {
-          config->simulation_time = std::stoi(value);
+          config->simulation_time = std::stod(value);
         } else if (key == "dt") {
           config->dt = std::stod(value);
-        } else if (key == "y_limit") {
-          config->y_limit = std::stoi(value);
-        } else if (key == "x_limit") {
-          config->x_limit = std::stoi(value);
+        } else if (key == "y_particles") {
+          config->y_particles = std::stoi(value);
+        } else if (key == "x_particles") {
+          config->x_particles = std::stoi(value);
+        } else if (key == "y_squares") {
+          config->y_squares = std::stoi(value);
+        } else if (key == "x_squares") {
+          config->x_squares = std::stoi(value);
+        } else if (key == "square_in_grid_length") {
+          config->square_in_grid_length = std::stod(value);
         } else if (key == "radius") {
-          config->radius = std::stoi(value);
+          config->radius = std::stof(value);
         } else if (key == "kn") {
           config->kn = std::stod(value);
         } else if (key == "ks") {
@@ -57,6 +63,5 @@ void parse_config(const char *filename, Config *config) {
       std::cerr << "Missing '=' in: " << line << std::endl;
     }
   }
-
   config_file.close();
 }
