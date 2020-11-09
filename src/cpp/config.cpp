@@ -63,6 +63,5 @@ void parse_config(const char *filename, Config *config) {
       std::cerr << "Missing '=' in: " << line << std::endl;
     }
   }
-
   config_file.close();
 }
