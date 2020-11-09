@@ -131,6 +131,7 @@ inline void compute_forces(const double dt, const size_t particles_size,
       &forces[p2_idx]
     );
   }
+  apply_gravity(particles_size, properties, forces);
 }
 
 /**
