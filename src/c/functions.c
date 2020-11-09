@@ -1,6 +1,5 @@
 #include <math.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h> // For memset.
 #include "data.h"
 #include "functions.h"
@@ -101,6 +100,9 @@ void collide_two_particles(const double dt, const double distance,
   *previous_tangent = Fs_1_2;
 }
 
+/**
+ * Computes the resulting forces each particle.
+ */
 inline void compute_forces(const double dt, const size_t particles_size,
                            const size_t contacts_size, const Particle *particles,
                            const ParticleProperties *properties, const Contact *contacts,
@@ -129,8 +131,6 @@ inline void compute_forces(const double dt, const size_t particles_size,
       &forces[p2_idx]
     );
   }
-
-  apply_gravity(particles_size, properties, forces);
 }
 
 /**

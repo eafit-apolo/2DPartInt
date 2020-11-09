@@ -67,6 +67,7 @@ void simulation_step(const size_t particles_size, const double dt, const int x_s
                  contacts_buffer, velocities, normal_forces, tangent_forces, forces);
 
   for (size_t part = 0; part < particles_size; ++part) {
+    apply_gravity(particles_size, properties, forces);
     compute_acceleration(part, properties, forces, accelerations);
     compute_velocity(dt, part, accelerations, velocities);
     compute_displacement(dt, part, velocities, displacements);
