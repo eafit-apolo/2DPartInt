@@ -19,6 +19,7 @@ extern Vector *accelerations;
 extern Vector *velocities;
 extern Vector *displacements;
 extern Particle **grid;
+extern Particle **grid_lasts;
 
 #ifndef M_PI
   #define M_PI 3.141592653589793
@@ -64,6 +65,7 @@ size_t initialize(const Config *config) {
   velocities = (Vector*) calloc(num_particles, sizeof(Vector));
   displacements = (Vector*) calloc(num_particles, sizeof(Vector));
   grid = (Particle**) calloc(config->x_squares * config->y_squares, sizeof(Particle*)); // Squares in grid will be of lenght 2 * diameter
+  grid_lasts = (Particle**) calloc(config->x_squares * config->y_squares, sizeof(Particle*)); // Array of pointers to the last position of each grid's squares's singly linked list
 
 
   double shift = config->x_particles * config->radius; // Shift to the left so there is simmetry around 0 in x coordinates
