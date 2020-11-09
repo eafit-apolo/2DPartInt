@@ -17,6 +17,6 @@ int ensure_output_folder(const char *output_folder);
 void write_simulation_step(const size_t num_particles, const Particle *particles,
                            const char *folder, const unsigned long step);
 
-void write_grid(const size_t x_squares, const size_t y_squares, const double square_length, const char* folder);
+void write_grid(const int x_squares, const int y_squares, const double square_length, const char* folder);
 
-void write_particles_from_grid(const size_t x_squares, const size_t y_squares, const char* folder, Particle** grid, const int step);
+void write_particles_from_grid(const int x_squares, const int y_squares, const char* folder, Particle** grid, const int step);
