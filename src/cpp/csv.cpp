@@ -48,7 +48,7 @@ void write_simulation_step(const size_t num_particles, const Particle *particles
   output_file.close();
 }
 
-void write_grid(const size_t x_squares, const size_t y_squares, const double square_length, const char* folder)
+void write_grid(const int x_squares, const int y_squares, const double square_length, const char* folder)
 {
     // Open the csv file to write.
     std::ofstream output_file;
@@ -61,9 +61,9 @@ void write_grid(const size_t x_squares, const size_t y_squares, const double squ
 
     double x_left_limit = -(x_squares*square_length/2); // The far leftest (if that word exists) of the grid
     double y=0;
-    for (size_t row = 0; row < y_squares; ++row) {
+    for (int row = 0; row < y_squares; ++row) {
         double x = x_left_limit;
-        for (size_t col = 0; col < x_squares; ++col) {
+        for (int col = 0; col < x_squares; ++col) {
             output_file << x
                         << ", "
                         << y
@@ -79,7 +79,7 @@ void write_grid(const size_t x_squares, const size_t y_squares, const double squ
     output_file.close();
 }
 
-void write_particles_from_grid(const size_t x_squares, const size_t y_squares, const char* folder, Particle** grid, const int step)
+void write_particles_from_grid(const int x_squares, const int y_squares, const char* folder, Particle** grid, const int step)
 {
     // Open the csv file to write.
     std::ofstream output_file;
@@ -90,8 +90,8 @@ void write_particles_from_grid(const size_t x_squares, const size_t y_squares, c
     // Write the header.
     output_file << "x coord, y coord, length\n";
     int counter = 0;
-    for (size_t row = 0; row < y_squares; ++row) {
-        for (size_t col = 0; col < x_squares; ++col) {
+    for (int row = 0; row < y_squares; ++row) {
+        for (int col = 0; col < x_squares; ++col) {
             if(!grid[row*x_squares + col]) continue; // If  square is empty
             Particle* p = grid[row * x_squares + col];
             do{
