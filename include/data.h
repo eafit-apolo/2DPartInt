@@ -9,7 +9,7 @@ struct Particle{
   double y_coordinate;
   double radius;
   Particle* next;
-  int idx;
+  size_t idx;
 };
 
 /**
@@ -33,8 +33,10 @@ typedef struct {
 /**
  * Represents a contact between two particles.
  */
-typedef struct {
+typedef struct Contact Contact;
+typedef struct Contact{
   size_t p1_idx;
   size_t p2_idx;
   double overlap;
+  Contact* next;
 } Contact;

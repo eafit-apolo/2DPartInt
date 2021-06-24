@@ -1,5 +1,6 @@
 #include <math.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h> // For memset.
 #include "data.h"
 #include "functions.h"
@@ -78,6 +79,7 @@ void collide_two_particles(const double dt, const double distance,
   const double dfs = tangent_velocity * properties_p2->ks * dt;
 
   // Forces for P2 with respect to P1.
+  //printf("%p %f", previous_normal, *previous_normal);
   double Fn_1_2 = *previous_normal + dfn;
   double Fs_1_2 = *previous_tangent + dfs;
 
@@ -105,17 +107,24 @@ void collide_two_particles(const double dt, const double distance,
  */
 inline void compute_forces(const double dt, const size_t particles_size,
                            const size_t contacts_size, const Particle *particles,
-                           const ParticleProperties *properties, const Contact *contacts,
+                           const ParticleProperties *properties, const Contact *contacts_head,
                            const Vector *velocities, double *normal_forces,
                            double *tangent_forces, Vector *forces) {
-
-  for (size_t i = 0; i < contacts_size; ++i) {
-    const size_t p1_idx = contacts[i].p1_idx;
-    const size_t p2_idx = contacts[i].p2_idx;
+  for (size_t i = 1; i <= contacts_size; ++i) {
+    const size_t p1_idx = contacts_head->p1_idx;
+    const size_t p2_idx = contacts_head->p2_idx;
     const size_t p2_p1_idx = (p1_idx * particles_size) + p2_idx;
     const Particle *p1 = &particles[p1_idx];
     const Particle *p2 = &particles[p2_idx];
     const double distance = compute_distance(p1, p2);
+    //printf("p2_p1:%zu\n", p2_p1_idx);
+    //printf("p1:%zu\n", p1_idx);
+    //printf("p2:%zu\n", p2_idx);
+    //for(size_t lk=0; lk < 811801; lk++){
+    //    //printf("-- %zu", lk);
+    //    double alguito = normal_forces[lk];
+    //}
+    //printf(" normal_forces[%zu]::%f\n", p2_p1_idx, normal_forces[p2_p1_idx]);
 
     // P1 collides P2.
     collide_two_particles(
@@ -130,6 +139,7 @@ inline void compute_forces(const double dt, const size_t particles_size,
       &tangent_forces[p2_p1_idx],
       &forces[p2_idx]
     );
+    contacts_head = contacts_head->next;
   }
   apply_gravity(particles_size, properties, forces);
 }

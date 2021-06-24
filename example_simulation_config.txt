@@ -1,10 +1,10 @@
-time=1
+time=0.2
 dt=0.00025
 
-x_particles=6
-y_particles=6
-x_squares=7
-y_squares=7
+x_particles=212
+y_particles=212
+x_squares=300
+y_squares=300
 square_in_grid_length=120
 
 radius=50

@@ -1,6 +1,7 @@
 #include <cstddef>
 #include <cmath>
 #include <cstdlib>
+#include <cstdio>
 extern "C" {
   #include "functions.h"
   #include "data.h"
@@ -11,7 +12,7 @@ extern "C" {
 // Simulation data structures.
 extern Particle *particles;
 extern ParticleProperties *properties;
-extern Contact *contacts_buffer;
+extern Contact *contacts_head;
 extern double *normal_forces;
 extern double *tangent_forces;
 extern Vector *forces;
@@ -57,8 +58,10 @@ size_t initialize(const Config *config) {
   // Allocate the memory for all the data structures.
   particles = (Particle*) calloc(num_particles, sizeof(Particle));
   properties = (ParticleProperties*) calloc(num_particles, sizeof(ParticleProperties));
-  contacts_buffer = (Contact*) calloc(num_particles * num_particles, sizeof(Contact));
+  contacts_head = (Contact*) malloc(sizeof(Contact)); // Head of the linked list that will be created when finding contacts
+  contacts_head->next = NULL; // list is empty
   normal_forces = (double*) calloc(num_particles * num_particles, sizeof(double));
+  printf("INIT:%zu\n",(size_t)(num_particles * num_particles) );
   tangent_forces = (double*) calloc(num_particles * num_particles, sizeof(double));
   forces = (Vector*) calloc(num_particles, sizeof(Vector));
   accelerations = (Vector*) calloc(num_particles, sizeof(Vector));

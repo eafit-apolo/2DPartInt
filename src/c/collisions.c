@@ -1,5 +1,6 @@
 #include <math.h>
 #include <stddef.h>
+#include <stdlib.h>
 #include "data.h"
 #include "functions.h"
 #include "collisions.h"
@@ -59,8 +60,9 @@ int find_square(const double x, const double y, const int x_squares, const int y
  *                     us the set of squares inside Grid that could contain p's colliding particles.
  *                  d. Traverse all the particles inside each found square to find collisions.
  */
-size_t compute_contacts(Particle const *const *const grid, const int x_squares, const int y_squares, const double square_length, Contact* contacts){
+size_t compute_contacts(Particle const *const *const grid, const int x_squares, const int y_squares, const double square_length, Contact* contacts_head){
     size_t k = 0; // current number of contacts
+    Contact* contacts_head_copy = contacts_head;
     // For each square
     for(int row=0; row<y_squares; row++){
         for(int col=0; col<x_squares; col++){
@@ -74,9 +76,14 @@ size_t compute_contacts(Particle const *const *const grid, const int x_squares, 
                     if(other != p){
                         const double overlap = compute_overlap(p, other);
                         if(overlap > 0){
-                            contacts[k].p1_idx = p->idx;
-                            contacts[k].p2_idx = other->idx;
-                            contacts[k].overlap = overlap;
+                            contacts_head_copy->p1_idx = p->idx;
+                            contacts_head_copy->p2_idx = other->idx;
+                            contacts_head_copy->overlap = overlap;
+                            if(!contacts_head_copy->next){ // If we are at the end of the list, create another node
+                                contacts_head_copy->next = (Contact*)malloc(sizeof(Contact));
+                                contacts_head_copy->next->next = NULL; // The new contact is the last one
+                            }
+                            contacts_head_copy = contacts_head_copy->next; // Now go to next node
                             k++;
                         }
                     }
@@ -102,9 +109,14 @@ size_t compute_contacts(Particle const *const *const grid, const int x_squares, 
                         while(other){
                             const double overlap = compute_overlap(p, other);
                             if(overlap > 0){
-                                contacts[k].p1_idx = p->idx;
-                                contacts[k].p2_idx = other->idx;
-                                contacts[k].overlap = overlap;
+                                contacts_head_copy->p1_idx = p->idx;
+                                contacts_head_copy->p2_idx = other->idx;
+                                contacts_head_copy->overlap = overlap;
+                                if(!contacts_head_copy->next){ // If we are at the end of the list, create another node
+                                    contacts_head_copy->next = (Contact*)malloc(sizeof(Contact));
+                                    contacts_head_copy->next->next = NULL; // The new contact is the last one
+                                }
+                                contacts_head_copy = contacts_head_copy->next; // Now go to next node
                                 k++;
                             }
                             other = other->next;

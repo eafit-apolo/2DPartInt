@@ -24,7 +24,7 @@ size_t particle_to_debug;
 // Simulation data structures.
 Particle *particles;
 ParticleProperties *properties;
-Contact *contacts_buffer;
+Contact *contacts_head;
 double *normal_forces;
 double *tangent_forces;
 Vector *forces;
@@ -40,7 +40,6 @@ Particle **grid_lasts;
 void free_all() {
   free(particles);
   free(properties);
-  free(contacts_buffer);
   free(normal_forces);
   free(tangent_forces);
   free(forces);
@@ -49,6 +48,11 @@ void free_all() {
   free(displacements);
   free(grid);
   free(grid_lasts);
+  while(contacts_head){
+      Contact *old_ptr = contacts_head;
+      contacts_head = contacts_head->next;
+      free(old_ptr);
+  }
 }
 
 /**
@@ -60,11 +64,10 @@ void simulation_step(const size_t particles_size, const double dt, const int x_s
   memset(forces, 0, sizeof(Vector) * particles_size);
   memset(grid, 0, sizeof(Particle*) * x_squares * y_squares);
   memset(grid_lasts, 0, sizeof(Particle*) * x_squares * y_squares);
-
   fill_grid(particles_size, x_squares, y_squares, squares_length, particles, grid, grid_lasts);
-  size_t contacts_size = compute_contacts(grid, x_squares, y_squares, squares_length, contacts_buffer);
+  size_t contacts_size = compute_contacts(grid, x_squares, y_squares, squares_length, contacts_head);
   compute_forces(dt, particles_size, contacts_size, particles, properties,
-                 contacts_buffer, velocities, normal_forces, tangent_forces, forces);
+                 contacts_head, velocities, normal_forces, tangent_forces, forces);
 
   for (size_t part = 0; part < particles_size; ++part) {
     compute_acceleration(part, properties, forces, accelerations);
@@ -153,7 +156,7 @@ int main(int argc, char *argv[]) {
 #ifdef DEBUG_STEP
     current_step = step;
 #endif
-
+    //printf("NUM:%zu\n", num_particles);
     simulation_step(num_particles, config->dt, config->x_squares, config->y_squares, config->square_in_grid_length);
     write_simulation_step(num_particles, particles, output_folder, step);
   }
